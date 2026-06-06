@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var p=location.pathname;if(p.endsWith('/')||/\.html?$/.test(p))return;var m='/bigtaka_freeplay';var i=p.lastIndexOf(m);if(i!==-1&&p.length===i+m.length){document.write('<base href="'+p+'/">');}else{var s=p.lastIndexOf('/');if(s>=0)document.write('<base href="'+p.substring(0,s+1)+'">');}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Card Game — Bigtaka Free Play</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+Bengali:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+.card-table {
+  background:
+    radial-gradient(ellipse at center, rgba(0, 100, 50, 0.4) 0%, rgba(0, 40, 20, 0.55) 80%),
+    linear-gradient(180deg, #0a4423 0%, #03190d 100%);
+  border-radius: 28px;
+  padding: 28px 24px;
+  border: 4px solid var(--gold);
+  box-shadow: var(--shadow-gold);
+  position: relative;
+  min-height: 460px;
+}
+
+.table-spots {
+  display: grid;
+  gap: 24px;
+}
+
+.spot {
+  text-align: center;
+}
+
+.spot-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 800;
+  color: var(--gold);
+  margin-bottom: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.spot-score {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 2px 9px;
+  background: rgba(0,0,0,0.5);
+  border-radius: 999px;
+  font-size: 13px;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
+.cards-row {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  min-height: 100px;
+  flex-wrap: wrap;
+  perspective: 600px;
+}
+
+.card {
+  width: 70px;
+  height: 100px;
+  background: #fff;
+  border-radius: 7px;
+  padding: 6px;
+  font-weight: 900;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.45);
+  animation: dealIn 0.35s ease;
+}
+@keyframes dealIn {
+  from { transform: translateY(-30px) rotateY(70deg); opacity: 0; }
+  to   { transform: none; opacity: 1; }
+}
+.card.red { color: #d4042c; }
+.card.black { color: #1a0c35; }
+.card-top, .card-bot {
+  font-size: 15px;
+  line-height: 1;
+}
+.card-bot { transform: rotate(180deg); align-self: flex-end; }
+.card-mid {
+  font-size: 32px;
+  text-align: center;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.card.hidden { background: linear-gradient(135deg, #500ecf, #ff1ed7); position: relative; overflow: hidden; }
+.card.hidden::after {
+  content: '৳';
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 50px; font-style: italic; color: var(--gold); font-weight: 900;
+}
+.card.hidden .card-top, .card.hidden .card-bot, .card.hidden .card-mid { visibility: hidden; }
+
+/* Joker (Andar Bahar) */
+.joker-spot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14px;
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px dashed rgba(255, 215, 0, 0.4);
+  border-radius: 14px;
+}
+
+/* Bet picker */
+.bet-options {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.bet-option {
+  padding: 12px 14px;
+  background: rgba(0,0,0,0.4);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 13px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.bet-option:hover { background: rgba(255,255,255,0.06); transform: translateY(-1px); }
+.bet-option .pay { font-size: 11px; color: var(--text-muted); font-weight: 600; }
+.bet-option.selected {
+  background: linear-gradient(135deg, rgba(80,14,207,0.3), rgba(255,30,215,0.2));
+  border-color: var(--gold);
+  box-shadow: 0 0 18px rgba(255, 215, 0, 0.3);
+}
+.bet-option.selected::after {
+  content: '✓';
+  position: absolute;
+  top: 4px; right: 6px;
+  color: var(--gold);
+  font-size: 13px;
+}
+
+.result-banner {
+  text-align: center;
+  font-size: 26px;
+  font-weight: 900;
+  font-style: italic;
+  margin: 16px 0 8px;
+  letter-spacing: -0.02em;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.result-banner.show { opacity: 1; }
+.result-banner.win  { background: linear-gradient(180deg, #c8ff5c, #89eb16); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.result-banner.loss { background: linear-gradient(180deg, #ff8fb1, #ff1ed7); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.result-banner.push { color: var(--gold); }
+
+.roadmap {
+  display: flex;
+  gap: 4px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.road-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 9px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  color: #fff;
+}
+.road-dot.p { background: #1ec0ff; }       /* Player / Dragon / Andar */
+.road-dot.b { background: #ff3344; }        /* Banker / Tiger / Bahar */
+.road-dot.t { background: var(--gold); color: #1a0c35; }  /* Tie */
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="logo">
+      <img src="../assets/bigtaka-freetoplay.png" alt="Bigtaka Free Play" />
+    </a>
+    <div class="nav-right">
+      <div class="nav-auth">
+        <button class="btn btn-ghost btn-sm nav-cta nav-login" data-open-signup>Log In</button>
+        <button class="btn btn-gold btn-sm nav-cta nav-signup" data-open-signup>Sign Up</button>
+      </div>
+      <button class="sfx-toggle" data-sfx-btn title="Toggle sounds"><span data-sfx-icon>🔊</span></button>
+      <div class="wallet">
+        <img class="wallet-icon" src="../assets/takacoincoin.png" alt="Taka" />
+        <div>
+          <div class="wallet-label">Balance</div>
+          <div class="wallet-amount"><span data-wallet>10,000</span> FUN</div>
+        </div>
+        <button class="wallet-reset" data-wallet-reset title="Reset balance">⟳</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="play-wrap">
+  <div class="container">
+    <a href="../index.html" class="back-link">← Back to all games</a>
+
+    <div class="play-head">
+      <div class="play-title-block">
+        <h1 id="game-name">Card Game <span class="practice-stamp" style="position:static;display:inline-flex;margin-left:8px;font-size:11px;vertical-align:middle">🎯 Practice Mode</span></h1>
+        <p class="play-sub" id="game-sub">Pick a bet and deal.</p>
+      </div>
+    </div>
+
+    <div id="mascot-maya" class="mascot-inline"></div>
+
+    <!-- LIVE CASINO header -->
+    <div id="live-dealer-card"></div>
+    <div id="live-feed" class="live-feed"></div>
+
+    <div style="display:flex;justify-content:flex-end;margin-bottom:8px">
+      <div class="streak-pill" data-streak-wrap><span class="streak-fire">🔥</span> Win streak <span data-streak-count>0</span></div>
+    </div>
+
+    <div class="play-layout">
+      <div class="play-canvas-wrap">
+        <div class="card-table" id="card-table">
+          <div class="table-spots" id="table-spots"></div>
+          <div class="result-banner" id="result">—</div>
+        </div>
+
+        <div class="reaction-bar" id="reaction-bar"></div>
+
+        <div class="status-row" style="display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--text-muted);margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+          <span style="color:var(--green);font-weight:700;">● Live Demo</span>
+          <span>Provider: <strong style="color:#fff" id="prov-label">Evolution Gaming</strong></span>
+          <span>RTP: <strong style="color:#fff" id="rtp-label">98.94%</strong></span>
+        </div>
+      </div>
+
+      <aside class="play-side">
+        <div class="side-card">
+          <h3>Bet & Deal</h3>
+          <div class="bet-input-row">
+            <input class="bet-input" id="bet-amt" type="number" min="10" step="10" value="100" />
+            <button class="bet-step" data-step="-">−</button>
+            <button class="bet-step" data-step="+">+</button>
+          </div>
+          <div class="bet-quick">
+            <button data-quick="50">50</button>
+            <button data-quick="100">100</button>
+            <button data-quick="500">500</button>
+            <button data-quick="1000">1000</button>
+          </div>
+
+          <div id="bet-picker"></div>
+
+          <button class="btn btn-green btn-block" id="deal-btn" style="margin-top:8px">🃏 DEAL</button>
+          <div id="action-row" style="display:none;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+            <button class="btn btn-ghost" id="hit-btn">HIT</button>
+            <button class="btn btn-gold" id="stand-btn">STAND</button>
+          </div>
+        </div>
+
+        <div class="side-card" id="rules-card">
+          <h3>How To Play</h3>
+          <div id="rules-text" style="color:var(--text-dim);font-size:13px;line-height:1.55"></div>
+        </div>
+
+        <div class="side-card">
+          <h3>Trend / Roadmap</h3>
+          <div class="roadmap" id="roadmap"></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<script src="../i18n.js"></script>
+<script src="../app.js"></script>
+<script>
+const params = new URLSearchParams(location.search);
+const gameName = params.get('name') || 'Card Game';
+const gameType = params.get('game') || 'blackjack';
+
+const titleEl = document.getElementById('game-name');
+const stampEl = titleEl.querySelector('.practice-stamp');
+titleEl.firstChild.textContent = gameName + ' ';
+if (stampEl) titleEl.appendChild(stampEl);
+document.title = gameName + ' — Bigtaka Free Play';
+
+// Mascot
+Mascot.render('#mascot-maya', 'maya');
+
+// LiveCasino
+LiveCasino.init('#live-dealer-card', 'live-feed', 'reaction-bar');
+
+// ============ DECK ============
+const SUITS = [
+  { s: '♠', c: 'black' },
+  { s: '♥', c: 'red' },
+  { s: '♦', c: 'red' },
+  { s: '♣', c: 'black' }
+];
+const RANKS = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+const RANK_VAL = { A:14, K:13, Q:12, J:11, '10':10, '9':9, '8':8, '7':7, '6':6, '5':5, '4':4, '3':3, '2':2 };
+
+function makeDeck() {
+  const d = [];
+  for (const s of SUITS) for (const r of RANKS) d.push({ rank: r, suit: s.s, color: s.c });
+  for (let i = d.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [d[i], d[j]] = [d[j], d[i]];
+  }
+  return d;
+}
+
+function renderCard(card, hidden) {
+  const el = document.createElement('div');
+  el.className = 'card ' + (card.color || 'black') + (hidden ? ' hidden' : '');
+  el.innerHTML = `
+    <div class="card-top">${card.rank}<br>${card.suit}</div>
+    <div class="card-mid">${card.suit}</div>
+    <div class="card-bot">${card.rank}<br>${card.suit}</div>
+  `;
+  return el;
+}
+
+// ============ HAND VALUE HELPERS ============
+function blackjackTotal(hand) {
+  let t = 0, aces = 0;
+  for (const c of hand) {
+    if (['J','Q','K'].includes(c.rank)) t += 10;
+    else if (c.rank === 'A') { t += 11; aces++; }
+    else t += parseInt(c.rank);
+  }
+  while (t > 21 && aces > 0) { t -= 10; aces--; }
+  return t;
+}
+
+function baccaratTotal(hand) {
+  let t = 0;
+  for (const c of hand) {
+    if (['J','Q','K','10'].includes(c.rank)) t += 0;
+    else if (c.rank === 'A') t += 1;
+    else t += parseInt(c.rank);
+  }
+  return t % 10;
+}
+
+// Higher card wins — Aces high. Returns -1 if a<b, 0 tie, 1 if a>b
+function cmpCards(a, b) {
+  return Math.sign(RANK_VAL[a.rank] - RANK_VAL[b.rank]);
+}
+
+// Simple poker hand evaluator for 3-card and 5-card games
+// Returns { rank: number, name: string }  higher rank wins
+function evalHand(cards) {
+  if (cards.length === 3) return evalThreeCard(cards);
+  return evalFiveCard(cards);
+}
+
+function evalThreeCard(cards) {
+  const sorted = cards.slice().sort((a, b) => RANK_VAL[b.rank] - RANK_VAL[a.rank]);
+  const vals = sorted.map(c => RANK_VAL[c.rank]);
+  const suits = sorted.map(c => c.suit);
+  const sameSuit = suits[0] === suits[1] && suits[1] === suits[2];
+  // Sequence: A-2-3 (special) or consecutive
+  const isSeq = (vals[0] - vals[1] === 1 && vals[1] - vals[2] === 1) || (vals[0] === 14 && vals[1] === 3 && vals[2] === 2);
+  const isTrail = vals[0] === vals[1] && vals[1] === vals[2];
+  const isPair = vals[0] === vals[1] || vals[1] === vals[2];
+
+  if (isTrail) return { rank: 6, name: 'Trail (Trio)', tiebreak: vals[0] };
+  if (sameSuit && isSeq) return { rank: 5, name: 'Pure Sequence', tiebreak: vals[0] };
+  if (isSeq) return { rank: 4, name: 'Sequence', tiebreak: vals[0] };
+  if (sameSuit) return { rank: 3, name: 'Color', tiebreak: vals[0] * 100 + vals[1] };
+  if (isPair) return { rank: 2, name: 'Pair', tiebreak: (vals[0] === vals[1] ? vals[0] : vals[1]) * 100 + vals.find(v => v !== (vals[0] === vals[1] ? vals[0] : vals[1])) };
+  return { rank: 1, name: 'High Card', tiebreak: vals[0] * 10000 + vals[1] * 100 + vals[2] };
+}
+
+function evalFiveCard(cards) {
+  const sorted = cards.slice().sort((a, b) => RANK_VAL[b.rank] - RANK_VAL[a.rank]);
+  const vals = sorted.map(c => RANK_VAL[c.rank]);
+  const suits = sorted.map(c => c.suit);
+  const counts = {};
+  for (const v of vals) counts[v] = (counts[v] || 0) + 1;
+  const countValues = Object.values(counts).sort((a, b) => b - a);
+  const sameSuit = suits.every(s => s === suits[0]);
+  const isStraight = (vals[0] - vals[4] === 4 && new Set(vals).size === 5) || (vals[0] === 14 && vals[1] === 5 && vals[2] === 4 && vals[3] === 3 && vals[4] === 2);
+  if (sameSuit && isStraight && vals[0] === 14 && !(vals[1] === 5)) return { rank: 10, name: 'Royal Flush' };
+  if (sameSuit && isStraight) return { rank: 9, name: 'Straight Flush' };
+  if (countValues[0] === 4) return { rank: 8, name: 'Four of a Kind' };
+  if (countValues[0] === 3 && countValues[1] === 2) return { rank: 7, name: 'Full House' };
+  if (sameSuit) return { rank: 6, name: 'Flush' };
+  if (isStraight) return { rank: 5, name: 'Straight' };
+  if (countValues[0] === 3) return { rank: 4, name: 'Three of a Kind' };
+  if (countValues[0] === 2 && countValues[1] === 2) return { rank: 3, name: 'Two Pair' };
+  if (countValues[0] === 2) return { rank: 2, name: 'Pair' };
+  return { rank: 1, name: 'High Card', tiebreak: vals[0] };
+}
+
+// ============ GAME CONFIGS ============
+const GAMES_CONFIG = {
+  blackjack: {
+    title: 'Blackjack',
+    sub: 'Beat the dealer to 21 without busting.',
+    rtp: '99.56%',
+    rules: `<strong>Goal:</strong> Get closer to 21 than the dealer without going over.<br><br>
+            <strong>Cards:</strong> Aces 1 or 11. J/Q/K = 10. All others face value.<br>
+            <strong>Actions:</strong> HIT (take a card) or STAND (end turn).<br>
+            <strong>Dealer:</strong> Hits to 17, stands on 17+.<br>
+            <strong>Blackjack</strong> (Ace + 10) pays 3:2.`,
+    needsBet: false,
+    needsActions: true
+  },
+  baccarat: {
+    title: 'Baccarat',
+    sub: 'Player vs Banker — closest to 9 wins.',
+    rtp: '98.94%',
+    rules: `<strong>Goal:</strong> Bet on Player, Banker, or Tie. Closest to 9 wins.<br><br>
+            <strong>Cards:</strong> A=1. 2-9 = face. 10/J/Q/K = 0. Hand value = last digit of sum.<br>
+            <strong>Player pays:</strong> 1:1<br>
+            <strong>Banker pays:</strong> 0.95:1 (5% commission)<br>
+            <strong>Tie pays:</strong> 8:1`,
+    needsBet: true,
+    bets: [
+      { id: 'player', label: 'Player', pay: 2 },
+      { id: 'banker', label: 'Banker', pay: 1.95 },
+      { id: 'tie',    label: 'Tie',    pay: 9 }
+    ]
+  },
+  dragontiger: {
+    title: 'Dragon Tiger',
+    sub: 'One card battle — higher wins.',
+    rtp: '96.27%',
+    rules: `<strong>Goal:</strong> Bet on Dragon, Tiger, or Tie. Higher card wins (A is highest).<br><br>
+            <strong>Dragon/Tiger pays:</strong> 1:1<br>
+            <strong>Tie pays:</strong> 11:1<br>
+            <strong>Tip:</strong> Simplest live casino game — pure 50/50 odds.`,
+    needsBet: true,
+    bets: [
+      { id: 'dragon', label: '🐉 Dragon', pay: 2 },
+      { id: 'tiger',  label: '🐅 Tiger',  pay: 2 },
+      { id: 'tie',    label: 'Tie',       pay: 12 }
+    ]
+  },
+  andarbahar: {
+    title: 'Andar Bahar',
+    sub: 'Match the joker — pick Andar or Bahar.',
+    rtp: '97.85%',
+    rules: `<strong>Goal:</strong> Predict which side (Andar or Bahar) matches the joker's rank first.<br><br>
+            <strong>A joker</strong> is revealed first. Cards then deal alternately to Andar (first) and Bahar.<br>
+            First side with a matching rank wins.<br>
+            <strong>Andar pays:</strong> 0.9:1 (first-deal advantage)<br>
+            <strong>Bahar pays:</strong> 1:1`,
+    needsBet: true,
+    bets: [
+      { id: 'andar', label: 'Andar (Left)',  pay: 1.9 },
+      { id: 'bahar', label: 'Bahar (Right)', pay: 2.0 }
+    ]
+  },
+  teenpatti: {
+    title: 'Teen Patti',
+    sub: '3-card poker — Player A vs Player B.',
+    rtp: '97.85%',
+    rules: `<strong>Goal:</strong> Bet on Player A or Player B. Higher 3-card hand wins.<br><br>
+            <strong>Ranking (high→low):</strong><br>
+            Trail (3-of-a-kind) > Pure Sequence > Sequence > Color > Pair > High Card<br><br>
+            <strong>Pays:</strong> 1:1`,
+    needsBet: true,
+    bets: [
+      { id: 'playerA', label: 'Player A', pay: 1.97 },
+      { id: 'playerB', label: 'Player B', pay: 1.97 }
+    ]
+  },
+  war: {
+    title: 'War of Cards',
+    sub: 'High card wins — simple and fast.',
+    rtp: '97.16%',
+    rules: `<strong>Goal:</strong> Bet on whose card will be higher — Yours or Dealer's. Aces high.<br><br>
+            <strong>Win pays:</strong> 1:1<br>
+            <strong>Tie:</strong> Push (bet returned)<br>
+            <strong>Tip:</strong> Pure 50/50 — fastest live casino game.`,
+    needsBet: true,
+    bets: [
+      { id: 'you',    label: 'You',    pay: 2 },
+      { id: 'dealer', label: 'Dealer', pay: 2 }
+    ]
+  },
+  threecard: {
+    title: 'Three Card Poker',
+    sub: '3 cards each — Player vs Dealer.',
+    rtp: '96.63%',
+    rules: `<strong>Goal:</strong> Beat dealer's 3-card hand. Both deal 3 cards face up after bet.<br><br>
+            <strong>Ranking (high→low):</strong><br>
+            Straight Flush > 3 of a Kind > Straight > Flush > Pair > High Card<br><br>
+            <strong>Dealer qualifies:</strong> needs Queen-high or better. Else player wins.<br>
+            <strong>Pays:</strong> 1:1 on Play bet`,
+    needsBet: false,
+    autoPlay: true
+  },
+  holdem: {
+    title: 'Casino Hold\'em Poker',
+    sub: 'Texas Hold\'em vs dealer — best 5-card hand wins.',
+    rtp: '97.84%',
+    rules: `<strong>Goal:</strong> Build the best 5-card poker hand using your 2 + community 5.<br><br>
+            Dealer also gets 2 hole cards. Compare 5-card best hands.<br>
+            <strong>Cards reveal:</strong> 2 hole → flop (3) → turn (4) → river (5).<br>
+            <strong>Pays:</strong> 1:1 (varies by hand strength)`,
+    needsBet: false,
+    autoPlay: true
+  },
+  stud: {
+    title: 'Caribbean Stud',
+    sub: '5-card poker vs dealer.',
+    rtp: '94.78%',
+    rules: `<strong>Goal:</strong> Beat dealer's 5-card hand. Both get 5 cards (dealer's 1st face-up).<br><br>
+            <strong>Dealer qualifies:</strong> needs Ace-King or better. Else player wins ante only.<br>
+            <strong>Pays:</strong> 1:1 (varies by hand strength)`,
+    needsBet: false,
+    autoPlay: true
+  }
+};
+
+const cfg = GAMES_CONFIG[gameType] || GAMES_CONFIG.blackjack;
+document.getElementById('game-sub').textContent = cfg.sub;
+document.getElementById('rtp-label').textContent = cfg.rtp;
+document.getElementById('rules-text').innerHTML = cfg.rules;
+
+// ============ STATE ============
+const state = {
+  deck: [],
+  hands: {},
+  bet: 0,
+  betChoice: cfg.bets ? cfg.bets[0].id : null,
+  active: false,
+  history: []  // P/B/T markers for roadmap
+};
+
+// ============ TABLE LAYOUT ============
+function buildTableLayout() {
+  const wrap = document.getElementById('table-spots');
+  if (gameType === 'blackjack') {
+    wrap.innerHTML = `
+      <div class="spot"><div class="spot-label">DEALER<span class="spot-score" id="dealer-score">0</span></div><div class="cards-row" id="dealer-cards"></div></div>
+      <div class="spot"><div class="spot-label">YOU<span class="spot-score" id="player-score">0</span></div><div class="cards-row" id="player-cards"></div></div>
+    `;
+  } else if (gameType === 'baccarat') {
+    wrap.innerHTML = `
+      <div class="spot"><div class="spot-label">BANKER<span class="spot-score" id="banker-score">0</span></div><div class="cards-row" id="banker-cards"></div></div>
+      <div class="spot"><div class="spot-label">PLAYER<span class="spot-score" id="player-score">0</span></div><div class="cards-row" id="player-cards"></div></div>
+    `;
+  } else if (gameType === 'dragontiger') {
+    wrap.innerHTML = `
+      <div class="spot" style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+        <div><div class="spot-label">🐉 DRAGON</div><div class="cards-row" id="dragon-cards"></div></div>
+        <div><div class="spot-label">🐅 TIGER</div><div class="cards-row" id="tiger-cards"></div></div>
+      </div>
+    `;
+  } else if (gameType === 'andarbahar') {
+    wrap.innerHTML = `
+      <div class="joker-spot">
+        <div class="spot-label" style="color:var(--gold)">🃏 JOKER</div>
+        <div class="cards-row" id="joker-cards"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+        <div class="spot"><div class="spot-label" style="color:#1ec0ff">ANDAR</div><div class="cards-row" id="andar-cards" style="justify-content:flex-start;flex-wrap:wrap"></div></div>
+        <div class="spot"><div class="spot-label" style="color:#ff3344">BAHAR</div><div class="cards-row" id="bahar-cards" style="justify-content:flex-start;flex-wrap:wrap"></div></div>
+      </div>
+    `;
+  } else if (gameType === 'teenpatti') {
+    wrap.innerHTML = `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+        <div class="spot"><div class="spot-label" style="color:#1ec0ff">PLAYER A</div><div class="cards-row" id="playerA-cards"></div><div id="playerA-rank" style="font-size:11px;color:var(--gold);margin-top:6px;font-weight:700"></div></div>
+        <div class="spot"><div class="spot-label" style="color:#ff3344">PLAYER B</div><div class="cards-row" id="playerB-cards"></div><div id="playerB-rank" style="font-size:11px;color:var(--gold);margin-top:6px;font-weight:700"></div></div>
+      </div>
+    `;
+  } else if (gameType === 'war') {
+    wrap.innerHTML = `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+        <div class="spot"><div class="spot-label" style="color:#1ec0ff">YOU</div><div class="cards-row" id="you-cards"></div></div>
+        <div class="spot"><div class="spot-label" style="color:#ff3344">DEALER</div><div class="cards-row" id="dealer-cards"></div></div>
+      </div>
+    `;
+  } else if (gameType === 'threecard') {
+    wrap.innerHTML = `
+      <div class="spot"><div class="spot-label">DEALER</div><div class="cards-row" id="dealer-cards"></div><div id="dealer-rank" style="font-size:11px;color:var(--gold);margin-top:6px;font-weight:700"></div></div>
+      <div class="spot"><div class="spot-label">YOU</div><div class="cards-row" id="you-cards"></div><div id="you-rank" style="font-size:11px;color:var(--gold);margin-top:6px;font-weight:700"></div></div>
+    `;
+  } else if (gameType === 'holdem') {
+    wrap.innerHTML = `
+      <div class="spot"><div class="spot-label">DEALER (HOLE)</div><div class="cards-row" id="dealer-hole"></div></div>
+      <div class="spot"><div class="spot-label">COMMUNITY (FLOP · TURN · RIVER)</div><div class="cards-row" id="community"></div></div>
+      <div class="spot"><div class="spot-label">YOU (HOLE)</div><div class="cards-row" id="you-hole"></div><div id="you-rank" style="font-size:11px;color:var(--gold);margin-top:6px;font-weight:700"></div></div>
+    `;
+  } else if (gameType === 'stud') {
+    wrap.innerHTML = `
+      <div class="spot"><div class="spot-label">DEALER</div><div class="cards-row" id="dealer-cards"></div><div id="dealer-rank" style="font-size:11px;color:var(--gold);margin-top:6px;font-weight:700"></div></div>
+      <div class="spot"><div class="spot-label">YOU</div><div class="cards-row" id="you-cards"></div><div id="you-rank" style="font-size:11px;color:var(--gold);margin-top:6px;font-weight:700"></div></div>
+    `;
+  }
+}
+
+function buildBetPicker() {
+  const wrap = document.getElementById('bet-picker');
+  if (!cfg.bets) { wrap.innerHTML = ''; return; }
+  wrap.innerHTML = `<h3 style="margin-top:12px">Place Your Bet</h3><div class="bet-options" id="bet-options">` +
+    cfg.bets.map((b, i) => `
+      <div class="bet-option${i === 0 ? ' selected' : ''}" data-bet="${b.id}">
+        <span>${b.label}</span>
+        <span class="pay">${b.pay}× pay</span>
+      </div>
+    `).join('') + `</div>`;
+  wrap.querySelectorAll('[data-bet]').forEach(opt => {
+    opt.addEventListener('click', () => {
+      wrap.querySelectorAll('[data-bet]').forEach(o => o.classList.remove('selected'));
+      opt.classList.add('selected');
+      state.betChoice = opt.dataset.bet;
+    });
+  });
+}
+
+// ============ DISPLAY HELPERS ============
+function showCardsIn(containerId, cards, hiddenIndices) {
+  hiddenIndices = hiddenIndices || [];
+  const el = document.getElementById(containerId);
+  el.innerHTML = '';
+  cards.forEach((c, i) => el.appendChild(renderCard(c, hiddenIndices.includes(i))));
+}
+function setScore(elId, val) { const el = document.getElementById(elId); if (el) el.textContent = val; }
+function showResult(msg, kind) {
+  const r = document.getElementById('result');
+  r.textContent = msg;
+  r.className = 'result-banner show ' + kind;
+}
+function clearResult() { document.getElementById('result').classList.remove('show', 'win', 'loss', 'push'); }
+
+function addToRoadmap(marker) {
+  state.history.push(marker);
+  if (state.history.length > 30) state.history.shift();
+  document.getElementById('roadmap').innerHTML = state.history.map(m =>
+    `<span class="road-dot ${m.cls}">${m.label}</span>`
+  ).join('');
+}
+
+function payout(amount, mult) {
+  const w = Math.round(amount * mult);
+  Wallet.add(w);
+  return w;
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ============ DEAL DISPATCHER ============
+async function deal() {
+  const bet = parseInt(document.getElementById('bet-amt').value) || 0;
+  if (bet < 10) return toast('Min bet is 10 FUN', 'loss');
+  if (bet > Wallet.get()) return toast('Not enough FUN — hit ⟳ to reset', 'loss');
+
+  Wallet.add(-bet);
+  Sfx.bet();
+  Player.recordBet(bet);
+  state.bet = bet;
+  state.deck = makeDeck();
+  state.active = true;
+  clearResult();
+  document.getElementById('deal-btn').disabled = true;
+  document.getElementById('action-row').style.display = 'none';
+
+  if (gameType === 'blackjack') return playBlackjack();
+  if (gameType === 'baccarat') return playBaccarat();
+  if (gameType === 'dragontiger') return playDragonTiger();
+  if (gameType === 'andarbahar') return playAndarBahar();
+  if (gameType === 'teenpatti') return playTeenPatti();
+  if (gameType === 'war') return playWar();
+  if (gameType === 'threecard') return playThreeCard();
+  if (gameType === 'holdem') return playHoldem();
+  if (gameType === 'stud') return playStud();
+}
+
+function endRound(outcome /* 'win' | 'loss' | 'push' */, msg, mult) {
+  document.getElementById('deal-btn').disabled = false;
+  document.getElementById('action-row').style.display = 'none';
+  state.active = false;
+  if (outcome === 'win') {
+    const winAmt = payout(state.bet, mult);
+    msg = msg + ` · +${Wallet.format(winAmt)} FUN`;
+    showResult(msg, 'win');
+    mult >= 5 ? Sfx.jackpot() : mult >= 2 ? Sfx.bigWin() : Sfx.win();
+    Player.recordWin(state.bet * mult, mult, 'live');
+    LiveCasino.react(mult >= 3 ? 'big' : 'win');
+    LiveCasino.bumpStreak();
+  } else if (outcome === 'loss') {
+    showResult(msg, 'loss');
+    Sfx.loss();
+    Player.recordLoss();
+    LiveCasino.react('loss');
+    LiveCasino.resetStreak();
+  } else {
+    payout(state.bet, 1);  // return bet
+    showResult(msg + ' · bet returned', 'push');
+    Sfx.tick();
+    LiveCasino.dealerSay('Push — bet returned.');
+  }
+}
+
+// ============ BLACKJACK ============
+async function playBlackjack() {
+  LiveCasino.dealerSay('Dealing cards…');
+  state.hands.player = [state.deck.pop(), state.deck.pop()];
+  state.hands.dealer = [state.deck.pop(), state.deck.pop()];
+  showCardsIn('player-cards', state.hands.player);
+  showCardsIn('dealer-cards', state.hands.dealer, [1]);
+  setScore('player-score', blackjackTotal(state.hands.player));
+  setScore('dealer-score', '?');
+  if (blackjackTotal(state.hands.player) === 21) return resolveBlackjack();
+  document.getElementById('action-row').style.display = 'grid';
+}
+
+function resolveBlackjack() {
+  showCardsIn('dealer-cards', state.hands.dealer);
+  setScore('dealer-score', blackjackTotal(state.hands.dealer));
+  (async () => {
+    while (blackjackTotal(state.hands.dealer) < 17) {
+      await sleep(400);
+      state.hands.dealer.push(state.deck.pop());
+      Sfx.deal();
+      showCardsIn('dealer-cards', state.hands.dealer);
+      setScore('dealer-score', blackjackTotal(state.hands.dealer));
+    }
+    const p = blackjackTotal(state.hands.player);
+    const d = blackjackTotal(state.hands.dealer);
+    const isBJ = state.hands.player.length === 2 && p === 21;
+    if (p > 21) endRound('loss', 'BUST');
+    else if (d > 21 || p > d) endRound('win', isBJ ? 'BLACKJACK!' : 'WIN', isBJ ? 2.5 : 2);
+    else if (p === d) endRound('push', 'PUSH');
+    else endRound('loss', 'DEALER WINS');
+  })();
+}
+
+document.getElementById('hit-btn').addEventListener('click', () => {
+  if (!state.active || gameType !== 'blackjack') return;
+  state.hands.player.push(state.deck.pop());
+  Sfx.deal();
+  showCardsIn('player-cards', state.hands.player);
+  setScore('player-score', blackjackTotal(state.hands.player));
+  if (blackjackTotal(state.hands.player) > 21) return resolveBlackjack();
+  if (blackjackTotal(state.hands.player) === 21) resolveBlackjack();
+});
+
+document.getElementById('stand-btn').addEventListener('click', () => {
+  if (!state.active || gameType !== 'blackjack') return;
+  resolveBlackjack();
+});
+
+// ============ BACCARAT ============
+async function playBaccarat() {
+  LiveCasino.dealerSay('Dealing — Player and Banker…');
+  state.hands.player = [state.deck.pop(), state.deck.pop()];
+  state.hands.banker = [state.deck.pop(), state.deck.pop()];
+  showCardsIn('player-cards', state.hands.player);
+  showCardsIn('banker-cards', state.hands.banker);
+  setScore('player-score', baccaratTotal(state.hands.player));
+  setScore('banker-score', baccaratTotal(state.hands.banker));
+  await sleep(700);
+  // Third card rules — simplified
+  const p = baccaratTotal(state.hands.player);
+  const b = baccaratTotal(state.hands.banker);
+  // Natural (8 or 9): no draws
+  if (p < 8 && b < 8) {
+    let playerDrew = false;
+    if (p <= 5) { state.hands.player.push(state.deck.pop()); playerDrew = true; }
+    if (!playerDrew && b <= 5) state.hands.banker.push(state.deck.pop());
+    else if (playerDrew && b <= 5) state.hands.banker.push(state.deck.pop());
+    showCardsIn('player-cards', state.hands.player);
+    showCardsIn('banker-cards', state.hands.banker);
+    setScore('player-score', baccaratTotal(state.hands.player));
+    setScore('banker-score', baccaratTotal(state.hands.banker));
+    await sleep(500);
+  }
+  const finalP = baccaratTotal(state.hands.player);
+  const finalB = baccaratTotal(state.hands.banker);
+  let winner, marker;
+  if (finalP > finalB)      { winner = 'player'; marker = { cls: 'p', label: 'P' }; }
+  else if (finalB > finalP) { winner = 'banker'; marker = { cls: 'b', label: 'B' }; }
+  else                      { winner = 'tie';    marker = { cls: 't', label: 'T' }; }
+  addToRoadmap(marker);
+  const sel = cfg.bets.find(b => b.id === state.betChoice);
+  if (state.betChoice === winner) endRound('win', `${winner.toUpperCase()} WINS!`, sel.pay);
+  else endRound('loss', `${winner.toUpperCase()} WINS`);
+}
+
+// ============ DRAGON TIGER ============
+async function playDragonTiger() {
+  LiveCasino.dealerSay('Dragon vs Tiger — one card each…');
+  state.hands.dragon = [state.deck.pop()];
+  state.hands.tiger  = [state.deck.pop()];
+  showCardsIn('dragon-cards', state.hands.dragon);
+  await sleep(400);
+  showCardsIn('tiger-cards', state.hands.tiger);
+  await sleep(700);
+  const cmp = cmpCards(state.hands.dragon[0], state.hands.tiger[0]);
+  let winner, marker;
+  if (cmp > 0)      { winner = 'dragon'; marker = { cls: 'p', label: '🐉' }; }
+  else if (cmp < 0) { winner = 'tiger';  marker = { cls: 'b', label: '🐅' }; }
+  else              { winner = 'tie';    marker = { cls: 't', label: 'T' }; }
+  addToRoadmap(marker);
+  const sel = cfg.bets.find(b => b.id === state.betChoice);
+  if (state.betChoice === winner) endRound('win', `${winner.toUpperCase()} WINS!`, sel.pay);
+  else endRound('loss', `${winner.toUpperCase()} WINS`);
+}
+
+// ============ ANDAR BAHAR ============
+async function playAndarBahar() {
+  LiveCasino.dealerSay('Revealing the joker…');
+  const joker = state.deck.pop();
+  state.hands.joker = [joker];
+  state.hands.andar = [];
+  state.hands.bahar = [];
+  showCardsIn('joker-cards', [joker]);
+  await sleep(700);
+  let side = 'andar';   // Andar gets first card
+  let cards = 0;
+  while (true) {
+    const c = state.deck.pop();
+    state.hands[side].push(c);
+    showCardsIn(side + '-cards', state.hands[side]);
+    Sfx.deal();
+    cards++;
+    if (c.rank === joker.rank) {
+      addToRoadmap({ cls: side === 'andar' ? 'p' : 'b', label: side === 'andar' ? 'A' : 'B' });
+      const sel = cfg.bets.find(b => b.id === state.betChoice);
+      const winner = side;
+      if (state.betChoice === winner) endRound('win', `${winner.toUpperCase()} MATCHED!`, sel.pay);
+      else endRound('loss', `${winner.toUpperCase()} MATCHED`);
+      return;
+    }
+    side = (side === 'andar') ? 'bahar' : 'andar';
+    if (cards > 50) break; // safety
+    await sleep(180);
+  }
+}
+
+// ============ TEEN PATTI ============
+async function playTeenPatti() {
+  LiveCasino.dealerSay('Dealing 3 cards each…');
+  state.hands.playerA = [state.deck.pop(), state.deck.pop(), state.deck.pop()];
+  state.hands.playerB = [state.deck.pop(), state.deck.pop(), state.deck.pop()];
+  showCardsIn('playerA-cards', state.hands.playerA, [0,1,2]);
+  showCardsIn('playerB-cards', state.hands.playerB, [0,1,2]);
+  await sleep(800);
+  // Reveal
+  showCardsIn('playerA-cards', state.hands.playerA);
+  await sleep(400);
+  showCardsIn('playerB-cards', state.hands.playerB);
+  const evalA = evalThreeCard(state.hands.playerA);
+  const evalB = evalThreeCard(state.hands.playerB);
+  document.getElementById('playerA-rank').textContent = evalA.name;
+  document.getElementById('playerB-rank').textContent = evalB.name;
+  await sleep(700);
+  let winner;
+  if (evalA.rank > evalB.rank) winner = 'playerA';
+  else if (evalA.rank < evalB.rank) winner = 'playerB';
+  else winner = (evalA.tiebreak || 0) > (evalB.tiebreak || 0) ? 'playerA' : 'playerB';
+  addToRoadmap({ cls: winner === 'playerA' ? 'p' : 'b', label: winner === 'playerA' ? 'A' : 'B' });
+  const sel = cfg.bets.find(b => b.id === state.betChoice);
+  if (state.betChoice === winner) endRound('win', `${winner === 'playerA' ? 'PLAYER A' : 'PLAYER B'} WINS!`, sel.pay);
+  else endRound('loss', `${winner === 'playerA' ? 'PLAYER A' : 'PLAYER B'} WINS`);
+}
+
+// ============ WAR OF CARDS ============
+async function playWar() {
+  LiveCasino.dealerSay('Cards down — high card wins.');
+  state.hands.you    = [state.deck.pop()];
+  state.hands.dealer = [state.deck.pop()];
+  showCardsIn('you-cards', state.hands.you);
+  await sleep(400);
+  showCardsIn('dealer-cards', state.hands.dealer);
+  await sleep(800);
+  const cmp = cmpCards(state.hands.you[0], state.hands.dealer[0]);
+  if (cmp === 0) {
+    addToRoadmap({ cls: 't', label: 'T' });
+    endRound('push', 'TIE — WAR!');
+    return;
+  }
+  let winner = cmp > 0 ? 'you' : 'dealer';
+  addToRoadmap({ cls: winner === 'you' ? 'p' : 'b', label: winner === 'you' ? 'Y' : 'D' });
+  const sel = cfg.bets.find(b => b.id === state.betChoice);
+  if (state.betChoice === winner) endRound('win', `${winner.toUpperCase()} WINS!`, sel.pay);
+  else endRound('loss', `${winner.toUpperCase()} WINS`);
+}
+
+// ============ THREE CARD POKER ============
+async function playThreeCard() {
+  LiveCasino.dealerSay('Dealing 3 cards each…');
+  state.hands.you    = [state.deck.pop(), state.deck.pop(), state.deck.pop()];
+  state.hands.dealer = [state.deck.pop(), state.deck.pop(), state.deck.pop()];
+  showCardsIn('you-cards', state.hands.you);
+  await sleep(500);
+  showCardsIn('dealer-cards', state.hands.dealer, [0,1,2]);
+  const evalYou = evalThreeCard(state.hands.you);
+  document.getElementById('you-rank').textContent = evalYou.name;
+  await sleep(700);
+  showCardsIn('dealer-cards', state.hands.dealer);
+  const evalD = evalThreeCard(state.hands.dealer);
+  document.getElementById('dealer-rank').textContent = evalD.name;
+  // Dealer qualifies on Queen-high (high card top val >= 12)
+  const dealerVals = state.hands.dealer.map(c => RANK_VAL[c.rank]).sort((a, b) => b - a);
+  const dealerQualifies = evalD.rank > 1 || dealerVals[0] >= 12;
+  await sleep(500);
+  if (!dealerQualifies) { endRound('win', 'DEALER DIDN\'T QUALIFY', 2); return; }
+  let winner;
+  if (evalYou.rank > evalD.rank) winner = 'you';
+  else if (evalYou.rank < evalD.rank) winner = 'dealer';
+  else winner = (evalYou.tiebreak || 0) >= (evalD.tiebreak || 0) ? 'you' : 'dealer';
+  // Bonus pay for premium hands
+  let mult = 2;
+  if (evalYou.rank === 6) mult = 33; // Trail
+  else if (evalYou.rank === 5) mult = 21; // Pure Sequence
+  else if (evalYou.rank === 4) mult = 7; // Straight
+  else if (evalYou.rank === 3) mult = 4; // Color/Flush
+  if (winner === 'you') endRound('win', `YOU WIN · ${evalYou.name}`, mult);
+  else endRound('loss', `DEALER WINS · ${evalD.name}`);
+}
+
+// ============ CASINO HOLD'EM ============
+async function playHoldem() {
+  LiveCasino.dealerSay('Hole cards…');
+  state.hands.you = [state.deck.pop(), state.deck.pop()];
+  state.hands.dealer = [state.deck.pop(), state.deck.pop()];
+  state.hands.community = [];
+  showCardsIn('you-hole', state.hands.you);
+  showCardsIn('dealer-hole', state.hands.dealer, [0,1]);
+  showCardsIn('community', []);
+  await sleep(700);
+  // Flop
+  LiveCasino.dealerSay('Flop — three cards…');
+  state.hands.community.push(state.deck.pop(), state.deck.pop(), state.deck.pop());
+  showCardsIn('community', state.hands.community);
+  await sleep(900);
+  // Turn
+  LiveCasino.dealerSay('Turn…');
+  state.hands.community.push(state.deck.pop());
+  showCardsIn('community', state.hands.community);
+  await sleep(700);
+  // River
+  LiveCasino.dealerSay('River!');
+  state.hands.community.push(state.deck.pop());
+  showCardsIn('community', state.hands.community);
+  await sleep(700);
+  // Reveal dealer
+  showCardsIn('dealer-hole', state.hands.dealer);
+  // Eval best 5-card hand for both — simplified: just take 5 community + 2 hole and pick 5 highest
+  const youBest = bestFive([...state.hands.you, ...state.hands.community]);
+  const dealerBest = bestFive([...state.hands.dealer, ...state.hands.community]);
+  document.getElementById('you-rank').textContent = youBest.name;
+  await sleep(500);
+  let winner;
+  if (youBest.rank > dealerBest.rank) winner = 'you';
+  else if (youBest.rank < dealerBest.rank) winner = 'dealer';
+  else winner = 'tie';
+  let mult = 2;
+  if (youBest.rank === 9 || youBest.rank === 10) mult = 100;
+  else if (youBest.rank === 8) mult = 20;
+  else if (youBest.rank === 7) mult = 8;
+  else if (youBest.rank === 6) mult = 4;
+  else if (youBest.rank === 5) mult = 3;
+  if (winner === 'you') endRound('win', `YOU WIN · ${youBest.name}`, mult);
+  else if (winner === 'tie') endRound('push', `TIE · ${youBest.name}`);
+  else endRound('loss', `DEALER WINS · ${dealerBest.name}`);
+}
+
+// Best 5 from a set of 7 — simple choose best by trying all combos
+function bestFive(cards) {
+  if (cards.length === 5) return evalFiveCard(cards);
+  let best = null;
+  // Pick 5 from cards — simplified: take top 5 by rank
+  const sorted = cards.slice().sort((a, b) => RANK_VAL[b.rank] - RANK_VAL[a.rank]);
+  // Try all combinations of 5 from 7 (just 21 combos)
+  function combo(arr, n) {
+    const r = [];
+    function go(start, cur) {
+      if (cur.length === n) { r.push(cur.slice()); return; }
+      for (let i = start; i < arr.length; i++) {
+        cur.push(arr[i]);
+        go(i + 1, cur);
+        cur.pop();
+      }
+    }
+    go(0, []);
+    return r;
+  }
+  combo(cards, 5).forEach(c => {
+    const e = evalFiveCard(c);
+    if (!best || e.rank > best.rank) best = e;
+  });
+  return best || evalFiveCard(sorted.slice(0, 5));
+}
+
+// ============ CARIBBEAN STUD ============
+async function playStud() {
+  LiveCasino.dealerSay('Dealing 5 cards each…');
+  state.hands.you    = [state.deck.pop(), state.deck.pop(), state.deck.pop(), state.deck.pop(), state.deck.pop()];
+  state.hands.dealer = [state.deck.pop(), state.deck.pop(), state.deck.pop(), state.deck.pop(), state.deck.pop()];
+  showCardsIn('you-cards', state.hands.you);
+  showCardsIn('dealer-cards', state.hands.dealer, [1,2,3,4]);
+  const evalYou = evalFiveCard(state.hands.you);
+  document.getElementById('you-rank').textContent = evalYou.name;
+  await sleep(900);
+  showCardsIn('dealer-cards', state.hands.dealer);
+  const evalD = evalFiveCard(state.hands.dealer);
+  document.getElementById('dealer-rank').textContent = evalD.name;
+  // Dealer qualifies on Ace-King-high or better (high two cards >= A and K)
+  const dealerVals = state.hands.dealer.map(c => RANK_VAL[c.rank]).sort((a, b) => b - a);
+  const dealerQualifies = evalD.rank > 1 || (dealerVals[0] === 14 && dealerVals[1] === 13);
+  await sleep(500);
+  if (!dealerQualifies) { endRound('win', 'DEALER DIDN\'T QUALIFY', 2); return; }
+  let mult = 2;
+  if (evalYou.rank === 10) mult = 100;
+  else if (evalYou.rank === 9) mult = 50;
+  else if (evalYou.rank === 8) mult = 20;
+  else if (evalYou.rank === 7) mult = 7;
+  else if (evalYou.rank === 6) mult = 5;
+  else if (evalYou.rank === 5) mult = 4;
+  else if (evalYou.rank === 4) mult = 3;
+  if (evalYou.rank > evalD.rank) endRound('win', `YOU WIN · ${evalYou.name}`, mult);
+  else if (evalYou.rank < evalD.rank) endRound('loss', `DEALER WINS · ${evalD.name}`);
+  else endRound('push', `TIE · ${evalYou.name}`);
+}
+
+// ============ UI HOOKS ============
+document.querySelectorAll('[data-step]').forEach(b => {
+  b.addEventListener('click', () => {
+    const el = document.getElementById('bet-amt');
+    let v = parseInt(el.value) || 10;
+    v += b.dataset.step === '+' ? 50 : -50;
+    el.value = Math.max(10, v);
+  });
+});
+document.querySelectorAll('[data-quick]').forEach(b => {
+  b.addEventListener('click', () => document.getElementById('bet-amt').value = b.dataset.quick);
+});
+
+document.getElementById('deal-btn').addEventListener('click', deal);
+
+buildTableLayout();
+buildBetPicker();
+</script>
+</body>
+</html>

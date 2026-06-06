@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var p=location.pathname;if(p.endsWith('/')||/\.html?$/.test(p))return;var m='/bigtaka_freeplay';var i=p.lastIndexOf(m);if(i!==-1&&p.length===i+m.length){document.write('<base href="'+p+'/">');}else{var s=p.lastIndexOf('/');if(s>=0)document.write('<base href="'+p.substring(0,s+1)+'">');}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aviator — Bigtaka Free Play</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+Bengali:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../styles.css" />
+<style data-track="aviator">
+.aviator-canvas {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  width: 100%;
+  background: radial-gradient(ellipse at 30% 70%, rgba(80,14,207,0.4) 0%, transparent 60%),
+              radial-gradient(ellipse at 80% 30%, rgba(255,30,215,0.18) 0%, transparent 50%),
+              linear-gradient(180deg, #1a0c35 0%, #0a0418 100%);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.aviator-stars {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(2px 2px at 20% 30%, white, transparent),
+    radial-gradient(1px 1px at 80% 20%, white, transparent),
+    radial-gradient(1px 1px at 60% 80%, white, transparent),
+    radial-gradient(2px 2px at 40% 60%, rgba(255,255,255,0.7), transparent),
+    radial-gradient(1px 1px at 90% 50%, white, transparent),
+    radial-gradient(1px 1px at 10% 70%, rgba(255,255,255,0.6), transparent);
+  background-size: 400px 400px;
+  background-repeat: repeat;
+  opacity: 0.5;
+  animation: stars-move 60s linear infinite;
+}
+@keyframes stars-move { from { background-position: 0 0; } to { background-position: 400px 400px; } }
+
+.aviator-multiplier {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: clamp(48px, 9vw, 110px);
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: -0.04em;
+  text-shadow: 0 0 40px rgba(255, 215, 0, 0.4);
+  color: #fff;
+  transition: color 0.2s;
+  z-index: 5;
+  text-align: center;
+  pointer-events: none;
+}
+.aviator-multiplier.crashed { color: #ff1ed7; text-shadow: 0 0 40px rgba(255, 30, 215, 0.7); }
+.aviator-multiplier.waiting { color: #89eb16; }
+.aviator-multiplier .label {
+  display: block;
+  font-size: 0.18em;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 8px;
+  text-shadow: none;
+}
+
+.aviator-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+.aviator-plane {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 60px;
+  filter: drop-shadow(0 4px 12px rgba(255, 215, 0, 0.5));
+  transition: opacity 0.2s;
+  z-index: 4;
+  pointer-events: none;
+}
+.aviator-plane.crashed { animation: shake 0.3s ease; opacity: 0.7; }
+@keyframes shake { 0%,100% { transform: translate(-50%,-50%); } 50% { transform: translate(-50%,-50%) rotate(20deg); } }
+
+.history-bar {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  right: 14px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  z-index: 6;
+  max-height: 56px;
+  overflow: hidden;
+}
+
+.cashout-flash {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -120%);
+  background: linear-gradient(135deg, #a4ff2c, #89eb16);
+  color: #0a0418;
+  padding: 12px 22px;
+  border-radius: 12px;
+  font-weight: 900;
+  font-size: 24px;
+  box-shadow: 0 10px 30px rgba(137, 235, 22, 0.6);
+  opacity: 0;
+  transition: all 0.4s ease;
+  z-index: 10;
+  pointer-events: none;
+}
+.cashout-flash.show { opacity: 1; transform: translate(-50%, -180%); }
+
+.bet-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.bet-button.active {
+  background: linear-gradient(135deg, #ff5fde, var(--pink));
+  box-shadow: 0 8px 22px rgba(255, 30, 215, 0.4);
+  color: #fff;
+}
+
+.status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.status-row .live-dot {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--green);
+  font-weight: 700;
+}
+.status-row .live-dot::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 10px var(--green);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.auto-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.auto-row .field {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+.auto-row label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  font-weight: 600;
+  display: block;
+  margin-bottom: 4px;
+}
+.auto-row input {
+  width: 100%;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 800;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+  padding: 0;
+}
+.auto-row input:focus { outline: none; }
+
+.auto-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  font-size: 13px;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+.switch {
+  width: 36px;
+  height: 20px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 999px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+.switch::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.15s;
+}
+.switch.on { background: var(--purple); }
+.switch.on::after { transform: translateX(16px); }
+</style>
+</head>
+<body>
+
+<!-- minimal nav -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="logo">
+      <img src="../assets/bigtaka-freetoplay.png" alt="Bigtaka Free Play" />
+    </a>
+    <div class="nav-right">
+      <div class="nav-auth">
+        <button class="btn btn-ghost btn-sm nav-cta nav-login" data-open-signup>Log In</button>
+        <button class="btn btn-gold btn-sm nav-cta nav-signup" data-open-signup>Sign Up</button>
+      </div>
+      <button class="sfx-toggle" data-sfx-btn title="Toggle sounds"><span data-sfx-icon>🔊</span></button>
+      <div class="wallet">
+        <img class="wallet-icon" src="../assets/takacoincoin.png" alt="Taka" />
+        <div>
+          <div class="wallet-label">Balance</div>
+          <div class="wallet-amount"><span data-wallet>10,000</span> FUN</div>
+        </div>
+        <button class="wallet-reset" data-wallet-reset title="Reset balance">⟳</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="play-wrap">
+  <div class="container">
+    <a href="../index.html" class="back-link">← Back to all games</a>
+
+    <div class="play-head">
+      <div class="play-title-block">
+        <h1 id="game-name">Aviator <span class="practice-stamp" style="position:static;display:inline-flex;margin-left:8px;font-size:11px;vertical-align:middle">🎯 Practice Mode</span></h1>
+        <p class="play-sub">Place a bet. Cash out before the plane flies away.</p>
+      </div>
+    </div>
+
+    <div id="mascot-rafi" class="mascot-inline"></div>
+
+    <div class="play-layout">
+      <div class="play-canvas-wrap">
+        <div class="aviator-canvas" id="canvas">
+          <div class="aviator-stars"></div>
+          <div class="history-bar" id="history-bar"></div>
+          <svg class="aviator-svg" id="curve-svg" viewBox="0 0 1000 625" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="curveGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ff1ed7" stop-opacity="0.05"/>
+                <stop offset="100%" stop-color="#ff1ed7" stop-opacity="0.6"/>
+              </linearGradient>
+              <linearGradient id="curveStrokeGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#500ecf"/>
+                <stop offset="50%" stop-color="#ff1ed7"/>
+                <stop offset="100%" stop-color="#ffd700"/>
+              </linearGradient>
+            </defs>
+            <path id="curve-fill" d="" fill="url(#curveGrad)" />
+            <path id="curve-line" d="" stroke="url(#curveStrokeGrad)" stroke-width="4" fill="none" stroke-linecap="round" />
+          </svg>
+          <div class="aviator-multiplier waiting" id="multiplier">
+            Waiting…
+            <span class="label">Next round in <span id="countdown">5</span>s</span>
+          </div>
+          <div class="aviator-plane" id="plane" style="display:none">✈️</div>
+          <div class="cashout-flash" id="cashflash"></div>
+        </div>
+
+        <div class="status-row">
+          <span class="live-dot">Live Demo</span>
+          <span>Provider: <strong style="color:#fff" id="prov-label">Spribe</strong></span>
+          <span>RTP: <strong style="color:#fff">97.00%</strong></span>
+        </div>
+      </div>
+
+      <aside class="play-side">
+        <div class="side-card">
+          <h3>Place Your Bet</h3>
+          <div class="bet-input-row">
+            <input class="bet-input" id="bet-amt" type="number" min="10" step="10" value="100" />
+            <button class="bet-step" data-step="-">−</button>
+            <button class="bet-step" data-step="+">+</button>
+          </div>
+          <div class="bet-quick">
+            <button data-quick="50">50</button>
+            <button data-quick="100">100</button>
+            <button data-quick="500">500</button>
+            <button data-quick="1000">1000</button>
+          </div>
+
+          <button class="btn btn-green btn-block" id="action-btn" style="margin-top:8px;">PLACE BET</button>
+
+          <div class="auto-row" style="margin-top:14px">
+            <div class="field">
+              <label>Auto Cashout</label>
+              <input type="number" min="1.01" step="0.01" value="2.00" id="auto-cashout" />
+            </div>
+            <div class="field" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;" id="auto-toggle">
+              <label style="margin:0;">Auto Mode</label>
+              <div class="switch" id="auto-switch"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="side-card">
+          <h3>How To Play</h3>
+          <p style="color:var(--text-dim);font-size:13px;line-height:1.6;margin-bottom:10px">
+            1. Place a bet before the round starts (5s countdown).<br />
+            2. Plane takes off — multiplier rises from 1.00×.<br />
+            3. Tap <strong style="color:#fff">CASH OUT</strong> before the plane flies away to win.<br />
+            4. If you wait too long, you lose the bet.
+          </p>
+          <div class="tip-card">
+            <strong>💡 Tip:</strong> Most pro players auto-cashout at 1.5×–2× for steady gains. Chasing 100× crashes most bankrolls.
+          </div>
+        </div>
+
+        <div class="side-card">
+          <h3>Recent Crashes</h3>
+          <div class="history-list" id="side-history">
+            <span class="history-chip">—</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<script src="../i18n.js"></script>
+<script src="../app.js"></script>
+<script>
+// ============ AVIATOR GAME ============
+Mascot.render('#mascot-rafi', 'rafi');
+const params = new URLSearchParams(location.search);
+const gameName = params.get('name') || 'Aviator';
+document.getElementById('game-name').textContent = gameName;
+document.title = gameName + ' — Bigtaka Free Play';
+
+const provider = ({
+  'Aviator': 'Spribe',
+  'Aviatrix': 'Aviatrix',
+  'JetX': 'SmartSoft',
+  'JetX3': 'SmartSoft',
+  'Spaceman': 'Pragmatic Play',
+  'Rocketon': 'Galaxsys',
+  'Cash Show': 'Belatra',
+  'Crash X': 'Turbo Games',
+  'Rocket Queen': 'Mascot Gaming',
+  'Plane': 'Galaxsys'
+})[gameName] || 'Spribe';
+document.getElementById('prov-label').textContent = provider;
+
+const state = {
+  phase: 'waiting', // waiting | running | crashed
+  multiplier: 1.0,
+  crashAt: 0,
+  startTs: 0,
+  betPlaced: false,
+  betAmount: 0,
+  cashedOut: false,
+  cashOutAt: 0,
+  history: [],
+  countdown: 5,
+  autoMode: false
+};
+
+const canvas = document.getElementById('canvas');
+const multEl = document.getElementById('multiplier');
+const planeEl = document.getElementById('plane');
+const curveFill = document.getElementById('curve-fill');
+const curveLine = document.getElementById('curve-line');
+const historyBar = document.getElementById('history-bar');
+const sideHistory = document.getElementById('side-history');
+const actionBtn = document.getElementById('action-btn');
+const flash = document.getElementById('cashflash');
+const betAmtEl = document.getElementById('bet-amt');
+const autoCashoutEl = document.getElementById('auto-cashout');
+const autoSwitch = document.getElementById('auto-switch');
+const countdownEl = document.getElementById('countdown');
+
+// Bet controls
+document.querySelectorAll('[data-step]').forEach(b => {
+  b.addEventListener('click', () => {
+    let v = parseInt(betAmtEl.value) || 10;
+    v += b.dataset.step === '+' ? 50 : -50;
+    betAmtEl.value = Math.max(10, v);
+  });
+});
+document.querySelectorAll('[data-quick]').forEach(b => {
+  b.addEventListener('click', () => betAmtEl.value = b.dataset.quick);
+});
+
+// Auto toggle
+document.getElementById('auto-toggle').addEventListener('click', () => {
+  state.autoMode = !state.autoMode;
+  autoSwitch.classList.toggle('on', state.autoMode);
+});
+
+// Generate crash point with Aviator-like distribution
+// House edge ~3%, distribution: 1/(1-rand) but capped
+function genCrash() {
+  const r = Math.random();
+  // ~3% chance of instant crash (1.00×)
+  if (r < 0.03) return 1.00;
+  // Otherwise inverse distribution
+  // crash = 0.97 / (1 - rand), capped at 100
+  const c = 0.97 / (1 - (r - 0.03) / 0.97);
+  return Math.min(100, Math.max(1.00, Math.floor(c * 100) / 100));
+}
+
+function fmtMult(m) {
+  return m.toFixed(2) + '×';
+}
+
+function updateCurve(progress) {
+  // Draw an exponential-ish curve from bottom-left to current point
+  const W = 1000, H = 625;
+  // Curve goes from (0, H) up to current point
+  const endX = Math.min(W * 0.92, progress.x);
+  const endY = Math.max(H * 0.08, progress.y);
+
+  // Cubic curve for smooth growth
+  const c1x = endX * 0.4;
+  const c1y = H - 10;
+  const c2x = endX * 0.7;
+  const c2y = endY + (H - endY) * 0.4;
+
+  const pathLine = `M 0 ${H} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${endX} ${endY}`;
+  const pathFill = pathLine + ` L ${endX} ${H} Z`;
+
+  curveLine.setAttribute('d', pathLine);
+  curveFill.setAttribute('d', pathFill);
+
+  // Position plane at end of curve
+  const rect = canvas.getBoundingClientRect();
+  const px = (endX / W) * rect.width;
+  const py = (endY / H) * rect.height;
+  planeEl.style.left = px + 'px';
+  planeEl.style.top = py + 'px';
+  planeEl.style.transform = `translate(-50%, -50%) rotate(${-25 - Math.min(10, progress.angle || 0)}deg)`;
+}
+
+function startRound() {
+  state.phase = 'running';
+  state.multiplier = 1.00;
+  state.crashAt = genCrash();
+  state.startTs = performance.now();
+  state.cashedOut = false;
+  state.cashOutAt = 0;
+  Sfx.takeoff();
+
+  multEl.classList.remove('crashed', 'waiting');
+  multEl.innerHTML = '1.00×';
+  planeEl.style.display = 'flex';
+
+  if (state.betPlaced) {
+    actionBtn.textContent = `CASH OUT ${Wallet.format(state.betAmount)} × 1.00`;
+    actionBtn.className = 'btn btn-green btn-block bet-button active';
+    actionBtn.disabled = false;
+  } else {
+    actionBtn.textContent = 'WAITING FOR NEXT ROUND…';
+    actionBtn.disabled = true;
+    actionBtn.className = 'btn btn-ghost btn-block';
+  }
+
+  animate();
+}
+
+function animate() {
+  if (state.phase !== 'running') return;
+
+  const elapsed = (performance.now() - state.startTs) / 1000;
+  // Multiplier growth: starts at 1, grows exponentially
+  // Choose growth so 2× at ~5s, 10× at ~15s
+  state.multiplier = Math.exp(elapsed * 0.14);
+
+  // Check for crash
+  if (state.multiplier >= state.crashAt) {
+    state.multiplier = state.crashAt;
+    return crash();
+  }
+
+  // Auto-cashout
+  if (state.betPlaced && !state.cashedOut && state.autoMode) {
+    const targetMult = parseFloat(autoCashoutEl.value) || 0;
+    if (targetMult > 1 && state.multiplier >= targetMult) {
+      doCashout();
+    }
+  }
+
+  multEl.innerHTML = fmtMult(state.multiplier);
+
+  if (state.betPlaced && !state.cashedOut) {
+    const potential = state.betAmount * state.multiplier;
+    actionBtn.textContent = `CASH OUT ${Wallet.format(potential)}`;
+  }
+
+  // Update curve
+  const W = 1000, H = 625;
+  const progressX = Math.min(W * 0.9, elapsed * 65);
+  // y goes from H (bottom) up logarithmically based on multiplier
+  const t = Math.min(1, (state.multiplier - 1) / 8); // hits top by 9×
+  const progressY = H - (H * 0.85) * t;
+  updateCurve({ x: progressX, y: progressY, angle: elapsed });
+
+  requestAnimationFrame(animate);
+}
+
+function crash() {
+  state.phase = 'crashed';
+  multEl.classList.add('crashed');
+  multEl.innerHTML = `FLEW AWAY!<span class="label">${fmtMult(state.crashAt)}</span>`;
+  planeEl.classList.add('crashed');
+  Sfx.crash();
+
+  // Push history
+  state.history.unshift(state.crashAt);
+  if (state.history.length > 20) state.history.length = 20;
+  renderHistory();
+
+  // Settle bet
+  if (state.betPlaced && !state.cashedOut) {
+    Sfx.loss();
+    Player.recordLoss();
+    toast(`Lost ${Wallet.format(state.betAmount)} FUN — plane flew away at ${fmtMult(state.crashAt)}`, 'loss');
+  }
+
+  state.betPlaced = false;
+  state.betAmount = 0;
+
+  actionBtn.textContent = `NEXT ROUND IN…`;
+  actionBtn.disabled = true;
+  actionBtn.className = 'btn btn-ghost btn-block';
+
+  setTimeout(() => {
+    planeEl.classList.remove('crashed');
+    planeEl.style.display = 'none';
+    curveFill.setAttribute('d', '');
+    curveLine.setAttribute('d', '');
+    goToWaiting();
+  }, 1800);
+}
+
+function renderHistory() {
+  const html = state.history.slice(0, 20).map(m => {
+    const cls = m < 2 ? '' : m < 10 ? 'green' : 'gold';
+    return `<span class="history-chip ${cls}">${fmtMult(m)}</span>`;
+  }).join('');
+  historyBar.innerHTML = html;
+  sideHistory.innerHTML = state.history.length ? html : '<span class="history-chip">—</span>';
+}
+
+function goToWaiting() {
+  state.phase = 'waiting';
+  state.countdown = 5;
+  multEl.classList.remove('crashed');
+  multEl.classList.add('waiting');
+  multEl.innerHTML = `Waiting…<span class="label">Next round in <span id="countdown">5</span>s</span>`;
+
+  const tick = () => {
+    if (state.phase !== 'waiting') return;
+    state.countdown--;
+    const cd = document.getElementById('countdown');
+    if (cd) cd.textContent = state.countdown;
+    if (state.countdown <= 0) {
+      startRound();
+    } else {
+      if (state.countdown <= 3) Sfx.tick();
+      setTimeout(tick, 1000);
+    }
+  };
+
+  // Update bet button for waiting state
+  if (state.betPlaced) {
+    actionBtn.textContent = `BET PLACED · ${Wallet.format(state.betAmount)} FUN`;
+    actionBtn.disabled = true;
+    actionBtn.className = 'btn btn-ghost btn-block';
+  } else {
+    actionBtn.textContent = 'PLACE BET';
+    actionBtn.disabled = false;
+    actionBtn.className = 'btn btn-green btn-block';
+  }
+
+  setTimeout(tick, 1000);
+}
+
+function placeBet() {
+  const amount = parseInt(betAmtEl.value) || 0;
+  if (amount < 10) return toast('Min bet is 10 FUN', 'loss');
+  if (amount > Wallet.get()) return toast('Not enough FUN — hit ⟳ to reset balance', 'loss');
+
+  Wallet.add(-amount);
+  state.betPlaced = true;
+  state.betAmount = amount;
+  Sfx.bet();
+  Player.recordBet(amount);
+
+  actionBtn.textContent = `BET PLACED · ${Wallet.format(amount)} FUN`;
+  actionBtn.disabled = true;
+  actionBtn.className = 'btn btn-ghost btn-block';
+  toast(`Bet placed: ${Wallet.format(amount)} FUN`, 'win');
+}
+
+function doCashout() {
+  if (!state.betPlaced || state.cashedOut) return;
+  state.cashedOut = true;
+  state.cashOutAt = state.multiplier;
+  const winnings = state.betAmount * state.multiplier;
+  Wallet.add(winnings);
+  state.multiplier >= 10 ? Sfx.jackpot() : state.multiplier >= 2.5 ? Sfx.bigWin() : Sfx.win();
+  Player.recordWin(winnings, state.multiplier, 'crash');
+  if (state.multiplier >= 5) {
+    const r = canvas.getBoundingClientRect();
+    coinBurst(r.left + r.width/2, r.top + r.height/2, 22);
+  }
+
+  flash.textContent = `+${Wallet.format(winnings)} · ${fmtMult(state.multiplier)}`;
+  flash.classList.add('show');
+  setTimeout(() => flash.classList.remove('show'), 1200);
+
+  toast(`Cashed out at ${fmtMult(state.multiplier)} · won ${Wallet.format(winnings)} FUN`, 'win');
+
+  actionBtn.textContent = `CASHED OUT ${fmtMult(state.multiplier)}`;
+  actionBtn.disabled = true;
+  actionBtn.className = 'btn btn-ghost btn-block';
+}
+
+actionBtn.addEventListener('click', () => {
+  if (state.phase === 'waiting' && !state.betPlaced) {
+    placeBet();
+  } else if (state.phase === 'running' && state.betPlaced && !state.cashedOut) {
+    doCashout();
+  }
+});
+
+// Start the loop
+goToWaiting();
+</script>
+</body>
+</html>

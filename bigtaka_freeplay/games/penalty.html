@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var p=location.pathname;if(p.endsWith('/')||/\.html?$/.test(p))return;var m='/bigtaka_freeplay';var i=p.lastIndexOf(m);if(i!==-1&&p.length===i+m.length){document.write('<base href="'+p+'/">');}else{var s=p.lastIndexOf('/');if(s>=0)document.write('<base href="'+p.substring(0,s+1)+'">');}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Penalty Shootout — Bigtaka Free Play</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+Bengali:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+.pitch {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  background:
+    linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.4)),
+    repeating-linear-gradient(90deg, #2a8c2a 0%, #2a8c2a 8%, #1a7720 8%, #1a7720 16%);
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.goal {
+  position: absolute;
+  top: 10%;
+  left: 15%;
+  right: 15%;
+  height: 42%;
+  border: 6px solid #fff;
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.04), rgba(0,0,0,0.5)),
+    repeating-linear-gradient(0deg, transparent 0px, transparent 14px, rgba(255,255,255,0.08) 14px, rgba(255,255,255,0.08) 15px),
+    repeating-linear-gradient(90deg, transparent 0px, transparent 14px, rgba(255,255,255,0.08) 14px, rgba(255,255,255,0.08) 15px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+}
+
+.target-grid {
+  position: absolute;
+  inset: 6px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 4px;
+  z-index: 2;
+}
+
+.target-zone {
+  background: rgba(255,255,255,0.05);
+  border: 2px dashed rgba(255,255,255,0.15);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 800;
+  color: rgba(255,255,255,0.4);
+}
+.target-zone:hover { background: rgba(255,215,0,0.15); border-color: var(--gold); color: var(--gold); }
+.target-zone.selected { background: rgba(255,215,0,0.25); border-color: var(--gold); color: var(--gold); }
+
+.keeper {
+  position: absolute;
+  font-size: 56px;
+  z-index: 4;
+  transition: left 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), top 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+}
+
+.ball-soccer {
+  position: absolute;
+  bottom: 12%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 36px;
+  z-index: 3;
+  transition: all 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+.ball-soccer.shooting {
+  bottom: 30%;
+  font-size: 18px;
+}
+
+.kicker {
+  position: absolute;
+  bottom: 4%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 60px;
+  z-index: 5;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+}
+
+.outcome-text {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  font-size: clamp(40px, 8vw, 80px);
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: -0.03em;
+  z-index: 20;
+  text-shadow: 0 6px 24px rgba(0,0,0,0.8);
+  pointer-events: none;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+.outcome-text.show { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+.outcome-text.goal { color: var(--gold); }
+.outcome-text.miss { color: var(--pink); }
+
+.shot-row {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 14px;
+}
+.shot-marker {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+.shot-marker.goal { background: rgba(137,235,22,0.18); border-color: var(--green); }
+.shot-marker.miss { background: rgba(255,30,215,0.15); border-color: var(--pink); }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="logo">
+      <img src="../assets/bigtaka-freetoplay.png" alt="Bigtaka Free Play" />
+    </a>
+    <div class="nav-right">
+      <div class="nav-auth">
+        <button class="btn btn-ghost btn-sm nav-cta nav-login" data-open-signup>Log In</button>
+        <button class="btn btn-gold btn-sm nav-cta nav-signup" data-open-signup>Sign Up</button>
+      </div>
+      <button class="sfx-toggle" data-sfx-btn title="Toggle sounds"><span data-sfx-icon>🔊</span></button>
+      <div class="wallet">
+        <img class="wallet-icon" src="../assets/takacoincoin.png" alt="Taka" />
+        <div>
+          <div class="wallet-label">Balance</div>
+          <div class="wallet-amount"><span data-wallet>10,000</span> FUN</div>
+        </div>
+        <button class="wallet-reset" data-wallet-reset title="Reset balance">⟳</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="play-wrap">
+  <div class="container">
+    <a href="../index.html" class="back-link">← Back to all games</a>
+
+    <div class="play-head">
+      <div class="play-title-block">
+        <h1 id="game-name">Penalty Shootout <span class="practice-stamp" style="position:static;display:inline-flex;margin-left:8px;font-size:11px;vertical-align:middle">🎯 Practice Mode</span></h1>
+        <p class="play-sub">Pick your corner. Beat the keeper. 5 shots per round.</p>
+      </div>
+    </div>
+
+    <div id="mascot-boss" class="mascot-inline"></div>
+
+    <div class="play-layout">
+      <div class="play-canvas-wrap">
+        <div class="pitch" id="pitch">
+          <div class="goal">
+            <div class="target-grid" id="target-grid">
+              <div class="target-zone" data-zone="tl">↖</div>
+              <div class="target-zone" data-zone="tc">↑</div>
+              <div class="target-zone" data-zone="tr">↗</div>
+              <div class="target-zone" data-zone="bl">←</div>
+              <div class="target-zone" data-zone="bc">●</div>
+              <div class="target-zone" data-zone="br">→</div>
+            </div>
+            <div class="keeper" id="keeper" style="left: 45%; top: 35%">🧤</div>
+          </div>
+          <div class="ball-soccer" id="ball">⚽</div>
+          <div class="kicker">🧍</div>
+          <div class="outcome-text" id="outcome">—</div>
+        </div>
+
+        <div class="shot-row" id="shot-row">
+          <div class="shot-marker">1</div>
+          <div class="shot-marker">2</div>
+          <div class="shot-marker">3</div>
+          <div class="shot-marker">4</div>
+          <div class="shot-marker">5</div>
+        </div>
+
+        <div class="status-row" style="display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--text-muted);margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+          <span style="color:var(--green);font-weight:700;">● Live Demo</span>
+          <span>Provider: <strong style="color:#fff">Bigtaka Originals</strong></span>
+          <span>Mode: <strong style="color:#fff">Skill</strong></span>
+        </div>
+      </div>
+
+      <aside class="play-side">
+        <div class="side-card">
+          <h3>Bet per Round</h3>
+          <div class="bet-input-row">
+            <input class="bet-input" id="bet-amt" type="number" min="10" step="10" value="100" />
+            <button class="bet-step" data-step="-">−</button>
+            <button class="bet-step" data-step="+">+</button>
+          </div>
+          <div class="bet-quick">
+            <button data-quick="50">50</button>
+            <button data-quick="100">100</button>
+            <button data-quick="500">500</button>
+            <button data-quick="1000">1000</button>
+          </div>
+
+          <button class="btn btn-green btn-block" id="start-btn" style="margin-top:12px">▶ START ROUND</button>
+          <button class="btn btn-gold btn-block" id="shoot-btn" style="margin-top:8px;display:none">⚽ SHOOT!</button>
+        </div>
+
+        <div class="side-card">
+          <h3>Score</h3>
+          <div style="text-align:center;font-size:48px;font-weight:900;font-style:italic;color:var(--gold);" id="score">0 / 5</div>
+          <div style="text-align:center;font-size:13px;color:var(--text-muted);margin-top:4px">Goals scored</div>
+
+          <div style="font-size:13px;color:var(--text-dim);line-height:1.8;margin-top:14px">
+            <div style="display:flex;justify-content:space-between"><span>Each goal</span><strong style="color:var(--green)">1× bet returned</strong></div>
+            <div style="display:flex;justify-content:space-between"><span>5/5 bonus</span><strong style="color:var(--gold)">+1× bet</strong></div>
+          </div>
+        </div>
+
+        <div class="side-card">
+          <h3>Strategy</h3>
+          <div class="tip-card">
+            <strong>💡 Tip:</strong> The keeper learns your last 3 picks. If you go corner 3 times, they'll dive that side. Mix it up!
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<script src="../i18n.js"></script>
+<script src="../app.js"></script>
+<script>
+const params = new URLSearchParams(location.search);
+document.getElementById('game-name').textContent = params.get('name') || 'Penalty Shootout';
+document.title = (params.get('name') || 'Penalty') + ' — Bigtaka Free Play';
+
+const ZONES = {
+  tl: { x: 18, y: 22 }, tc: { x: 50, y: 22 }, tr: { x: 82, y: 22 },
+  bl: { x: 18, y: 60 }, bc: { x: 50, y: 60 }, br: { x: 82, y: 60 }
+};
+const ZONE_KEYS = Object.keys(ZONES);
+
+let state = {
+  active: false,
+  shot: 0,
+  goals: 0,
+  bet: 0,
+  betPerShot: 0,
+  selectedZone: null,
+  history: []
+};
+
+const keeperEl = document.getElementById('keeper');
+const ballEl = document.getElementById('ball');
+const outcomeEl = document.getElementById('outcome');
+const shotRow = document.getElementById('shot-row');
+
+document.querySelectorAll('[data-zone]').forEach(z => {
+  z.addEventListener('click', () => {
+    if (!state.active) return;
+    document.querySelectorAll('[data-zone]').forEach(x => x.classList.remove('selected'));
+    z.classList.add('selected');
+    state.selectedZone = z.dataset.zone;
+  });
+});
+
+function startRound() {
+  const bet = parseInt(document.getElementById('bet-amt').value) || 0;
+  if (bet < 10) return toast('Min bet is 10 FUN', 'loss');
+  if (bet > Wallet.get()) return toast('Not enough FUN — hit ⟳ to reset', 'loss');
+
+  Wallet.add(-bet);
+  Sfx.bet();
+  Player.recordBet(bet);
+  if (!window._mAttached) { Mascot.render('#mascot-boss', 'boss'); window._mAttached = true; }
+  state.bet = bet;
+  state.betPerShot = Math.round(bet / 5);
+  state.shot = 0;
+  state.goals = 0;
+  state.history = [];
+  state.active = true;
+  document.getElementById('start-btn').style.display = 'none';
+  document.getElementById('shoot-btn').style.display = 'block';
+  shotRow.innerHTML = [1,2,3,4,5].map(n => `<div class="shot-marker">${n}</div>`).join('');
+  updateScore();
+  nextShot();
+}
+
+function nextShot() {
+  if (state.shot >= 5) return endRound();
+  state.shot++;
+  state.selectedZone = null;
+  document.querySelectorAll('[data-zone]').forEach(x => x.classList.remove('selected'));
+  outcomeEl.className = 'outcome-text';
+  outcomeEl.textContent = '';
+
+  // Reset ball
+  ballEl.classList.remove('shooting');
+  ballEl.style.left = '50%';
+  ballEl.style.bottom = '12%';
+
+  // Reset keeper to center
+  keeperEl.style.left = '45%';
+  keeperEl.style.top = '35%';
+}
+
+function shoot() {
+  if (!state.active) return;
+  if (!state.selectedZone) return toast('Pick a corner first!', 'loss');
+
+  document.getElementById('shoot-btn').disabled = true;
+
+  // Keeper AI: learn from history
+  const keeperZone = pickKeeperZone();
+  const targetPos = ZONES[state.selectedZone];
+
+  // Move keeper
+  setTimeout(() => {
+    const kPos = ZONES[keeperZone];
+    keeperEl.style.left = (kPos.x - 6) + '%';
+    keeperEl.style.top = (kPos.y - 5) + '%';
+  }, 100);
+
+  // Animate ball
+  ballEl.classList.add('shooting');
+  ballEl.style.left = targetPos.x + '%';
+  ballEl.style.bottom = (90 - targetPos.y) + '%';
+  Sfx.thwack();
+
+  setTimeout(() => {
+    const goal = state.selectedZone !== keeperZone;
+    state.history.push(state.selectedZone);
+    if (state.history.length > 3) state.history.shift();
+    const marker = shotRow.children[state.shot - 1];
+    if (goal) {
+      state.goals++;
+      Wallet.add(state.betPerShot * 2); // 1× refund + 1× win
+      Sfx.swish();
+      setTimeout(() => Sfx.win(), 100);
+      const sp = Player.get(); sp.sportsWins = sp.sportsWins || {}; sp.sportsWins.soccer = (sp.sportsWins.soccer || 0) + 1; Player.save(sp);
+      Player.recordWin(state.betPerShot * 2, 2, 'sports');
+      outcomeEl.className = 'outcome-text show goal';
+      outcomeEl.textContent = 'GOAL!';
+      marker.className = 'shot-marker goal';
+      marker.textContent = '⚽';
+    } else {
+      Sfx.loss();
+      outcomeEl.className = 'outcome-text show miss';
+      outcomeEl.textContent = 'SAVED!';
+      marker.className = 'shot-marker miss';
+      marker.textContent = '✕';
+    }
+    updateScore();
+    document.getElementById('shoot-btn').disabled = false;
+    setTimeout(nextShot, 1300);
+  }, 550);
+}
+
+function pickKeeperZone() {
+  // AI: 50% chance to dive based on history pattern
+  if (state.history.length >= 2 && Math.random() < 0.55) {
+    // Look at last 3 picks - dive toward most common
+    const counts = {};
+    state.history.forEach(z => counts[z] = (counts[z] || 0) + 1);
+    const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0];
+    return top;
+  }
+  // Random
+  return ZONE_KEYS[Math.floor(Math.random() * ZONE_KEYS.length)];
+}
+
+function updateScore() {
+  document.getElementById('score').textContent = state.goals + ' / 5';
+}
+
+function endRound() {
+  state.active = false;
+  document.getElementById('start-btn').style.display = 'block';
+  document.getElementById('shoot-btn').style.display = 'none';
+
+  // Bonus for 5/5
+  if (state.goals === 5) {
+    Wallet.add(state.bet);
+    Sfx.jackpot();
+    coinBurst(window.innerWidth/2, window.innerHeight/2, 30);
+    toast(`PERFECT 5/5 · +${Wallet.format(state.bet)} bonus!`, 'win');
+  } else if (state.goals >= 4) {
+    Sfx.bigWin();
+    toast(`${state.goals}/5 goals — solid round!`, 'win');
+  } else if (state.goals >= 2) {
+    Sfx.win();
+    toast(`${state.goals}/5 goals!`, 'win');
+  } else {
+    toast(`${state.goals}/5 goals — try again!`, '');
+  }
+
+  outcomeEl.className = 'outcome-text show goal';
+  outcomeEl.textContent = state.goals + ' / 5 GOALS';
+}
+
+// Controls
+document.querySelectorAll('[data-step]').forEach(b => {
+  b.addEventListener('click', () => {
+    const el = document.getElementById('bet-amt');
+    let v = parseInt(el.value) || 10;
+    v += b.dataset.step === '+' ? 50 : -50;
+    el.value = Math.max(10, v);
+  });
+});
+document.querySelectorAll('[data-quick]').forEach(b => {
+  b.addEventListener('click', () => document.getElementById('bet-amt').value = b.dataset.quick);
+});
+
+document.getElementById('start-btn').addEventListener('click', startRound);
+document.getElementById('shoot-btn').addEventListener('click', shoot);
+</script>
+</body>
+</html>

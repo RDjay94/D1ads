@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var p=location.pathname;if(p.endsWith('/')||/\.html?$/.test(p))return;var m='/bigtaka_freeplay';var i=p.lastIndexOf(m);if(i!==-1&&p.length===i+m.length){document.write('<base href="'+p+'/">');}else{var s=p.lastIndexOf('/');if(s>=0)document.write('<base href="'+p.substring(0,s+1)+'">');}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bigtaka Free Play — Learn Every Casino Game, Risk-Free</title>
+<meta name="description" content="Free-to-play learning hub for online casino & sports games. 60+ titles. No real money. Practice slots, live casino, Aviator, sports betting with FUN coins." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+Bengali:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- ============ LOADING SCREEN ============ -->
+<div id="loader" class="loader" aria-hidden="true">
+  <div class="loader-coins"></div>
+  <div class="loader-logo-wrap">
+    <div class="loader-glow secondary"></div>
+    <div class="loader-glow"></div>
+    <img class="loader-logo" src="assets/bigtaka-freetoplay.png" alt="Bigtaka Free Play" />
+  </div>
+  <div class="loader-tagline">Loading the city of luxury…</div>
+  <div class="loader-progress">
+    <div class="loader-progress-track">
+      <div class="loader-progress-bar" id="loader-bar"></div>
+    </div>
+    <div class="loader-percent"><span id="loader-pct">0</span>%</div>
+  </div>
+</div>
+<script>
+(function(){
+  const LOADER_KEY = 'bigtaka_freeplay_loader_seen_v1';
+  const loader = document.getElementById('loader');
+  if (!loader) return;
+
+  // Skip the loader if the user has already seen it (refreshes, repeat visits)
+  if (localStorage.getItem(LOADER_KEY)) {
+    loader.remove();
+    return;
+  }
+
+  const coinsWrap = loader.querySelector('.loader-coins');
+  const W = window.innerWidth, H = window.innerHeight;
+  const cx = W / 2, cy = H / 2;
+  const coinSrc = location.pathname.includes('/games/') ? '../assets/takacoincoin.png' : 'assets/takacoincoin.png';
+
+  function dropCoinWave(count, jitter) {
+    for (let i = 0; i < count; i++) {
+      const c = document.createElement('img');
+      c.src = coinSrc;
+      c.className = 'loader-coin' + (i % 8 === 0 ? ' lg' : i % 5 === 0 ? ' sm' : '');
+      const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * (jitter || 0.4);
+      const dist = 280 + Math.random() * Math.max(W, H) * 0.6;
+      c.style.setProperty('--dx', (Math.cos(angle) * dist).toFixed(0) + 'px');
+      c.style.setProperty('--dy', (Math.sin(angle) * dist).toFixed(0) + 'px');
+      c.style.left = cx + 'px';
+      c.style.top = cy + 'px';
+      c.style.animationDelay = (Math.random() * 0.4).toFixed(2) + 's';
+      coinsWrap.appendChild(c);
+      setTimeout(() => c.remove(), 2000);
+    }
+  }
+
+  // ============ INLINE AUDIO (independent of app.js Sfx module) ============
+  let ctx = null;
+  function getCtx() {
+    if (!ctx) { try { ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return null; } }
+    if (ctx.state === 'suspended') ctx.resume().catch(() => {});
+    return ctx;
+  }
+  function tone(freq, dur, type, vol) {
+    const c = getCtx();
+    if (!c) return;
+    try {
+      const osc = c.createOscillator();
+      const gain = c.createGain();
+      osc.type = type || 'triangle';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.0001, c.currentTime);
+      gain.gain.exponentialRampToValueAtTime((vol || 0.3) * 0.35, c.currentTime + 0.005);
+      gain.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + dur);
+      osc.connect(gain); gain.connect(c.destination);
+      osc.start(); osc.stop(c.currentTime + dur + 0.05);
+    } catch (e) {}
+  }
+  function coinPing() {
+    tone(1320, 0.06, 'triangle', 0.28);
+    setTimeout(() => tone(1760, 0.07, 'triangle', 0.25), 40);
+    setTimeout(() => tone(2640, 0.1, 'triangle', 0.22), 100);
+    setTimeout(() => tone(2093, 0.4, 'sine', 0.18), 110);
+  }
+  function sparkle(count) {
+    const pool = [2093, 2349, 2637, 3136, 3520, 3951];
+    for (let i = 0; i < (count || 5); i++) {
+      setTimeout(() => tone(pool[Math.floor(Math.random() * pool.length)], 0.09, 'sine', 0.2), i * 55);
+    }
+  }
+  function jingle() {
+    // Rising C major chord climb ending on the high C — completion sound
+    [523, 659, 784, 1047, 1319, 1568, 2093].forEach((f, i) =>
+      setTimeout(() => tone(f, 0.18, 'triangle', 0.3), i * 70));
+  }
+  function cheerNoise() {
+    const c = getCtx();
+    if (!c) return;
+    try {
+      const dur = 0.6;
+      const len = Math.max(1, Math.floor(c.sampleRate * dur));
+      const buf = c.createBuffer(1, len, c.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1) * Math.sin(i / len * Math.PI);
+      const src = c.createBufferSource();
+      src.buffer = buf;
+      const f = c.createBiquadFilter();
+      f.type = 'bandpass'; f.frequency.value = 1500; f.Q.value = 0.7;
+      const g = c.createGain();
+      g.gain.value = 0.1;
+      src.connect(f); f.connect(g); g.connect(c.destination);
+      src.start();
+    } catch (e) {}
+  }
+
+  // ============ ANIMATION TIMELINE ============
+
+  // 0ms: Initial coin burst + ka-ching
+  dropCoinWave(40);
+  coinPing();
+  setTimeout(() => sparkle(4), 200);
+
+  // 800ms: Second coin wave + sparkle
+  setTimeout(() => { dropCoinWave(22, 0.6); sparkle(5); }, 800);
+
+  // 1600ms: Third coin wave + sparkle
+  setTimeout(() => { dropCoinWave(18, 0.8); sparkle(4); }, 1600);
+
+  // 2200ms: Final crescendo — jingle + cheer
+  setTimeout(() => { jingle(); cheerNoise(); }, 2200);
+
+  // ============ PROGRESS BAR ============
+  const bar = document.getElementById('loader-bar');
+  const pct = document.getElementById('loader-pct');
+  const startTs = performance.now();
+  const DURATION = 2500;
+  function tick() {
+    const elapsed = performance.now() - startTs;
+    const p = Math.min(100, (elapsed / DURATION) * 100);
+    if (bar) bar.style.width = p + '%';
+    if (pct) pct.textContent = Math.round(p);
+    if (p < 100) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+
+  // ============ FINALIZE ============
+  setTimeout(() => {
+    localStorage.setItem(LOADER_KEY, '1');
+    loader.classList.add('fade-out');
+    setTimeout(() => loader.remove(), 500);
+  }, 2500);
+})();
+</script>
+
+<!-- ============ NAV ============ -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#" class="logo">
+      <img src="assets/bigtaka-freetoplay.png" alt="Bigtaka Free Play" />
+    </a>
+
+    <div class="nav-links">
+      <a href="#hero" class="active">Home</a>
+      <a href="#game-library">All Games</a>
+      <a href="#how-it-works">How It Works</a>
+      <a href="#about">About</a>
+    </div>
+
+    <div class="nav-right">
+      <div class="player-pill" title="Your level & XP">
+        <div class="player-level-badge"><span data-player-level>1</span></div>
+        <div class="player-pill-text">
+          <span class="player-pill-label">XP <span class="player-pill-xp" data-player-xp>0</span> / <span data-player-xp-next>100</span></span>
+          <div class="xp-bar-mini"><div class="xp-bar-mini-fill" data-player-xp-bar style="width:0%"></div></div>
+        </div>
+      </div>
+      <div class="nav-auth">
+        <button class="btn btn-ghost btn-sm nav-cta nav-login" data-open-signup>Log In</button>
+        <button class="btn btn-gold btn-sm nav-cta nav-signup" data-open-signup>Sign Up</button>
+      </div>
+      <button class="sfx-toggle lang-toggle" data-i18n-toggle data-i18n-skip title="English" aria-label="Switch to English"><span data-i18n-toggle-label>EN</span></button>
+      <button class="sfx-toggle" data-sfx-btn title="Toggle sounds"><span data-sfx-icon>🔊</span></button>
+      <div class="wallet">
+        <img class="wallet-icon" src="assets/takacoincoin.png" alt="Taka" />
+        <div>
+          <div class="wallet-label">Balance</div>
+          <div class="wallet-amount"><span data-wallet>10,000</span> FUN</div>
+        </div>
+        <button class="wallet-reset" data-wallet-reset title="Reset balance">⟳</button>
+      </div>
+      <button class="menu-toggle" aria-label="Menu">☰</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero" id="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div>
+        <span class="hero-tag">100% Free • No Real Money • Educational</span>
+        <h1>Learn to Play.<br /><span class="hl">Win Bigger</span> Later.</h1>
+        <p class="lede">
+          Practice every casino game in the book — slots, live tables, Aviator, sports — with free FUN coins. Master the rules, build a strategy, and play like a pro. <strong>Zero taka risked.</strong>
+        </p>
+        <div class="hero-cta">
+          <a href="#game-library" class="btn btn-green">▶ Play Free</a>
+        </div>
+
+        <div class="hero-info-bar">
+          <span class="hero-info-emoji">🎮</span>
+          <span class="hero-info-text"><strong>3000+ games</strong> · live tables, slots, crash, sports — all free to practice</span>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="hero-orb"></div>
+        <div class="hero-coin">
+          <div class="hero-coin-inner"><img src="assets/takacoincoin.png" alt="Taka coin" /></div>
+        </div>
+        <div class="hero-chips">
+          <div class="chip c1"></div>
+          <div class="chip c2"></div>
+          <div class="chip c3"></div>
+          <div class="chip c4"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section class="section" id="how-it-works">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <h2 class="section-title">3 Steps. <span class="accent">No catch.</span></h2>
+        <p class="section-subtitle">No sign-up. No deposit. Just open a game, place a FUN bet, and learn.</p>
+      </div>
+    </div>
+
+    <div class="steps">
+      <div class="step scroll-fade">
+        <div class="step-num">1</div>
+        <h3>Get 10,000 FUN Coins</h3>
+        <p>Every visitor starts with 10,000 free FUN coins. Burn through them? Hit reset — they're not real money, they're for learning.</p>
+      </div>
+      <div class="step scroll-fade">
+        <div class="step-num">2</div>
+        <h3>Pick a Game</h3>
+        <p>Browse 60+ titles from real industry providers — Pragmatic Play, Evolution, Spribe, JILI. Tap "How to Play" to read the rules before you bet.</p>
+      </div>
+      <div class="step scroll-fade">
+        <div class="step-num">3</div>
+        <h3>Master the Strategy</h3>
+        <p>Every game includes a strategy tip card. Try the actual gameplay, study your wins and losses, build instinct — all risk-free.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CATEGORY SHORTCUTS ============ -->
+<section class="section" style="padding-top:20px;">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <h2 class="section-title">Browse by <span class="accent">Category</span></h2>
+        <p class="section-subtitle">5 game categories, 60 unique titles. Each one teaches a different skill.</p>
+      </div>
+    </div>
+
+    <div class="cat-grid">
+      <div class="cat-card slots scroll-fade" data-cat-jump="slots">
+        <div class="cat-icon">🎰</div>
+        <div class="cat-name">Slots</div>
+        <div class="cat-count">25 free titles · Reels & cascades</div>
+      </div>
+      <div class="cat-card live scroll-fade" data-cat-jump="live">
+        <div class="cat-icon">🎴</div>
+        <div class="cat-name">Live Casino</div>
+        <div class="cat-count">22 free titles · Tables & wheels</div>
+      </div>
+      <div class="cat-card crash scroll-fade" data-cat-jump="crash">
+        <div class="cat-icon">🚀</div>
+        <div class="cat-name">Aviator & Crash</div>
+        <div class="cat-count">10 free titles · Cash out in time</div>
+      </div>
+      <div class="cat-card fast scroll-fade" data-cat-jump="fast">
+        <div class="cat-icon">⚡</div>
+        <div class="cat-name">Fast Games</div>
+        <div class="cat-count">5 free titles · Mines, Plinko, Dice</div>
+      </div>
+      <div class="cat-card sports scroll-fade" data-cat-jump="sports">
+        <div class="cat-icon">🏏</div>
+        <div class="cat-name">Sports</div>
+        <div class="cat-count">10 free titles · Cricket, soccer, NBA</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DAILY MISSIONS ============ -->
+<section class="section" id="missions-section" style="padding-top: 30px; padding-bottom: 20px;">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <h2 class="section-title">Daily <span class="accent">Missions</span></h2>
+        <p class="section-subtitle">Complete 3 missions every day to earn bonus FUN coins. Refreshes at midnight.</p>
+      </div>
+    </div>
+    <div id="missions-panel" style="display: grid; gap: 12px;"></div>
+  </div>
+</section>
+
+<!-- ============ HOT NOW ============ -->
+<section class="section" id="hot-section" style="padding-top: 20px; padding-bottom: 20px;">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <h2 class="section-title">🔥 Hot <span class="accent">Right Now</span></h2>
+        <p class="section-subtitle">The most popular games on the platform — start here.</p>
+      </div>
+    </div>
+    <div id="hot-grid" class="scroller"></div>
+  </div>
+</section>
+
+<!-- ============ RECENTLY PLAYED ============ -->
+<section class="section" id="recent-section" style="padding-top: 20px; padding-bottom: 20px; display: none;">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <h2 class="section-title">⏱ Recently <span class="accent">Played</span></h2>
+        <p class="section-subtitle">Jump right back in where you left off.</p>
+      </div>
+    </div>
+    <div id="recent-grid" class="scroller"></div>
+  </div>
+</section>
+
+<!-- ============ GAME LIBRARY ============ -->
+<section class="section" id="game-library">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <h2 class="section-title">Game <span class="accent">Library</span></h2>
+        <p class="section-subtitle">Every famous title from the world's top game providers — playable free.</p>
+      </div>
+      <div id="game-count" style="color:var(--text-muted);font-weight:600;font-size:14px;">72 games</div>
+    </div>
+
+    <div class="controls">
+      <div class="search">
+        <span class="search-icon">🔍</span>
+        <input id="search-input" type="text" placeholder="Search games or providers…" />
+      </div>
+      <div class="filter-chips">
+        <button class="chip-btn active" data-filter="all">All 72</button>
+        <button class="chip-btn" data-filter="slots">🎰 Slots</button>
+        <button class="chip-btn" data-filter="live">🎴 Live Casino</button>
+        <button class="chip-btn" data-filter="crash">🚀 Aviator</button>
+        <button class="chip-btn" data-filter="fast">⚡ Fast Games</button>
+        <button class="chip-btn" data-filter="sports">🏏 Sports</button>
+      </div>
+    </div>
+
+    <div class="grid" id="game-grid"></div>
+  </div>
+</section>
+
+<!-- ============ ABOUT / FEATURES ============ -->
+<section class="section" id="about">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <h2 class="section-title">Built for <span class="accent">Real Learning</span></h2>
+        <p class="section-subtitle">Every Bigtaka Free Play feature is designed to teach — not just entertain.</p>
+      </div>
+    </div>
+
+    <div class="features">
+      <div class="feature scroll-fade">
+        <div class="feature-icon">🛡️</div>
+        <h4>100% Free</h4>
+        <p>No deposits, no withdrawals, no payment forms. Ever. Pure practice.</p>
+      </div>
+      <div class="feature scroll-fade">
+        <div class="feature-icon">📚</div>
+        <h4>Real Rules</h4>
+        <p>RTPs, paylines, and bonus features match the real games at industry providers.</p>
+      </div>
+      <div class="feature scroll-fade">
+        <div class="feature-icon">💡</div>
+        <h4>Strategy Cards</h4>
+        <p>Every game has expert strategy tips. Learn what works before you play for real.</p>
+      </div>
+      <div class="feature scroll-fade">
+        <div class="feature-icon">⚡</div>
+        <h4>Instant Play</h4>
+        <p>No app to download. Open the page, pick a game, start playing in seconds.</p>
+      </div>
+      <div class="feature scroll-fade">
+        <div class="feature-icon">📱</div>
+        <h4>Mobile First</h4>
+        <p>Designed for phones first. Practice on the bus, the bench, anywhere.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ACHIEVEMENTS ============ -->
+<section class="section" id="achievements" style="padding-top: 40px;">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <h2 class="section-title">🏆 Achievement <span class="accent">Badges</span></h2>
+        <p class="section-subtitle">Unlock badges by playing — each one comes with a 500 FUN bonus.</p>
+      </div>
+    </div>
+    <div id="badges-grid" class="badges-grid"></div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div>
+        <div class="logo logo-img-sm" style="margin-bottom:14px;">
+          <img src="assets/bigtaka-freetoplay.png" alt="Bigtaka Free Play" />
+        </div>
+        <p class="footer-tag">A free educational platform to learn casino and sports game mechanics. We exist to teach — not to take your money.</p>
+      </div>
+      <div>
+        <h5>Categories</h5>
+        <div class="footer-links">
+          <a href="#" data-cat-jump="slots">Slots</a>
+          <a href="#" data-cat-jump="live">Live Casino</a>
+          <a href="#" data-cat-jump="crash">Aviator & Crash</a>
+          <a href="#" data-cat-jump="fast">Fast Games</a>
+          <a href="#" data-cat-jump="sports">Sports</a>
+        </div>
+      </div>
+      <div>
+        <h5>Learn</h5>
+        <div class="footer-links">
+          <a href="#how-it-works">How It Works</a>
+          <a href="#game-library">Browse Games</a>
+          <a href="#about">About Free Play</a>
+          <a href="games/aviator.html">Play Aviator</a>
+          <a href="games/mines.html">Play Mines</a>
+        </div>
+      </div>
+      <div>
+        <h5>Responsible</h5>
+        <div class="footer-links">
+          <a href="#">Free play guidelines</a>
+          <a href="#">Educational use only</a>
+          <a href="#">No real money</a>
+          <a href="#">Contact us</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-disclaimer">
+      <span><span class="disclaimer-strong">⚠ Free play only.</span> Bigtaka Free Play uses virtual FUN coins with no monetary value. No real currency is wagered, won, or paid out. For ages 18+. This is an educational learning environment.</span>
+      <span>© 2026 Bigtaka. All rights reserved.</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ MODAL ============ -->
+<div class="modal-backdrop" id="modal">
+  <div class="modal"></div>
+</div>
+
+<!-- ============ DAILY LOGIN MODAL ============ -->
+<div class="modal-backdrop" id="daily-modal">
+  <div class="daily-modal-content">
+    <div class="daily-emoji">🎁</div>
+    <div class="daily-title">Daily Login Bonus!</div>
+    <p style="color: var(--text-dim);">Lucky Boss says welcome back, boss!</p>
+    <div class="daily-reward">+<span data-daily-reward>250</span> FUN</div>
+    <div class="daily-streak">Login streak: <strong><span data-daily-streak>1</span> day</strong></div>
+    <button class="btn btn-gold" data-daily-close>Claim & Play</button>
+  </div>
+</div>
+
+<script src="i18n.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

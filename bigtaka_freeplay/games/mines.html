@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var p=location.pathname;if(p.endsWith('/')||/\.html?$/.test(p))return;var m='/bigtaka_freeplay';var i=p.lastIndexOf(m);if(i!==-1&&p.length===i+m.length){document.write('<base href="'+p+'/">');}else{var s=p.lastIndexOf('/');if(s>=0)document.write('<base href="'+p.substring(0,s+1)+'">');}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mines — Bigtaka Free Play</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+Bengali:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+.mines-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  aspect-ratio: 1;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.mine-cell {
+  aspect-ratio: 1;
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(24px, 5vw, 38px);
+  cursor: pointer;
+  transition: transform 0.08s, background 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+
+.mine-cell::before {
+  content: '?';
+  font-size: 28px;
+  color: rgba(255,255,255,0.15);
+  font-weight: 900;
+}
+
+.mine-cell:not(.revealed):hover { transform: scale(1.04); background: rgba(255,255,255,0.1); }
+.mine-cell:not(.revealed):active { transform: scale(0.96); }
+
+.mine-cell.revealed {
+  cursor: default;
+}
+.mine-cell.revealed::before { display: none; }
+
+.mine-cell.gem {
+  background: linear-gradient(135deg, rgba(137,235,22,0.3), rgba(80,14,207,0.3));
+  border-color: var(--green);
+  box-shadow: inset 0 0 20px rgba(137,235,22,0.4);
+  animation: gemPop 0.3s ease;
+}
+
+.mine-cell.mine {
+  background: linear-gradient(135deg, rgba(255,30,215,0.4), rgba(80,14,207,0.4));
+  border-color: var(--pink);
+  box-shadow: inset 0 0 20px rgba(255,30,215,0.5);
+  animation: minePop 0.4s ease;
+}
+
+@keyframes gemPop {
+  0% { transform: scale(0.5); opacity: 0; }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes minePop {
+  0% { transform: scale(0.5) rotate(-15deg); opacity: 0; }
+  50% { transform: scale(1.25) rotate(8deg); }
+  100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+
+.mines-config-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.mines-config-row .field {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+.mines-config-row label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  font-weight: 600;
+  display: block;
+  margin-bottom: 4px;
+}
+.mines-config-row .value {
+  color: var(--gold);
+  font-size: 22px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.mines-status {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.status-stat {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+}
+.status-stat .lbl {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+.status-stat .val {
+  font-size: 20px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.status-stat .val.gold { color: var(--gold); }
+.status-stat .val.green { color: var(--green); }
+.status-stat .val.pink { color: var(--pink); }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="logo">
+      <img src="../assets/bigtaka-freetoplay.png" alt="Bigtaka Free Play" />
+    </a>
+    <div class="nav-right">
+      <div class="nav-auth">
+        <button class="btn btn-ghost btn-sm nav-cta nav-login" data-open-signup>Log In</button>
+        <button class="btn btn-gold btn-sm nav-cta nav-signup" data-open-signup>Sign Up</button>
+      </div>
+      <button class="sfx-toggle" data-sfx-btn title="Toggle sounds"><span data-sfx-icon>🔊</span></button>
+      <div class="wallet">
+        <img class="wallet-icon" src="../assets/takacoincoin.png" alt="Taka" />
+        <div>
+          <div class="wallet-label">Balance</div>
+          <div class="wallet-amount"><span data-wallet>10,000</span> FUN</div>
+        </div>
+        <button class="wallet-reset" data-wallet-reset title="Reset balance">⟳</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="play-wrap">
+  <div class="container">
+    <a href="../index.html" class="back-link">← Back to all games</a>
+
+    <div class="play-head">
+      <div class="play-title-block">
+        <h1>Mines <span class="practice-stamp" style="position:static;display:inline-flex;margin-left:8px;font-size:11px;vertical-align:middle">🎯 Practice Mode</span></h1>
+        <p class="play-sub">Find gems. Avoid mines. Cash out before disaster.</p>
+      </div>
+    </div>
+
+    <div id="mascot-monkey" class="mascot-inline"></div>
+
+    <div class="play-layout">
+      <div class="play-canvas-wrap">
+        <div class="mines-status">
+          <div class="status-stat">
+            <div class="lbl">Multiplier</div>
+            <div class="val gold" id="mult">1.00×</div>
+          </div>
+          <div class="status-stat">
+            <div class="lbl">Gems Found</div>
+            <div class="val green" id="gems-found">0</div>
+          </div>
+          <div class="status-stat">
+            <div class="lbl">Mines</div>
+            <div class="val pink" id="mines-count">3</div>
+          </div>
+        </div>
+
+        <div class="mines-grid" id="grid"></div>
+
+        <div class="status-row" style="display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--text-muted);margin-top:20px;padding-top:14px;border-top:1px solid var(--border);">
+          <span style="color:var(--green);font-weight:700;">● Live Demo</span>
+          <span>Provider: <strong style="color:#fff">Spribe</strong></span>
+          <span>RTP: <strong style="color:#fff">97.00%</strong></span>
+        </div>
+      </div>
+
+      <aside class="play-side">
+        <div class="side-card">
+          <h3>Bet</h3>
+          <div class="bet-input-row">
+            <input class="bet-input" id="bet-amt" type="number" min="10" step="10" value="100" />
+            <button class="bet-step" data-step="-">−</button>
+            <button class="bet-step" data-step="+">+</button>
+          </div>
+          <div class="bet-quick">
+            <button data-quick="50">50</button>
+            <button data-quick="100">100</button>
+            <button data-quick="500">500</button>
+            <button data-quick="1000">1000</button>
+          </div>
+
+          <h3 style="margin-top:14px">Mines (1–24)</h3>
+          <div class="tab-row">
+            <button data-mines="1">1</button>
+            <button data-mines="3" class="active">3</button>
+            <button data-mines="5">5</button>
+            <button data-mines="10">10</button>
+            <button data-mines="24">24</button>
+          </div>
+
+          <button class="btn btn-green btn-block" id="start-btn" style="margin-top:12px">START GAME</button>
+          <button class="btn btn-gold btn-block" id="cashout-btn" style="margin-top:8px;display:none">CASH OUT</button>
+        </div>
+
+        <div class="side-card">
+          <h3>How To Play</h3>
+          <p style="color:var(--text-dim);font-size:13px;line-height:1.55">
+            1. Place a bet and choose number of mines (1–24).<br />
+            2. Click cells to reveal gems. Each gem boosts the multiplier.<br />
+            3. Cash out anytime to lock in winnings.<br />
+            4. Hit a mine = lose the bet.
+          </p>
+          <div class="tip-card" style="margin-top:10px">
+            <strong>💡 Tip:</strong> 3 mines + cash out after 3–5 picks is the optimal risk/reward zone for most players.
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<script src="../i18n.js"></script>
+<script src="../app.js"></script>
+<script>
+const GRID_SIZE = 25;
+let state = {
+  active: false,
+  bet: 100,
+  mineCount: 3,
+  mineSet: new Set(),
+  revealed: new Set(),
+  gemsFound: 0,
+  mult: 1.0
+};
+
+const gridEl = document.getElementById('grid');
+const multEl = document.getElementById('mult');
+const gemsEl = document.getElementById('gems-found');
+const minesCountEl = document.getElementById('mines-count');
+const startBtn = document.getElementById('start-btn');
+const cashBtn = document.getElementById('cashout-btn');
+
+function buildGrid() {
+  gridEl.innerHTML = '';
+  for (let i = 0; i < GRID_SIZE; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'mine-cell';
+    cell.dataset.idx = i;
+    cell.addEventListener('click', () => revealCell(i));
+    gridEl.appendChild(cell);
+  }
+}
+
+function calcMult(gemsFound, mineCount) {
+  // Standard Mines formula with 97% RTP
+  // mult = 0.97 * C(25, gems) / C(25-mines, gems)
+  // simplified:
+  let m = 1.0;
+  for (let k = 0; k < gemsFound; k++) {
+    m *= (25 - k) / (25 - mineCount - k);
+  }
+  return 0.97 * m;
+}
+
+function startGame() {
+  state.bet = parseInt(document.getElementById('bet-amt').value) || 100;
+  if (state.bet < 10) return toast('Min bet is 10 FUN', 'loss');
+  if (state.bet > Wallet.get()) return toast('Not enough FUN — hit ⟳ to reset', 'loss');
+
+  Wallet.add(-state.bet);
+  Sfx.bet();
+  Player.recordBet(state.bet);
+  if (!Mascot._monkeyAttached) { Mascot.render('#mascot-monkey', 'monkey'); Mascot._monkeyAttached = true; }
+  state.active = true;
+  state.revealed = new Set();
+  state.gemsFound = 0;
+  state.mult = 1.0;
+
+  // Place mines
+  state.mineSet = new Set();
+  while (state.mineSet.size < state.mineCount) {
+    state.mineSet.add(Math.floor(Math.random() * GRID_SIZE));
+  }
+
+  multEl.textContent = '1.00×';
+  gemsEl.textContent = '0';
+  minesCountEl.textContent = state.mineCount;
+
+  startBtn.style.display = 'none';
+  cashBtn.style.display = 'block';
+  cashBtn.textContent = `CASH OUT · ${Wallet.format(state.bet)} FUN`;
+
+  buildGrid();
+}
+
+function revealCell(idx) {
+  if (!state.active || state.revealed.has(idx)) return;
+  state.revealed.add(idx);
+  const cell = gridEl.children[idx];
+  cell.classList.add('revealed');
+
+  if (state.mineSet.has(idx)) {
+    cell.classList.add('mine');
+    cell.textContent = '💣';
+    Sfx.mine();
+    // Reveal all other mines
+    state.mineSet.forEach(m => {
+      if (m !== idx) {
+        const c = gridEl.children[m];
+        c.classList.add('revealed', 'mine');
+        c.textContent = '💣';
+      }
+    });
+    endGame(false);
+  } else {
+    cell.classList.add('gem');
+    cell.textContent = '💎';
+    state.gemsFound++;
+    state.mult = calcMult(state.gemsFound, state.mineCount);
+    Sfx.gem();
+    multEl.textContent = state.mult.toFixed(2) + '×';
+    gemsEl.textContent = state.gemsFound;
+    cashBtn.textContent = `CASH OUT · ${Wallet.format(state.bet * state.mult)} FUN`;
+
+    // Auto-end if all gems found (max win)
+    if (state.gemsFound === GRID_SIZE - state.mineCount) {
+      cashOut();
+    }
+  }
+}
+
+function cashOut() {
+  if (!state.active || state.gemsFound === 0) return;
+  const winAmt = Math.round(state.bet * state.mult);
+  Wallet.add(winAmt);
+  state.mult >= 10 ? Sfx.jackpot() : state.mult >= 2.5 ? Sfx.bigWin() : Sfx.win();
+  Player.recordWin(winAmt, state.mult, 'fast');
+  if (state.mult >= 3) {
+    const r = gridEl.getBoundingClientRect();
+    coinBurst(r.left + r.width/2, r.top + r.height/2, 20);
+  }
+  toast(`Cashed out · won ${Wallet.format(winAmt)} FUN (${state.mult.toFixed(2)}×)`, 'win');
+  endGame(true);
+}
+
+function endGame(cashedOut) {
+  state.active = false;
+  startBtn.style.display = 'block';
+  cashBtn.style.display = 'none';
+  if (!cashedOut) {
+    Player.recordLoss();
+    toast(`Lost ${Wallet.format(state.bet)} FUN — hit a mine!`, 'loss');
+  }
+}
+
+// Controls
+document.querySelectorAll('[data-step]').forEach(b => {
+  b.addEventListener('click', () => {
+    const el = document.getElementById('bet-amt');
+    let v = parseInt(el.value) || 10;
+    v += b.dataset.step === '+' ? 50 : -50;
+    el.value = Math.max(10, v);
+  });
+});
+document.querySelectorAll('[data-quick]').forEach(b => {
+  b.addEventListener('click', () => document.getElementById('bet-amt').value = b.dataset.quick);
+});
+
+document.querySelectorAll('[data-mines]').forEach(b => {
+  b.addEventListener('click', () => {
+    if (state.active) return;
+    document.querySelectorAll('[data-mines]').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    state.mineCount = parseInt(b.dataset.mines);
+    minesCountEl.textContent = state.mineCount;
+  });
+});
+
+startBtn.addEventListener('click', startGame);
+cashBtn.addEventListener('click', cashOut);
+
+buildGrid();
+</script>
+</body>
+</html>

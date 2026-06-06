@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var p=location.pathname;if(p.endsWith('/')||/\.html?$/.test(p))return;var m='/bigtaka_freeplay';var i=p.lastIndexOf(m);if(i!==-1&&p.length===i+m.length){document.write('<base href="'+p+'/">');}else{var s=p.lastIndexOf('/');if(s>=0)document.write('<base href="'+p.substring(0,s+1)+'">');}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Six Hit Challenge — Bigtaka Free Play</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+Bengali:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+.pitch {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 11;
+  background: radial-gradient(ellipse at center top, #2a8c2a 0%, #0f4d0f 60%, #0a0418 100%);
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.pitch::before {
+  content: '';
+  position: absolute;
+  bottom: 25%;
+  left: 35%;
+  right: 35%;
+  height: 50%;
+  background: linear-gradient(180deg, rgba(180,140,80,0.4), rgba(120, 90, 50, 0.6));
+  border-radius: 8px;
+  transform: perspective(800px) rotateX(60deg);
+  transform-origin: bottom;
+}
+
+.stumps {
+  position: absolute;
+  top: 28%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+  z-index: 2;
+}
+.stump {
+  width: 4px;
+  height: 36px;
+  background: linear-gradient(180deg, #fff, #ccc);
+  border-radius: 2px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+}
+
+.batter {
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 80px;
+  filter: drop-shadow(0 8px 16px rgba(0,0,0,0.5));
+  z-index: 4;
+}
+
+.bat {
+  position: absolute;
+  bottom: 17%;
+  left: 50%;
+  transform: translateX(-50%) rotate(-15deg);
+  font-size: 60px;
+  z-index: 5;
+  transition: transform 0.15s ease-out;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
+}
+.bat.swing { transform: translateX(-50%) rotate(35deg); }
+
+.ball {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #fff 0%, #c00 60%, #600 100%);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+  z-index: 3;
+  left: 50%;
+  top: 28%;
+  transform: translate(-50%, -50%) scale(0.4);
+  opacity: 0;
+  pointer-events: none;
+}
+.ball.live { opacity: 1; }
+
+.outcome-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  font-size: clamp(40px, 8vw, 90px);
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: -0.03em;
+  z-index: 10;
+  text-shadow: 0 6px 24px rgba(0,0,0,0.8);
+  pointer-events: none;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+.outcome-text.show { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+.outcome-text.six { color: var(--gold); }
+.outcome-text.four { color: var(--green); }
+.outcome-text.out { color: var(--pink); }
+.outcome-text.dot { color: var(--text-dim); font-size: clamp(28px, 5vw, 50px); }
+
+.scoreboard {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.score-stat {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+}
+.score-stat .lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); font-weight: 700; }
+.score-stat .val { font-size: 22px; font-weight: 900; font-variant-numeric: tabular-nums; margin-top: 4px; }
+
+.balls-row {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 16px;
+}
+.ball-marker {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--text-muted);
+}
+.ball-marker.six { background: rgba(255,215,0,0.2); border-color: var(--gold); color: var(--gold); }
+.ball-marker.four { background: rgba(137,235,22,0.15); border-color: var(--green); color: var(--green); }
+.ball-marker.out { background: rgba(255,30,215,0.15); border-color: var(--pink); color: var(--pink); }
+.ball-marker.dot { color: var(--text-dim); }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="logo">
+      <img src="../assets/bigtaka-freetoplay.png" alt="Bigtaka Free Play" />
+    </a>
+    <div class="nav-right">
+      <div class="nav-auth">
+        <button class="btn btn-ghost btn-sm nav-cta nav-login" data-open-signup>Log In</button>
+        <button class="btn btn-gold btn-sm nav-cta nav-signup" data-open-signup>Sign Up</button>
+      </div>
+      <button class="sfx-toggle" data-sfx-btn title="Toggle sounds"><span data-sfx-icon>🔊</span></button>
+      <div class="wallet">
+        <img class="wallet-icon" src="../assets/takacoincoin.png" alt="Taka" />
+        <div>
+          <div class="wallet-label">Balance</div>
+          <div class="wallet-amount"><span data-wallet>10,000</span> FUN</div>
+        </div>
+        <button class="wallet-reset" data-wallet-reset title="Reset balance">⟳</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="play-wrap">
+  <div class="container">
+    <a href="../index.html" class="back-link">← Back to all games</a>
+
+    <div class="play-head">
+      <div class="play-title-block">
+        <h1>Six Hit Challenge <span class="practice-stamp" style="position:static;display:inline-flex;margin-left:8px;font-size:11px;vertical-align:middle">🎯 Practice Mode</span></h1>
+        <p class="play-sub">Time your swing as the ball reaches the bat. Perfect timing = SIX.</p>
+      </div>
+    </div>
+
+    <div id="mascot-boss" class="mascot-inline"></div>
+
+    <div class="play-layout">
+      <div class="play-canvas-wrap">
+        <div class="scoreboard">
+          <div class="score-stat"><div class="lbl">Ball</div><div class="val" id="ball-num">0/6</div></div>
+          <div class="score-stat"><div class="lbl">Runs</div><div class="val" style="color:var(--gold)" id="runs">0</div></div>
+          <div class="score-stat"><div class="lbl">Sixes</div><div class="val" style="color:var(--gold)" id="sixes">0</div></div>
+        </div>
+
+        <div class="pitch" id="pitch">
+          <div class="stumps">
+            <div class="stump"></div>
+            <div class="stump"></div>
+            <div class="stump"></div>
+          </div>
+          <div class="ball" id="ball"></div>
+          <div class="bat" id="bat">🏏</div>
+          <div class="batter">🧑‍🦰</div>
+          <div class="outcome-text" id="outcome">—</div>
+        </div>
+
+        <div class="balls-row" id="balls-row">
+          <div class="ball-marker">1</div>
+          <div class="ball-marker">2</div>
+          <div class="ball-marker">3</div>
+          <div class="ball-marker">4</div>
+          <div class="ball-marker">5</div>
+          <div class="ball-marker">6</div>
+        </div>
+
+        <div class="status-row" style="display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--text-muted);margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+          <span style="color:var(--green);font-weight:700;">● Live Demo</span>
+          <span>Provider: <strong style="color:#fff">Bigtaka Originals</strong></span>
+          <span>Mode: <strong style="color:#fff">Skill</strong></span>
+        </div>
+      </div>
+
+      <aside class="play-side">
+        <div class="side-card">
+          <h3>Bet per Over</h3>
+          <div class="bet-input-row">
+            <input class="bet-input" id="bet-amt" type="number" min="10" step="10" value="100" />
+            <button class="bet-step" data-step="-">−</button>
+            <button class="bet-step" data-step="+">+</button>
+          </div>
+          <div class="bet-quick">
+            <button data-quick="50">50</button>
+            <button data-quick="100">100</button>
+            <button data-quick="500">500</button>
+            <button data-quick="1000">1000</button>
+          </div>
+          <button class="btn btn-green btn-block" id="start-btn" style="margin-top:12px">▶ START OVER</button>
+          <button class="btn btn-gold btn-block" id="swing-btn" style="margin-top:8px;display:none">🏏 SWING!</button>
+        </div>
+
+        <div class="side-card">
+          <h3>Payouts</h3>
+          <div style="font-size:13px;color:var(--text-dim);line-height:1.8">
+            <div style="display:flex;justify-content:space-between"><span>SIX (perfect)</span><strong style="color:var(--gold)">6× bet</strong></div>
+            <div style="display:flex;justify-content:space-between"><span>FOUR (good)</span><strong style="color:var(--green)">3× bet</strong></div>
+            <div style="display:flex;justify-content:space-between"><span>SINGLE (okay)</span><strong style="color:#fff">1× bet</strong></div>
+            <div style="display:flex;justify-content:space-between"><span>OUT (bad)</span><strong style="color:var(--pink)">−bet</strong></div>
+          </div>
+          <div class="tip-card" style="margin-top:14px">
+            <strong>💡 Tip:</strong> Wait for the ball to almost reach the bat before tapping. Too early = single. Too late = out.
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<script src="../i18n.js"></script>
+<script src="../app.js"></script>
+<script>
+let state = {
+  active: false,
+  ball: 0,
+  runs: 0,
+  sixes: 0,
+  betPerBall: 0,
+  ballStart: 0,
+  ballDuration: 1400, // ms - time from bowl to perfect-timing window
+  awaitingSwing: false,
+  ballOutcome: null
+};
+
+const ballEl = document.getElementById('ball');
+const batEl = document.getElementById('bat');
+const outcomeEl = document.getElementById('outcome');
+const ballsRow = document.getElementById('balls-row');
+
+function updateScoreboard() {
+  document.getElementById('ball-num').textContent = state.ball + '/6';
+  document.getElementById('runs').textContent = state.runs;
+  document.getElementById('sixes').textContent = state.sixes;
+}
+
+function startOver() {
+  const bet = parseInt(document.getElementById('bet-amt').value) || 0;
+  if (bet < 10) return toast('Min bet is 10 FUN', 'loss');
+  if (bet > Wallet.get()) return toast('Not enough FUN — hit ⟳ to reset', 'loss');
+
+  Wallet.add(-bet);
+  Sfx.bet();
+  Player.recordBet(bet);
+  if (!window._mAttached) { Mascot.render('#mascot-boss', 'boss'); window._mAttached = true; }
+  state.betPerBall = Math.round(bet / 6);
+  state.ball = 0;
+  state.runs = 0;
+  state.sixes = 0;
+  state.active = true;
+  // Reset ball markers
+  ballsRow.innerHTML = [1,2,3,4,5,6].map(n => `<div class="ball-marker">${n}</div>`).join('');
+  document.getElementById('start-btn').style.display = 'none';
+  document.getElementById('swing-btn').style.display = 'block';
+  document.getElementById('swing-btn').disabled = true;
+  updateScoreboard();
+  nextBall();
+}
+
+function nextBall() {
+  if (state.ball >= 6) return endOver();
+  state.ball++;
+  updateScoreboard();
+  outcomeEl.className = 'outcome-text';
+  outcomeEl.textContent = '';
+
+  // Reset ball position
+  ballEl.classList.remove('live');
+  ballEl.style.transition = 'none';
+  ballEl.style.transform = 'translate(-50%, -50%) scale(0.4)';
+  ballEl.style.top = '28%';
+
+  // Brief pause then bowl
+  setTimeout(() => {
+    ballEl.classList.add('live');
+    ballEl.style.transition = `top ${state.ballDuration}ms linear, transform ${state.ballDuration}ms linear`;
+    ballEl.style.top = '78%';
+    ballEl.style.transform = 'translate(-50%, -50%) scale(1.4)';
+    state.ballStart = performance.now();
+    state.awaitingSwing = true;
+    document.getElementById('swing-btn').disabled = false;
+    Sfx.whoosh();
+
+    // Auto-fail if no swing in time
+    setTimeout(() => {
+      if (state.awaitingSwing) {
+        state.awaitingSwing = false;
+        registerOutcome('dot');
+      }
+    }, state.ballDuration + 400);
+  }, 600);
+}
+
+function swing() {
+  if (!state.awaitingSwing) return;
+  state.awaitingSwing = false;
+  document.getElementById('swing-btn').disabled = true;
+
+  // Swing the bat
+  batEl.classList.add('swing');
+  setTimeout(() => batEl.classList.remove('swing'), 250);
+
+  const elapsed = performance.now() - state.ballStart;
+  const optimal = state.ballDuration; // ms - perfect timing point
+  const diff = Math.abs(elapsed - optimal);
+
+  let outcome;
+  if (diff < 100) outcome = 'six';
+  else if (diff < 220) outcome = 'four';
+  else if (diff < 360) outcome = 'single';
+  else if (elapsed < optimal - 360) outcome = 'dot';
+  else outcome = 'out';
+
+  registerOutcome(outcome);
+}
+
+function registerOutcome(outcome) {
+  ballEl.classList.remove('live');
+  // Marker color
+  const marker = ballsRow.children[state.ball - 1];
+  marker.className = 'ball-marker ' + (outcome === 'six' ? 'six' : outcome === 'four' ? 'four' : outcome === 'out' ? 'out' : outcome === 'dot' ? 'dot' : '');
+  marker.textContent = outcome === 'six' ? '6' : outcome === 'four' ? '4' : outcome === 'single' ? '1' : outcome === 'dot' ? '·' : 'W';
+
+  // Display
+  outcomeEl.className = 'outcome-text show';
+  if (outcome === 'six') {
+    outcomeEl.classList.add('six');
+    outcomeEl.textContent = 'SIX!';
+    state.runs += 6;
+    state.sixes++;
+    Wallet.add(state.betPerBall * 6);
+    Sfx.thwack();
+    setTimeout(() => state.sixes >= 3 ? Sfx.jackpot() : Sfx.bigWin(), 80);
+    Player.recordWin(state.betPerBall * 6, 6, 'sports');
+    const s = Player.get(); s.sportsWins = s.sportsWins || {}; s.sportsWins.cricket = (s.sportsWins.cricket || 0) + 1; Player.save(s);
+    const r = ballEl.getBoundingClientRect();
+    coinBurst(r.left + r.width/2, r.top + r.height/2, 20);
+  } else if (outcome === 'four') {
+    outcomeEl.classList.add('four');
+    outcomeEl.textContent = 'FOUR!';
+    state.runs += 4;
+    Wallet.add(state.betPerBall * 3);
+    Sfx.thwack();
+    setTimeout(() => Sfx.win(), 80);
+    Player.recordWin(state.betPerBall * 3, 3, 'sports');
+    const s = Player.get(); s.sportsWins = s.sportsWins || {}; s.sportsWins.cricket = (s.sportsWins.cricket || 0) + 1; Player.save(s);
+  } else if (outcome === 'single') {
+    outcomeEl.textContent = 'SINGLE';
+    state.runs += 1;
+    Wallet.add(state.betPerBall * 1);
+    Sfx.thwack();
+    setTimeout(() => Sfx.coin(), 80);
+    Player.recordWin(state.betPerBall, 1, 'sports');
+    const s = Player.get(); s.sportsWins = s.sportsWins || {}; s.sportsWins.cricket = (s.sportsWins.cricket || 0) + 1; Player.save(s);
+  } else if (outcome === 'dot') {
+    outcomeEl.classList.add('dot');
+    outcomeEl.textContent = 'DOT BALL';
+    Sfx.tick();
+  } else if (outcome === 'out') {
+    outcomeEl.classList.add('out');
+    outcomeEl.textContent = 'OUT!';
+    Sfx.loss();
+    state.runs = state.runs; // no penalty beyond losing the ball stake
+  }
+
+  updateScoreboard();
+  setTimeout(nextBall, 1100);
+}
+
+function endOver() {
+  state.active = false;
+  document.getElementById('start-btn').style.display = 'block';
+  document.getElementById('swing-btn').style.display = 'none';
+  ballEl.classList.remove('live');
+  outcomeEl.className = 'outcome-text show six';
+  outcomeEl.textContent = `${state.runs} runs · ${state.sixes} sixes`;
+
+  let msg = `Over complete! ${state.runs} runs · ${state.sixes} sixes`;
+  if (state.sixes >= 3) toast(msg + ' — pro hitter!', 'win');
+  else if (state.runs >= 12) toast(msg + ' — solid over!', 'win');
+  else toast(msg, '');
+}
+
+// Controls
+document.querySelectorAll('[data-step]').forEach(b => {
+  b.addEventListener('click', () => {
+    const el = document.getElementById('bet-amt');
+    let v = parseInt(el.value) || 10;
+    v += b.dataset.step === '+' ? 50 : -50;
+    el.value = Math.max(10, v);
+  });
+});
+document.querySelectorAll('[data-quick]').forEach(b => {
+  b.addEventListener('click', () => document.getElementById('bet-amt').value = b.dataset.quick);
+});
+
+document.getElementById('start-btn').addEventListener('click', startOver);
+document.getElementById('swing-btn').addEventListener('click', swing);
+
+// Spacebar to swing
+document.addEventListener('keydown', e => {
+  if (e.code === 'Space' && state.awaitingSwing && !e.target.matches('input')) {
+    e.preventDefault();
+    swing();
+  }
+});
+
+// Tap pitch to swing
+document.getElementById('pitch').addEventListener('click', () => {
+  if (state.awaitingSwing) swing();
+});
+</script>
+</body>
+</html>

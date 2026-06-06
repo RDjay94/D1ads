@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var p=location.pathname;if(p.endsWith('/')||/\.html?$/.test(p))return;var m='/bigtaka_freeplay';var i=p.lastIndexOf(m);if(i!==-1&&p.length===i+m.length){document.write('<base href="'+p+'/">');}else{var s=p.lastIndexOf('/');if(s>=0)document.write('<base href="'+p.substring(0,s+1)+'">');}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dice — Bigtaka Free Play</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+Bengali:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+.dice-stage {
+  background: linear-gradient(180deg, rgba(80,14,207,0.18), rgba(10,4,24,0.5));
+  border-radius: 16px;
+  padding: 40px 28px;
+  border: 1px solid var(--border);
+}
+
+.dice-result {
+  font-size: clamp(64px, 10vw, 120px);
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: -0.05em;
+  text-align: center;
+  margin: 20px 0 30px;
+  font-variant-numeric: tabular-nums;
+  background: linear-gradient(180deg, #ffe55c, #ffd700, #c89211);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 16px rgba(255, 215, 0, 0.4));
+  transition: color 0.3s;
+}
+.dice-result.win { background: linear-gradient(180deg, #c8ff5c, #89eb16); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 20px rgba(137, 235, 22, 0.5)); }
+.dice-result.loss { background: linear-gradient(180deg, #ff8fb1, #ff1ed7); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 20px rgba(255, 30, 215, 0.5)); }
+
+.dice-slider-wrap {
+  position: relative;
+  height: 64px;
+  margin: 20px 0;
+}
+
+.dice-track {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+  height: 16px;
+  background: linear-gradient(90deg, var(--pink) 0%, var(--pink) var(--lo, 50%), var(--green) var(--lo, 50%), var(--green) 100%);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.dice-track-marker {
+  position: absolute;
+  top: -8px;
+  bottom: -8px;
+  width: 2px;
+  background: #fff;
+  pointer-events: none;
+  border-radius: 2px;
+  box-shadow: 0 0 12px rgba(255,255,255,0.5);
+}
+
+.dice-slider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 64px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: none;
+  cursor: pointer;
+}
+.dice-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ffe55c, #c89211);
+  border: 3px solid #fff;
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.5);
+  cursor: pointer;
+}
+.dice-slider::-moz-range-thumb {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ffe55c, #c89211);
+  border: 3px solid #fff;
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.5);
+  cursor: pointer;
+}
+
+.dice-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.dice-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 24px;
+}
+.dice-stat {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+}
+.dice-stat .lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); font-weight: 700; }
+.dice-stat .val { font-size: 20px; font-weight: 900; font-variant-numeric: tabular-nums; margin-top: 4px; }
+.dice-stat .val.gold { color: var(--gold); }
+.dice-stat .val.green { color: var(--green); }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="logo">
+      <img src="../assets/bigtaka-freetoplay.png" alt="Bigtaka Free Play" />
+    </a>
+    <div class="nav-right">
+      <div class="nav-auth">
+        <button class="btn btn-ghost btn-sm nav-cta nav-login" data-open-signup>Log In</button>
+        <button class="btn btn-gold btn-sm nav-cta nav-signup" data-open-signup>Sign Up</button>
+      </div>
+      <button class="sfx-toggle" data-sfx-btn title="Toggle sounds"><span data-sfx-icon>🔊</span></button>
+      <div class="wallet">
+        <img class="wallet-icon" src="../assets/takacoincoin.png" alt="Taka" />
+        <div>
+          <div class="wallet-label">Balance</div>
+          <div class="wallet-amount"><span data-wallet>10,000</span> FUN</div>
+        </div>
+        <button class="wallet-reset" data-wallet-reset title="Reset balance">⟳</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="play-wrap">
+  <div class="container">
+    <a href="../index.html" class="back-link">← Back to all games</a>
+
+    <div class="play-head">
+      <div class="play-title-block">
+        <h1 id="game-name">Dice <span class="practice-stamp" style="position:static;display:inline-flex;margin-left:8px;font-size:11px;vertical-align:middle">🎯 Practice Mode</span></h1>
+        <p class="play-sub">Pick a target. Roll. Land on the right side to win.</p>
+      </div>
+    </div>
+
+    <div id="mascot-monkey" class="mascot-inline"></div>
+
+    <div class="play-layout">
+      <div class="play-canvas-wrap">
+        <div class="dice-stage">
+          <div class="dice-result" id="result">—</div>
+
+          <div class="tab-row" style="max-width:260px;margin:0 auto 20px;">
+            <button data-side="under" class="active">Roll Under</button>
+            <button data-side="over">Roll Over</button>
+          </div>
+
+          <div class="dice-slider-wrap">
+            <div class="dice-track" id="track"></div>
+            <div class="dice-track-marker" id="marker" style="left: 50%"></div>
+            <input type="range" class="dice-slider" id="target" min="2" max="98" value="50" />
+          </div>
+
+          <div class="dice-labels">
+            <span>0</span><span>25</span><span>50</span><span>75</span><span>100</span>
+          </div>
+
+          <div class="dice-stats">
+            <div class="dice-stat">
+              <div class="lbl">Target</div>
+              <div class="val gold" id="target-val">Under 50</div>
+            </div>
+            <div class="dice-stat">
+              <div class="lbl">Win Chance</div>
+              <div class="val green" id="chance">49.50%</div>
+            </div>
+            <div class="dice-stat">
+              <div class="lbl">Multiplier</div>
+              <div class="val gold" id="mult">1.96×</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="status-row" style="display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--text-muted);margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+          <span style="color:var(--green);font-weight:700;">● Live Demo</span>
+          <span>Provider: <strong style="color:#fff">Spribe</strong></span>
+          <span>RTP: <strong style="color:#fff">97.00%</strong></span>
+        </div>
+      </div>
+
+      <aside class="play-side">
+        <div class="side-card">
+          <h3>Bet</h3>
+          <div class="bet-input-row">
+            <input class="bet-input" id="bet-amt" type="number" min="10" step="10" value="100" />
+            <button class="bet-step" data-step="-">−</button>
+            <button class="bet-step" data-step="+">+</button>
+          </div>
+          <div class="bet-quick">
+            <button data-quick="50">50</button>
+            <button data-quick="100">100</button>
+            <button data-quick="500">500</button>
+            <button data-quick="1000">1000</button>
+          </div>
+          <button class="btn btn-green btn-block" id="roll-btn" style="margin-top:12px">🎲 ROLL DICE</button>
+        </div>
+
+        <div class="side-card">
+          <h3>How To Play</h3>
+          <p style="color:var(--text-dim);font-size:13px;line-height:1.55">
+            Drag the slider to set your target. Choose <strong>Under</strong> or <strong>Over</strong>.
+            The roll generates a number 0–100. Land on the right side to win.
+            Tighter targets = higher multiplier, lower win chance.
+          </p>
+          <div class="tip-card" style="margin-top:10px">
+            <strong>💡 Tip:</strong> Lower-multiplier targets (around 1.5×) hit ~65% of the time — best for long sessions.
+          </div>
+        </div>
+
+        <div class="side-card">
+          <h3>Recent Rolls</h3>
+          <div class="history-list" id="history"></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<script src="../i18n.js"></script>
+<script src="../app.js"></script>
+<script>
+const params = new URLSearchParams(location.search);
+document.getElementById('game-name').textContent = params.get('name') || 'Dice';
+document.title = (params.get('name') || 'Dice') + ' — Bigtaka Free Play';
+
+let target = 50;
+let side = 'under'; // under | over
+
+const targetEl = document.getElementById('target');
+const markerEl = document.getElementById('marker');
+const trackEl = document.getElementById('track');
+const targetValEl = document.getElementById('target-val');
+const chanceEl = document.getElementById('chance');
+const multEl = document.getElementById('mult');
+const resultEl = document.getElementById('result');
+const historyEl = document.getElementById('history');
+
+function updateUI() {
+  const pos = target;
+  markerEl.style.left = pos + '%';
+
+  // Color track based on win zone
+  if (side === 'under') {
+    trackEl.style.background = `linear-gradient(90deg, var(--green) 0%, var(--green) ${pos}%, var(--pink) ${pos}%, var(--pink) 100%)`;
+  } else {
+    trackEl.style.background = `linear-gradient(90deg, var(--pink) 0%, var(--pink) ${pos}%, var(--green) ${pos}%, var(--green) 100%)`;
+  }
+
+  const winChance = side === 'under' ? target : (100 - target);
+  const mult = (97 / winChance); // 97% RTP
+
+  targetValEl.textContent = `${side === 'under' ? 'Under' : 'Over'} ${target}`;
+  chanceEl.textContent = winChance.toFixed(2) + '%';
+  multEl.textContent = mult.toFixed(2) + '×';
+}
+
+targetEl.addEventListener('input', e => {
+  target = parseInt(e.target.value);
+  updateUI();
+});
+
+document.querySelectorAll('[data-side]').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('[data-side]').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    side = b.dataset.side;
+    updateUI();
+  });
+});
+
+async function rollDice() {
+  const bet = parseInt(document.getElementById('bet-amt').value) || 0;
+  if (bet < 10) return toast('Min bet is 10 FUN', 'loss');
+  if (bet > Wallet.get()) return toast('Not enough FUN — hit ⟳ to reset', 'loss');
+
+  Wallet.add(-bet);
+  Sfx.bet();
+  Player.recordBet(bet);
+  if (!window._mAttached) { Mascot.render('#mascot-monkey', 'monkey'); window._mAttached = true; }
+  document.getElementById('roll-btn').disabled = true;
+  resultEl.className = 'dice-result';
+
+  // Animation: count up to roll
+  const finalRoll = Math.random() * 100;
+  const steps = 24;
+  for (let i = 0; i < steps; i++) {
+    resultEl.textContent = (Math.random() * 100).toFixed(2);
+    if (i % 4 === 0) Sfx.tick();
+    await sleep(40 + i * 4);
+  }
+  resultEl.textContent = finalRoll.toFixed(2);
+
+  const won = side === 'under' ? finalRoll < target : finalRoll > target;
+  const winChance = side === 'under' ? target : (100 - target);
+  const mult = (97 / winChance);
+
+  if (won) {
+    const winAmt = Math.round(bet * mult);
+    Wallet.add(winAmt);
+    mult >= 15 ? Sfx.jackpot() : mult >= 4 ? Sfx.bigWin() : Sfx.win();
+    Player.recordWin(winAmt, mult, 'fast');
+    if (mult >= 5) { const r = resultEl.getBoundingClientRect(); coinBurst(r.left + r.width/2, r.top + r.height/2, 18); }
+    resultEl.classList.add('win');
+    toast(`WIN · ${Wallet.format(winAmt)} FUN (${mult.toFixed(2)}×)`, 'win');
+  } else {
+    Sfx.loss();
+    Player.recordLoss();
+    resultEl.classList.add('loss');
+    toast(`Lost ${Wallet.format(bet)} FUN`, 'loss');
+  }
+
+  // History
+  const cls = won ? 'green' : '';
+  const chip = `<span class="history-chip ${cls}">${finalRoll.toFixed(1)}</span>`;
+  historyEl.innerHTML = chip + historyEl.innerHTML;
+  const chips = historyEl.querySelectorAll('.history-chip');
+  if (chips.length > 10) chips[chips.length - 1].remove();
+
+  document.getElementById('roll-btn').disabled = false;
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// Controls
+document.querySelectorAll('[data-step]').forEach(b => {
+  b.addEventListener('click', () => {
+    const el = document.getElementById('bet-amt');
+    let v = parseInt(el.value) || 10;
+    v += b.dataset.step === '+' ? 50 : -50;
+    el.value = Math.max(10, v);
+  });
+});
+document.querySelectorAll('[data-quick]').forEach(b => {
+  b.addEventListener('click', () => document.getElementById('bet-amt').value = b.dataset.quick);
+});
+
+document.getElementById('roll-btn').addEventListener('click', rollDice);
+
+updateUI();
+</script>
+</body>
+</html>

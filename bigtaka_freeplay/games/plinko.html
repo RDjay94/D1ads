@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var p=location.pathname;if(p.endsWith('/')||/\.html?$/.test(p))return;var m='/bigtaka_freeplay';var i=p.lastIndexOf(m);if(i!==-1&&p.length===i+m.length){document.write('<base href="'+p+'/">');}else{var s=p.lastIndexOf('/');if(s>=0)document.write('<base href="'+p.substring(0,s+1)+'">');}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Plinko — Bigtaka Free Play</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+Bengali:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+.plinko-canvas-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  max-height: 640px;
+  background: linear-gradient(180deg, rgba(80,14,207,0.18), rgba(10,4,24,0.6));
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.plinko-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.risk-tabs button {
+  flex: 1;
+}
+
+.bucket-row {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  font-size: 11px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.bucket-chip {
+  padding: 4px 8px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border);
+}
+.bucket-chip.hi { color: #ff1ed7; border-color: rgba(255, 30, 215, 0.4); background: rgba(255,30,215,0.08); }
+.bucket-chip.mid { color: #d4a017; border-color: rgba(255, 215, 0, 0.3); background: rgba(255,215,0,0.08); }
+.bucket-chip.lo { color: var(--text-muted); }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="logo">
+      <img src="../assets/bigtaka-freetoplay.png" alt="Bigtaka Free Play" />
+    </a>
+    <div class="nav-right">
+      <div class="nav-auth">
+        <button class="btn btn-ghost btn-sm nav-cta nav-login" data-open-signup>Log In</button>
+        <button class="btn btn-gold btn-sm nav-cta nav-signup" data-open-signup>Sign Up</button>
+      </div>
+      <button class="sfx-toggle" data-sfx-btn title="Toggle sounds"><span data-sfx-icon>🔊</span></button>
+      <div class="wallet">
+        <img class="wallet-icon" src="../assets/takacoincoin.png" alt="Taka" />
+        <div>
+          <div class="wallet-label">Balance</div>
+          <div class="wallet-amount"><span data-wallet>10,000</span> FUN</div>
+        </div>
+        <button class="wallet-reset" data-wallet-reset title="Reset balance">⟳</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="play-wrap">
+  <div class="container">
+    <a href="../index.html" class="back-link">← Back to all games</a>
+
+    <div class="play-head">
+      <div class="play-title-block">
+        <h1>Plinko <span class="practice-stamp" style="position:static;display:inline-flex;margin-left:8px;font-size:11px;vertical-align:middle">🎯 Practice Mode</span></h1>
+        <p class="play-sub">Drop the ball. Watch it bounce. Land in a multiplier.</p>
+      </div>
+    </div>
+
+    <div id="mascot-monkey" class="mascot-inline"></div>
+
+    <div class="play-layout">
+      <div class="play-canvas-wrap">
+        <div class="plinko-canvas-wrap">
+          <canvas class="plinko-canvas" id="canvas" width="800" height="1000"></canvas>
+        </div>
+
+        <div class="status-row" style="display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--text-muted);margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+          <span style="color:var(--green);font-weight:700;">● Live Demo</span>
+          <span>Provider: <strong style="color:#fff">Spribe</strong></span>
+          <span>RTP: <strong style="color:#fff">97.00%</strong></span>
+        </div>
+      </div>
+
+      <aside class="play-side">
+        <div class="side-card">
+          <h3>Bet</h3>
+          <div class="bet-input-row">
+            <input class="bet-input" id="bet-amt" type="number" min="10" step="10" value="100" />
+            <button class="bet-step" data-step="-">−</button>
+            <button class="bet-step" data-step="+">+</button>
+          </div>
+          <div class="bet-quick">
+            <button data-quick="50">50</button>
+            <button data-quick="100">100</button>
+            <button data-quick="500">500</button>
+            <button data-quick="1000">1000</button>
+          </div>
+
+          <h3 style="margin-top:14px">Risk Level</h3>
+          <div class="tab-row risk-tabs">
+            <button data-risk="low" class="active">Low</button>
+            <button data-risk="medium">Medium</button>
+            <button data-risk="high">High</button>
+          </div>
+
+          <h3>Rows</h3>
+          <div class="tab-row">
+            <button data-rows="8">8</button>
+            <button data-rows="12" class="active">12</button>
+            <button data-rows="16">16</button>
+          </div>
+
+          <button class="btn btn-green btn-block" id="drop-btn" style="margin-top:12px">🎯 DROP BALL</button>
+        </div>
+
+        <div class="side-card">
+          <h3>Multipliers</h3>
+          <div class="bucket-row" id="bucket-row"></div>
+          <div class="tip-card" style="margin-top:10px">
+            <strong>💡 Tip:</strong> High risk = bigger edge multipliers but more center hits. Low risk = steadier returns.
+          </div>
+        </div>
+
+        <div class="side-card">
+          <h3>Recent</h3>
+          <div class="history-list" id="history"></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<script src="../i18n.js"></script>
+<script src="../app.js"></script>
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const W = 800, H = 1000;
+
+let rows = 12;
+let risk = 'low';
+let balls = [];
+let pegs = [];
+let buckets = [];
+
+// Multiplier tables by risk & row count (mirror common Plinko games)
+const TABLES = {
+  low: {
+    8:  [5.6, 2.1, 1.1, 1.0, 0.5, 1.0, 1.1, 2.1, 5.6],
+    12: [10, 3, 1.6, 1.4, 1.1, 1.0, 0.5, 1.0, 1.1, 1.4, 1.6, 3, 10],
+    16: [16, 9, 2, 1.4, 1.4, 1.2, 1.1, 1.0, 0.5, 1.0, 1.1, 1.2, 1.4, 1.4, 2, 9, 16]
+  },
+  medium: {
+    8:  [13, 3, 1.3, 0.7, 0.4, 0.7, 1.3, 3, 13],
+    12: [33, 11, 4, 2, 1.1, 0.6, 0.3, 0.6, 1.1, 2, 4, 11, 33],
+    16: [110, 41, 10, 5, 3, 1.5, 1, 0.5, 0.3, 0.5, 1, 1.5, 3, 5, 10, 41, 110]
+  },
+  high: {
+    8:  [29, 4, 1.5, 0.3, 0.2, 0.3, 1.5, 4, 29],
+    12: [76, 18, 6, 3, 1.6, 0.4, 0.2, 0.4, 1.6, 3, 6, 18, 76],
+    16: [420, 130, 26, 9, 4, 2, 1.5, 0.3, 0.2, 0.3, 1.5, 2, 4, 9, 26, 130, 420]
+  }
+};
+
+function buildBoard() {
+  pegs = [];
+  buckets = [];
+  const cols = rows + 1;
+  const colSpacing = W / (cols + 2);
+  const rowSpacing = (H - 220) / (rows + 1);
+  const topPad = 80;
+
+  for (let r = 0; r < rows; r++) {
+    const count = r + 3;
+    const totalWidth = (count - 1) * colSpacing;
+    const startX = (W - totalWidth) / 2;
+    for (let c = 0; c < count; c++) {
+      pegs.push({
+        x: startX + c * colSpacing,
+        y: topPad + r * rowSpacing,
+        r: 5
+      });
+    }
+  }
+
+  // Buckets at bottom
+  const bucketCount = rows + 1;
+  const bucketWidth = W / bucketCount;
+  const mults = TABLES[risk][rows];
+  for (let i = 0; i < bucketCount; i++) {
+    buckets.push({
+      x: i * bucketWidth + bucketWidth / 2,
+      y: H - 60,
+      w: bucketWidth - 6,
+      mult: mults[i]
+    });
+  }
+
+  renderBucketChips();
+}
+
+function renderBucketChips() {
+  const row = document.getElementById('bucket-row');
+  const maxMult = Math.max(...buckets.map(b => b.mult));
+  row.innerHTML = buckets.map(b => {
+    const cls = b.mult >= maxMult * 0.4 ? 'hi' : b.mult >= 1 ? 'mid' : 'lo';
+    return `<span class="bucket-chip ${cls}">${b.mult}×</span>`;
+  }).join('');
+}
+
+function drawBoard() {
+  ctx.clearRect(0, 0, W, H);
+
+  // Bg subtle
+  const g = ctx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, 'rgba(80, 14, 207, 0.15)');
+  g.addColorStop(1, 'rgba(10, 4, 24, 0.5)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, W, H);
+
+  // Pegs
+  for (const p of pegs) {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+    ctx.fill();
+    ctx.shadowColor = 'rgba(255, 215, 0, 0.4)';
+    ctx.shadowBlur = 8;
+    ctx.fillStyle = '#fff';
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  }
+
+  // Buckets
+  const maxMult = Math.max(...buckets.map(b => b.mult));
+  for (const b of buckets) {
+    const intensity = b.mult / maxMult;
+    const isHigh = b.mult >= maxMult * 0.4;
+    const isMid = b.mult >= 1;
+    const color = isHigh ? '255, 30, 215' : isMid ? '255, 215, 0' : '128, 100, 180';
+
+    ctx.fillStyle = `rgba(${color}, ${0.2 + intensity * 0.55})`;
+    const x = b.x - b.w / 2, y = b.y - 22, w = b.w, h = 50;
+    ctx.beginPath();
+    ctx.roundRect(x, y, w, h, 8);
+    ctx.fill();
+    ctx.strokeStyle = `rgba(${color}, 0.6)`;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Text
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 18px Inter';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(b.mult + '×', b.x, b.y + 2);
+  }
+
+  // Balls
+  for (const ball of balls) {
+    const g = ctx.createRadialGradient(ball.x - 3, ball.y - 3, 1, ball.x, ball.y, ball.r);
+    g.addColorStop(0, '#ffe55c');
+    g.addColorStop(1, '#c89211');
+    ctx.beginPath();
+    ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
+    ctx.fillStyle = g;
+    ctx.shadowColor = 'rgba(255, 215, 0, 0.7)';
+    ctx.shadowBlur = 14;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  }
+}
+
+function step() {
+  const gravity = 0.32;
+  const damping = 0.62;
+  const friction = 0.998;
+
+  for (let i = balls.length - 1; i >= 0; i--) {
+    const ball = balls[i];
+    if (ball.settled) continue;
+    ball.vy += gravity;
+    ball.vx *= friction;
+    ball.x += ball.vx;
+    ball.y += ball.vy;
+
+    // Collide with pegs
+    for (const p of pegs) {
+      const dx = ball.x - p.x;
+      const dy = ball.y - p.y;
+      const d = Math.hypot(dx, dy);
+      const minD = ball.r + p.r;
+      if (d < minD && d > 0) {
+        // Push out
+        const nx = dx / d, ny = dy / d;
+        ball.x = p.x + nx * minD;
+        ball.y = p.y + ny * minD;
+        // Reflect velocity
+        const dot = ball.vx * nx + ball.vy * ny;
+        ball.vx -= 2 * dot * nx;
+        ball.vy -= 2 * dot * ny;
+        ball.vx *= damping;
+        ball.vy *= damping;
+        // Random kick to avoid getting stuck
+        ball.vx += (Math.random() - 0.5) * 1.2;
+        // Rate-limited bounce sound (avoid noise spam)
+        const now = performance.now();
+        if (now - ball.lastBounce > 90) {
+          const pitch = 0.7 + (ball.y / H) * 0.9;
+          Sfx.bounce(pitch);
+          ball.lastBounce = now;
+        }
+      }
+    }
+
+    // Walls
+    if (ball.x < ball.r) { ball.x = ball.r; ball.vx *= -damping; }
+    if (ball.x > W - ball.r) { ball.x = W - ball.r; ball.vx *= -damping; }
+
+    // Settle in bucket
+    if (ball.y > H - 60) {
+      ball.settled = true;
+      const bucket = buckets.reduce((closest, b) =>
+        Math.abs(b.x - ball.x) < Math.abs(closest.x - ball.x) ? b : closest
+      );
+      ball.bucket = bucket;
+      settleBall(ball);
+    }
+  }
+}
+
+function settleBall(ball) {
+  const winAmt = Math.round(ball.bet * ball.bucket.mult);
+  Wallet.add(winAmt);
+  const net = winAmt - ball.bet;
+  if (net > 0) {
+    ball.bucket.mult >= 50 ? Sfx.jackpot() : ball.bucket.mult >= 5 ? Sfx.bigWin() : ball.bucket.mult >= 1.5 ? Sfx.win() : Sfx.coin();
+    Player.recordWin(winAmt, ball.bucket.mult, 'fast');
+    if (ball.bucket.mult >= 5) coinBurst(ball.x + canvas.getBoundingClientRect().left, ball.y + canvas.getBoundingClientRect().top, 18);
+    toast(`${ball.bucket.mult}× · won ${Wallet.format(winAmt)} FUN`, 'win');
+  } else if (net < 0) {
+    Sfx.loss();
+    Player.recordLoss();
+    toast(`${ball.bucket.mult}× · returned ${Wallet.format(winAmt)} FUN`, 'loss');
+  } else {
+    Sfx.tick();
+    toast(`${ball.bucket.mult}× · break even`, '');
+  }
+
+  // History
+  const hist = document.getElementById('history');
+  const maxMult = Math.max(...buckets.map(b => b.mult));
+  const cls = ball.bucket.mult >= maxMult * 0.4 ? '' : ball.bucket.mult >= 1 ? 'green' : '';
+  const chip = `<span class="history-chip ${cls}">${ball.bucket.mult}×</span>`;
+  hist.innerHTML = chip + hist.innerHTML;
+  // Keep only 8
+  const chips = hist.querySelectorAll('.history-chip');
+  if (chips.length > 8) chips[chips.length - 1].remove();
+}
+
+let lastTime = 0;
+function loop(now) {
+  if (!lastTime) lastTime = now;
+  lastTime = now;
+  step();
+  drawBoard();
+  requestAnimationFrame(loop);
+}
+
+function dropBall() {
+  const bet = parseInt(document.getElementById('bet-amt').value) || 0;
+  if (bet < 10) return toast('Min bet is 10 FUN', 'loss');
+  if (bet > Wallet.get()) return toast('Not enough FUN — hit ⟳ to reset', 'loss');
+
+  Wallet.add(-bet);
+  Sfx.bet();
+  Player.recordBet(bet);
+  if (!window._mAttached) { Mascot.render('#mascot-monkey', 'monkey'); window._mAttached = true; }
+  balls.push({
+    x: W / 2 + (Math.random() - 0.5) * 16,
+    y: 30,
+    vx: (Math.random() - 0.5) * 1.5,
+    vy: 0,
+    r: 10,
+    bet: bet,
+    settled: false,
+    lastBounce: 0
+  });
+  // Cap balls
+  if (balls.length > 12) balls = balls.slice(-12);
+}
+
+// Controls
+document.querySelectorAll('[data-step]').forEach(b => {
+  b.addEventListener('click', () => {
+    const el = document.getElementById('bet-amt');
+    let v = parseInt(el.value) || 10;
+    v += b.dataset.step === '+' ? 50 : -50;
+    el.value = Math.max(10, v);
+  });
+});
+document.querySelectorAll('[data-quick]').forEach(b => {
+  b.addEventListener('click', () => document.getElementById('bet-amt').value = b.dataset.quick);
+});
+
+document.querySelectorAll('[data-risk]').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('[data-risk]').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    risk = b.dataset.risk;
+    buildBoard();
+  });
+});
+
+document.querySelectorAll('[data-rows]').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('[data-rows]').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    rows = parseInt(b.dataset.rows);
+    buildBoard();
+  });
+});
+
+document.getElementById('drop-btn').addEventListener('click', dropBall);
+
+// roundRect polyfill (just in case)
+if (!CanvasRenderingContext2D.prototype.roundRect) {
+  CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+    if (w < 2 * r) r = w / 2;
+    if (h < 2 * r) r = h / 2;
+    this.beginPath();
+    this.moveTo(x + r, y);
+    this.arcTo(x + w, y, x + w, y + h, r);
+    this.arcTo(x + w, y + h, x, y + h, r);
+    this.arcTo(x, y + h, x, y, r);
+    this.arcTo(x, y, x + w, y, r);
+    this.closePath();
+    return this;
+  };
+}
+
+buildBoard();
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
