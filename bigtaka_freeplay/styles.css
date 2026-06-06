@@ -3020,3 +3020,158 @@ img { display: block; max-width: 100%; }
 @media (max-width: 540px) {
   .scroller { grid-template-columns: repeat(2, 1fr); gap: 12px; }
 }
+
+/* ============================================================ */
+/* ============ MOBILE POLISH (≤720px / ≤540px / ≤380px) ====== */
+/* ============================================================ */
+
+@media (max-width: 720px) {
+  /* ----- NAV ----- */
+  .nav-inner { padding: 10px 12px; gap: 6px; }
+  .nav-right { gap: 6px; }
+  .wallet { padding: 6px 10px 6px 6px; gap: 6px; }
+  .wallet-icon { width: 28px; height: 28px; }
+  .wallet-amount { font-size: 13px; }
+  .wallet-label { font-size: 9px; letter-spacing: 0.06em; }
+  .wallet-reset { width: 26px; height: 26px; font-size: 14px; }
+  .sfx-toggle { width: 36px; height: 36px; font-size: 16px; }
+  .lang-toggle { font-size: 12px; }
+  /* Compact nav CTA buttons */
+  .nav-cta { padding: 7px 11px !important; font-size: 12px !important; }
+  .nav-login { display: none; }
+  /* On mobile keep the Sign Up button visible on the hub */
+  .nav-auth { display: inline-flex; }
+
+  /* ----- HERO ----- */
+  .hero { padding: 28px 0 24px; }
+  .hero h1 { font-size: clamp(28px, 8vw, 40px); line-height: 1.1; }
+  .hero .lede { font-size: 14px; }
+  .hero-info-bar { font-size: 12px; padding: 10px 12px; }
+  .hero-visual { max-width: 280px; aspect-ratio: 1; margin: 8px auto 0; }
+  .hero-brand-logo { width: 88%; max-width: 280px; bottom: -18%; }
+
+  /* ----- FILTER CHIPS: horizontal scroll instead of wrapping ----- */
+  .filter-chips {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 6px;
+    margin: 0 -16px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .filter-chips::-webkit-scrollbar { display: none; }
+  .chip-btn { flex-shrink: 0; white-space: nowrap; }
+
+  /* ----- SECTIONS: tighter ----- */
+  .section { padding: 32px 0; }
+  .section-title { font-size: clamp(22px, 6vw, 28px); }
+  .section-subtitle { font-size: 14px; }
+  .section-head { gap: 12px; margin-bottom: 18px; }
+
+  /* ----- CATEGORY CARDS: keep big icons but tighter ----- */
+  .cat-grid-big .cat-icon { width: 96px; height: 96px; font-size: 54px; margin-bottom: 12px; border-radius: 22px; }
+  .cat-grid-big .cat-name { font-size: 18px; }
+
+  /* ----- STEPS / FEATURES ----- */
+  .step { padding: 18px 16px; }
+  .step h3 { font-size: 17px; }
+  .step p { font-size: 13.5px; }
+
+  /* ----- GAME PAGE NAV / TITLE ----- */
+  .play-wrap { padding: 12px 0 28px; }
+  .play-head { gap: 8px; margin-bottom: 12px; }
+  .play-title-block h1 { font-size: clamp(22px, 6vw, 30px); }
+  .play-sub { font-size: 13px; }
+  .play-canvas-wrap { padding: 16px 10px; }
+  .play-side { padding: 4px 0 0; }
+  .play-side .panel { padding: 14px; }
+  .play-side .panel h4 { font-size: 14px; }
+
+  /* ----- LIVE-CASINO DEALER CARD + FEED tighter on mobile ----- */
+  .live-dealer { padding: 8px 12px; gap: 10px; }
+  .live-dealer-avatar { width: 44px; height: 44px; font-size: 22px; }
+  .live-dealer-name { font-size: 13px; }
+  .live-dealer-style { font-size: 11px; }
+  .live-dealer-msg { font-size: 12px; }
+  .live-dealer-stat { padding: 6px 8px; }
+  .ldstat-value { font-size: 14px; }
+  .reaction-btn { padding: 7px 9px; font-size: 17px; }
+  .reaction-label { font-size: 11px; }
+  .live-feed-item { font-size: 12px; padding: 8px 10px; }
+
+  /* ----- FLOATING I18N TOGGLE ----- */
+  .i18n-floating-toggle { width: 42px; height: 42px; bottom: 12px; right: 12px; font-size: 12px; }
+
+  /* ----- MODAL ----- */
+  .modal { padding: 18px 14px; max-width: calc(100vw - 24px); margin: 12px auto; }
+  .modal-title { font-size: 22px; }
+  .modal-eyebrow { font-size: 10px; }
+  .modal-section h4 { font-size: 13px; }
+}
+
+@media (max-width: 540px) {
+  /* Tighter still — phones in portrait */
+  .nav-inner { padding: 8px 10px; }
+  .container { padding: 0 14px; }
+
+  /* Game card grid: keep 2-col with tighter gap */
+  .grid { gap: 10px; }
+  .game-meta { padding: 10px 10px 8px; }
+  .game-title { font-size: 13px; }
+  .game-provider { font-size: 10px; letter-spacing: 0.05em; }
+  .game-tag { font-size: 9px; padding: 3px 6px; top: 8px; left: 8px; }
+  .jackpot-badge { font-size: 9px; }
+
+  /* New wheel-game bet grids: enforce 56px min touch target */
+  .mw-bet-btn, .dc-bet-btn, .cl-bet-btn, .ft-bet-btn, .ml-bet-btn, .ct-bet-btn {
+    padding: 14px 4px; font-size: 13px; min-height: 56px;
+  }
+  .mw-bet-grid, .ct-bet-grid, .ft-bet-grid, .ml-bet-grid { gap: 6px; }
+  .dc-bet-grid, .cl-bet-grid { gap: 6px; }
+
+  /* Lightning Roulette table: shrink cells, scroll only for the inside grid */
+  .lr-board { grid-template-columns: 26px repeat(12, minmax(0, 1fr)); gap: 2px; }
+  .lr-cell { padding: 6px 1px; font-size: 10px; }
+  .lr-outside { grid-template-columns: repeat(3, 1fr); gap: 5px; }
+  .lr-outside .lr-cell { padding: 12px 4px; font-size: 12px; }
+
+  /* Mega Wheel banner */
+  .mw-mega-banner { padding: 12px; }
+  .mw-mega-banner .num { font-size: clamp(30px, 8vw, 44px); }
+
+  /* Crazy Time / Funky / Monopoly top-slot */
+  .ct-top-slot, .ft-top-slot { padding: 8px 10px; gap: 8px; }
+  .ct-slot-cell, .ft-slot-cell { padding: 6px 10px; min-width: 56px; font-size: 14px; }
+
+  /* Bet input row */
+  .play-side input[type=number] { width: 80px !important; font-size: 14px; }
+
+  /* Result text */
+  .mw-result, .dc-result, .lr-result, .cl-result, .ft-result, .ml-result, .ct-result, .ccf-result {
+    font-size: clamp(28px, 7.5vw, 42px) !important;
+    min-height: 50px;
+    margin: 12px 0 6px;
+  }
+
+  /* Hero brand logo: stay inside */
+  .hero-brand-logo { width: 82%; bottom: -14%; }
+
+  /* Footer: stack to 2 cols (already) but tighter */
+  .footer-inner { gap: 24px; }
+}
+
+@media (max-width: 380px) {
+  /* Smallest phones */
+  .nav-cta { padding: 6px 9px !important; font-size: 11px !important; }
+  .wallet-label { display: none; }
+  .hero h1 { font-size: 26px; }
+
+  /* Mega/Funky/Monopoly/Crazy Time bet grids → 3 cols (8 buttons → 3 rows) */
+  .mw-bet-grid { grid-template-columns: repeat(3, 1fr); }
+  .ct-bet-grid, .ft-bet-grid, .ml-bet-grid { grid-template-columns: repeat(2, 1fr); }
+  /* Lightning Roulette: hide first/last "outside" col to keep things readable */
+  .lr-cell { font-size: 9px; padding: 5px 1px; }
+}

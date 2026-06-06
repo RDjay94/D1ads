@@ -895,7 +895,7 @@ function spawnCoinRain(count) {
 function showFreeSpinsPortal(grant) {
   fsGrant.textContent = grant;
   fsPortal.classList.add('show');
-  if (window.Sfx && Sfx.bigWin) Sfx.bigWin();
+  if (typeof Sfx !== "undefined" && Sfx.bigWin) Sfx.bigWin();
   setTimeout(() => fsPortal.classList.remove('show'), 2400);
 }
 
@@ -942,7 +942,7 @@ async function doSpin() {
   await spinAnimation();
 
   renderGrid();
-  if (window.Sfx) Sfx.reelStop();
+  if (typeof Sfx !== "undefined") Sfx.reelStop();
 
   // Evaluate wins (with cascading loop)
   let totalWinMult = 0;
@@ -960,7 +960,7 @@ async function doSpin() {
 
     // Highlight + explode + refill
     const positions = highlightWins(wins);
-    if (window.Sfx) Sfx.coin();
+    if (typeof Sfx !== "undefined") Sfx.coin();
     await sleep(state.turbo ? 250 : 500);
     explodeWinning(positions);
     await sleep(state.turbo ? 200 : 350);
@@ -1028,7 +1028,7 @@ async function doSpin() {
 
 async function spinAnimation() {
   // Reel whoosh — kicks off the spin
-  if (window.Sfx && Sfx.spin) Sfx.spin();
+  if (typeof Sfx !== "undefined" && Sfx.spin) Sfx.spin();
   // Quick spin: fade out symbols, scramble, fade back in
   for (let r = 0; r < 6; r++) {
     const reelEl = reelsEl.children[r];
@@ -1042,12 +1042,12 @@ async function spinAnimation() {
   const totalDur = state.turbo ? 200 : 500;
   const step = totalDur / ticks;
   for (let t = 0; t < ticks; t++) {
-    setTimeout(() => { if (window.Sfx && Sfx.tick) Sfx.tick(); }, t * step);
+    setTimeout(() => { if (typeof Sfx !== "undefined" && Sfx.tick) Sfx.tick(); }, t * step);
   }
   await sleep(totalDur);
   // Staggered reel "land" sounds — 6 reels stop one after another for the classic slot feel
   for (let r = 0; r < 6; r++) {
-    setTimeout(() => { if (window.Sfx && Sfx.reelStop) Sfx.reelStop(); }, r * (state.turbo ? 35 : 65));
+    setTimeout(() => { if (typeof Sfx !== "undefined" && Sfx.reelStop) Sfx.reelStop(); }, r * (state.turbo ? 35 : 65));
   }
   await sleep(state.turbo ? 230 : 420);
 }
@@ -1070,7 +1070,7 @@ function triggerRageFeature() {
     state.grid[r][row] = WILD;
   }
   toast('⚡ RAGE UNLEASHED — wilds dropped!', 'win');
-  if (window.Sfx) Sfx.bigWin();
+  if (typeof Sfx !== "undefined") Sfx.bigWin();
 }
 
 // ============ RANDOM EVENTS ============
@@ -1099,7 +1099,7 @@ function triggerRandomEvent() {
     }
     toast('🌟 MYSTERY TRANSFORM!', 'win');
   }
-  if (window.Sfx) Sfx.sparkle && Sfx.sparkle();
+  if (typeof Sfx !== "undefined") Sfx.sparkle && Sfx.sparkle();
 }
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }

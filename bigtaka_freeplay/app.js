@@ -1448,6 +1448,13 @@ const Signup = {
 };
 
 window.openSignup = () => Signup.open();
+// Expose core modules on window so the `window.Sfx && Sfx.x()` style guards
+// scattered through games actually evaluate truthy. (Sfx/Wallet/Player are
+// declared as `const`, so without this they live only in the script's
+// lexical scope and `window.Sfx` is undefined.)
+window.Sfx = Sfx;
+window.Wallet = Wallet;
+window.Player = Player;
 
 // ============ LIVE CASINO module (shared dealer / feed / reactions / streak) ============
 const LiveCasino = {
