@@ -3022,6 +3022,99 @@ img { display: block; max-width: 100%; }
 }
 
 /* ============================================================ */
+/* ============ SHARED WHEEL LABEL "SPOKE" PATTERN ============= */
+/* Used by mega-wheel, dream-catcher, lightning-roulette,        */
+/* candyland, funky-time, monopoly-live, crazy-time.             */
+/* A spoke is a 0-width vertical line from the wheel's outer     */
+/* edge to its center, rotated by the segment angle. The label   */
+/* span inside sits near the top (= outer edge) so it always     */
+/* lands on the perimeter regardless of wheel size or zoom.      */
+/* ============================================================ */
+.bt-spoke {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 0;
+  height: 50%;
+  transform-origin: bottom center;
+  pointer-events: none;
+  z-index: 4;
+}
+.bt-spoke > .lbl {
+  position: absolute;
+  top: 9%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-weight: 900;
+  font-style: italic;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+  pointer-events: none;
+  white-space: nowrap;
+  line-height: 1;
+}
+.bt-spoke.flip > .lbl {
+  transform: translate(-50%, -50%) rotate(180deg);
+}
+
+/* LED-style chase rim around the wheel — sits just outside the wheel ring.
+   Wrap the wheel div in a parent with position:relative and add .bt-led-rim
+   as a sibling above the wheel. */
+.bt-led-rim {
+  position: absolute;
+  inset: -10px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: conic-gradient(
+    from 0deg,
+    #ff1ed7 0deg 12deg, transparent 12deg 24deg,
+    #ffd700 24deg 36deg, transparent 36deg 48deg,
+    #00e5ff 48deg 60deg, transparent 60deg 72deg,
+    #89eb16 72deg 84deg, transparent 84deg 96deg,
+    #ff1ed7 96deg 108deg, transparent 108deg 120deg,
+    #ffd700 120deg 132deg, transparent 132deg 144deg,
+    #00e5ff 144deg 156deg, transparent 156deg 168deg,
+    #89eb16 168deg 180deg, transparent 180deg 192deg,
+    #ff1ed7 192deg 204deg, transparent 204deg 216deg,
+    #ffd700 216deg 228deg, transparent 228deg 240deg,
+    #00e5ff 240deg 252deg, transparent 252deg 264deg,
+    #89eb16 264deg 276deg, transparent 276deg 288deg,
+    #ff1ed7 288deg 300deg, transparent 300deg 312deg,
+    #ffd700 312deg 324deg, transparent 324deg 336deg,
+    #00e5ff 336deg 348deg, transparent 348deg 360deg
+  );
+  -webkit-mask: radial-gradient(circle, transparent 95%, black 95.5%, black 99%, transparent 100%);
+          mask: radial-gradient(circle, transparent 95%, black 95.5%, black 99%, transparent 100%);
+  filter: blur(0.7px);
+  animation: btLedSpin 8s linear infinite;
+  z-index: 2;
+}
+@keyframes btLedSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+/* Pointer pulse while the wheel is spinning */
+.bt-pointer-active {
+  animation: btPointerPulse 0.45s ease-in-out infinite;
+}
+@keyframes btPointerPulse {
+  0%, 100% { transform: translateX(-50%) scale(1); filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.55)); }
+  50% { transform: translateX(-50%) scale(1.18); filter: drop-shadow(0 4px 14px rgba(255, 215, 0, 0.9)); }
+}
+
+/* Winning-segment highlight ring after spin */
+.bt-winner-burst {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 3;
+  animation: btWinnerBurst 1.6s ease-out;
+}
+@keyframes btWinnerBurst {
+  0% { box-shadow: inset 0 0 0 0 rgba(255, 215, 0, 0), 0 0 0 0 rgba(255, 215, 0, 0); }
+  20% { box-shadow: inset 0 0 60px 12px rgba(255, 215, 0, 0.7), 0 0 30px 8px rgba(255, 215, 0, 0.6); }
+  100% { box-shadow: inset 0 0 0 0 rgba(255, 215, 0, 0), 0 0 0 0 rgba(255, 215, 0, 0); }
+}
+
+/* ============================================================ */
 /* ============ MOBILE POLISH (≤720px / ≤540px / ≤380px) ====== */
 /* ============================================================ */
 

@@ -77,6 +77,7 @@
       </div>
 
       <div class="mw-wheel-wrap">
+        <div class="bt-led-rim"></div>
         <div class="mw-pointer"></div>
         <div class="mw-wheel" id="wheel"></div>
         <div class="mw-center">MEGA<br/>WHEEL</div>
@@ -153,7 +154,8 @@
     let labelsHtml = '';
     SEGMENTS.forEach((seg, i) => {
       const angle = i * step + step / 2;
-      labelsHtml += `<div style="position:absolute;top:50%;left:50%;transform:rotate(${angle}deg) translateY(-180%) rotate(${(angle % 360) > 90 && (angle % 360) < 270 ? 180 : 0}deg);transform-origin:0 0;font-size:14px;font-weight:900;font-style:italic;color:${TEXT_COLOR[seg]};text-shadow:0 1px 2px rgba(0,0,0,0.5);pointer-events:none">${seg}</div>`;
+      const flipCls = ((angle % 360) > 90 && (angle % 360) < 270) ? ' flip' : '';
+      labelsHtml += `<div class="bt-spoke${flipCls}" style="transform:rotate(${angle}deg)"><span class="lbl" style="font-size:17px;color:${TEXT_COLOR[seg]}">${seg}</span></div>`;
     });
     wheel.innerHTML = labelsHtml;
   }

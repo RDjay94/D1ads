@@ -81,6 +81,7 @@
       <div class="cl-clouds"></div>
 
       <div class="cl-wheel-wrap">
+        <div class="bt-led-rim"></div>
         <div class="cl-pointer"></div>
         <div class="cl-wheel" id="wheel"></div>
         <div class="cl-center">🍭</div>
@@ -166,7 +167,8 @@
     let labels = '';
     SEGMENTS.forEach((s, i) => {
       const angle = i * step + step / 2;
-      labels += `<div style="position:absolute;top:50%;left:50%;transform:rotate(${angle}deg) translateY(-180%) rotate(${(angle % 360) > 90 && (angle % 360) < 270 ? 180 : 0}deg);transform-origin:0 0;font-size:18px;pointer-events:none">${META[s].ic}</div>`;
+      const flipCls = ((angle % 360) > 90 && (angle % 360) < 270) ? ' flip' : '';
+      labels += `<div class="bt-spoke${flipCls}" style="transform:rotate(${angle}deg)"><span class="lbl" style="font-size:22px;text-shadow:0 2px 4px rgba(0,0,0,0.5)">${META[s].ic}</span></div>`;
     });
     wheel.innerHTML = labels;
   }

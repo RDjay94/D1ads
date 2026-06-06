@@ -90,6 +90,7 @@
       </div>
 
       <div class="ft-wheel-wrap">
+        <div class="bt-led-rim"></div>
         <div class="ft-pointer"></div>
         <div class="ft-wheel" id="wheel"></div>
         <div class="ft-center">FUNKY<br/>TIME</div>
@@ -177,7 +178,8 @@
     SEGMENTS.forEach((s, i) => {
       const angle = i * step + step / 2;
       const txt = s.k === 'num' ? LABEL[s.v] : LABEL[s.k];
-      labels += `<div style="position:absolute;top:50%;left:50%;transform:rotate(${angle}deg) translateY(-180%) rotate(${(angle % 360) > 90 && (angle % 360) < 270 ? 180 : 0}deg);transform-origin:0 0;font-size:15px;font-weight:900;font-style:italic;color:#1a0c35;text-shadow:0 1px 1px rgba(255,255,255,0.4);pointer-events:none">${txt}</div>`;
+      const flipCls = ((angle % 360) > 90 && (angle % 360) < 270) ? ' flip' : '';
+      labels += `<div class="bt-spoke${flipCls}" style="transform:rotate(${angle}deg)"><span class="lbl" style="font-size:17px;color:#1a0c35;text-shadow:0 1px 2px rgba(255,255,255,0.6)">${txt}</span></div>`;
     });
     wheel.innerHTML = labels;
   }
