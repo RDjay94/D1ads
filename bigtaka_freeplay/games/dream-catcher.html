@@ -63,6 +63,9 @@
     <p class="play-sub">The original money wheel. Land a 2× and the wheel respins with all wins doubled.</p>
   </div></div>
 
+  <div id="live-dealer-card"></div>
+  <div id="live-feed" class="live-feed"></div>
+
   <div class="play-layout">
     <div class="play-canvas-wrap dc-stage">
 
@@ -78,6 +81,7 @@
       <div class="dc-result" id="result">Place your bet</div>
       <div class="dc-history" id="history"></div>
 
+      <div class="reaction-bar" id="reaction-bar"></div>
       <div class="status-row" style="display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--text-muted);margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
         <span style="color:var(--green);font-weight:700;">● Live Demo</span>
         <span>Provider: <strong style="color:#fff">Evolution Gaming</strong></span>
@@ -145,7 +149,7 @@
       const angle = i * step + step / 2;
       const txt = seg.type === 'x2' ? '×2' : seg.value;
       const col = seg.type === 'x2' ? '#fff' : TXT_NUM[seg.value];
-      labels += `<div style="position:absolute;top:50%;left:50%;transform:rotate(${angle}deg) translateY(-180%);transform-origin:0 0;font-size:14px;font-weight:900;font-style:italic;color:${col};text-shadow:0 1px 2px rgba(0,0,0,0.6);pointer-events:none">${txt}</div>`;
+      labels += `<div style="position:absolute;top:50%;left:50%;transform:rotate(${angle}deg) translateY(-180%) rotate(${(angle % 360) > 90 && (angle % 360) < 270 ? 180 : 0}deg);transform-origin:0 0;font-size:14px;font-weight:900;font-style:italic;color:${col};text-shadow:0 1px 2px rgba(0,0,0,0.6);pointer-events:none">${txt}</div>`;
     });
     wheel.innerHTML = labels;
   }
@@ -236,5 +240,14 @@
 })();
 </script>
 
+<script>
+(function(){
+  if (typeof LiveCasino !== "undefined") {
+    LiveCasino.renderDealerCard("#live-dealer-card");
+    LiveCasino.startFeedTicker("live-feed");
+    LiveCasino.renderReactionBar("reaction-bar");
+  }
+})();
+</script>
 </body>
 </html>

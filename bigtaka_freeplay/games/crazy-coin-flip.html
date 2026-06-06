@@ -68,6 +68,9 @@
     <p class="play-sub">Phase 1: spin the slot to qualify. Phase 2: pick red or blue, watch the multiplier coin flip.</p>
   </div></div>
 
+  <div id="live-dealer-card"></div>
+  <div id="live-feed" class="live-feed"></div>
+
   <div class="play-layout">
     <div class="play-canvas-wrap ccf-stage">
       <div class="ccf-floor"></div>
@@ -111,6 +114,7 @@
 
       <div class="ccf-result" id="result">Place your qualifier bet</div>
 
+      <div class="reaction-bar" id="reaction-bar"></div>
       <div class="status-row" style="display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--text-muted);margin-top:14px;padding-top:14px;border-top:1px solid var(--border);position:relative;z-index:1">
         <span style="color:var(--green);font-weight:700;">● Live Demo</span>
         <span>Provider: <strong style="color:#fff">Evolution Gaming</strong></span>
@@ -260,5 +264,14 @@
 })();
 </script>
 
+<script>
+(function(){
+  if (typeof LiveCasino !== "undefined") {
+    LiveCasino.renderDealerCard("#live-dealer-card");
+    LiveCasino.startFeedTicker("live-feed");
+    LiveCasino.renderReactionBar("reaction-bar");
+  }
+})();
+</script>
 </body>
 </html>

@@ -70,6 +70,9 @@
     <p class="play-sub">European single-zero roulette + random lightning numbers paying 50× to 500× on straight bets.</p>
   </div></div>
 
+  <div id="live-dealer-card"></div>
+  <div id="live-feed" class="live-feed"></div>
+
   <div class="play-layout">
     <div class="play-canvas-wrap lr-stage">
 
@@ -88,6 +91,7 @@
       <div class="lr-result" id="result">Place your bet</div>
       <div class="lr-history" id="history"></div>
 
+      <div class="reaction-bar" id="reaction-bar"></div>
       <div class="status-row" style="display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--text-muted);margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
         <span style="color:var(--green);font-weight:700;">● Live Demo</span>
         <span>Provider: <strong style="color:#fff">Evolution Gaming</strong></span>
@@ -328,5 +332,14 @@
 })();
 </script>
 
+<script>
+(function(){
+  if (typeof LiveCasino !== "undefined") {
+    LiveCasino.renderDealerCard("#live-dealer-card");
+    LiveCasino.startFeedTicker("live-feed");
+    LiveCasino.renderReactionBar("reaction-bar");
+  }
+})();
+</script>
 </body>
 </html>
