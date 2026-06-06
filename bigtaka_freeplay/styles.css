@@ -3268,3 +3268,92 @@ img { display: block; max-width: 100%; }
   /* Lightning Roulette: hide first/last "outside" col to keep things readable */
   .lr-cell { font-size: 9px; padding: 5px 1px; }
 }
+
+/* ============================================================ */
+/* Bonus overlays inside wheel games (Cash Hunt, Pachinko, Bar  */
+/* Bonus, Candy Drop, Sugar Rush, Monopoly board, Crazy Time    */
+/* inner wheel) are normally constrained to inset: 12px of the  */
+/* wheel-wrap. On phones the wheel-wrap is ~320px so the bonus  */
+/* gets way too cramped. Promote them to full-viewport overlays */
+/* on mobile so the cash-hunt grid, dice board, etc. are usable.*/
+/* ============================================================ */
+@media (max-width: 720px) {
+  .cl-bonus-overlay,
+  .ft-bonus-overlay,
+  .ml-board-overlay,
+  .ct-bonus-overlay {
+    position: fixed !important;
+    inset: 0 !important;
+    border-radius: 0 !important;
+    padding: 24px 16px !important;
+    overflow-y: auto;
+    z-index: 99999 !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  /* Cash Hunt fits 12-col grid on a phone — give it more room */
+  .ct-cashhunt {
+    max-width: 100% !important;
+    grid-template-columns: repeat(9, 1fr) !important;
+    gap: 4px !important;
+  }
+  .ct-cash-tile { font-size: 16px; }
+  /* Pachinko full-height friendly */
+  .ct-pachinko { aspect-ratio: 0.85 !important; max-width: 320px; }
+  /* Candy Drop / Sugar Rush board scales */
+  .cl-bonus-overlay .candies { grid-template-columns: repeat(4, 1fr); max-width: 340px; }
+  /* Funky Time cocktails */
+  .ft-cocktails { gap: 10px; flex-wrap: wrap; justify-content: center; }
+  /* Monopoly board: scale the property tiles to be tappable */
+  .ml-board { max-width: 100% !important; }
+  .ml-tile { font-size: 10px !important; padding: 4px 2px !important; }
+  /* Crazy Time inner wheel sized for phones */
+  .ct-inner-wheel { width: 200px !important; }
+
+  /* The wheel-wrap is no longer the bonus container, so let the wheel
+     keep its size when a bonus is open. */
+}
+
+/* ============================================================ */
+/* Game pages: sticky bottom action panel on mobile so SPIN is
+   always tappable without scrolling past the bet grid.        */
+/* ============================================================ */
+@media (max-width: 720px) {
+  .play-side {
+    position: relative;
+  }
+  /* The side panel already stacks below the canvas; ensure inputs
+     are at least 16px to prevent iOS zoom on focus. */
+  .play-side input[type="number"],
+  .play-side input[type="text"] {
+    font-size: 16px !important;
+  }
+}
+
+/* ============================================================ */
+/* Hub: extra-tight on the smallest phones                      */
+/* ============================================================ */
+@media (max-width: 360px) {
+  .container { padding: 0 12px; }
+  .nav { padding: 0; }
+  .nav-inner { padding: 8px 10px; gap: 4px; }
+  .nav-cta { padding: 6px 8px !important; font-size: 11px !important; }
+  .sfx-toggle, .lang-toggle { width: 34px; height: 34px; }
+  .wallet { padding: 5px 8px 5px 5px; gap: 4px; }
+  .wallet-icon { width: 24px; height: 24px; }
+  .wallet-amount { font-size: 12px; }
+  .grid { gap: 8px; }
+  .game-card { aspect-ratio: 3 / 4.2; }
+  .cat-grid-big .cat-icon { width: 82px; height: 82px; font-size: 48px; }
+  .cat-grid-big .cat-name { font-size: 15px; }
+  .hero { padding: 20px 0 18px; }
+  .hero h1 { font-size: 24px; line-height: 1.08; }
+  .hero .lede { font-size: 13px; }
+  .hero-info-bar { font-size: 11px; padding: 8px 10px; }
+  .hero-visual { max-width: 240px; }
+  .hero-brand-logo { width: 80%; max-width: 240px; }
+  .section-title { font-size: 20px; }
+  .section { padding: 24px 0; }
+  .section-head { margin-bottom: 14px; }
+  .play-title-block h1 { font-size: 20px; }
+  .play-sub { font-size: 12px; }
+}
