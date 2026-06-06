@@ -510,49 +510,49 @@ const GAMES = [
   },
 
   // ===== LIVE CASINO (15) =====
-  { id: 'crazy-time', cat: 'live', name: 'Crazy Time', provider: 'Evolution Gaming', color: ['#ff1ed7', '#500ecf'], icon: '🎡', tag: 'hot', play: 'games/roulette.html?theme=crazy&name=Crazy+Time',
+  { id: 'crazy-time', cat: 'live', name: 'Crazy Time', provider: 'Evolution Gaming', color: ['#ff1ed7', '#500ecf'], icon: '🎡', tag: 'hot', play: 'games/crazy-time.html?name=Crazy+Time',
     rtp: '96.08%', volatility: 'High', maxWin: '25,000×', minBet: '10 FUN',
     how: 'Live game-show wheel with 4 bonus rounds: Coin Flip, Cash Hunt, Pachinko, and Crazy Time. Bet on a number or bonus segment.',
     rules: ['Bet on numbers 1, 2, 5, 10 or 4 bonus games', 'Top Slot multiplier above the wheel can multiply your win', 'Bonus games trigger 6–12% of spins', 'Crazy Time bonus = biggest payouts'],
     strategy: 'Spread small bets on bonus segments — single bonus hit can pay 100×+. Avoid betting all-in on one segment.'
   },
-  { id: 'lightning-roulette', cat: 'live', name: 'Lightning Roulette', provider: 'Evolution Gaming', color: ['#d4a017', '#500ecf'], icon: '⚡', tag: 'play', play: 'games/roulette.html?theme=lightning&name=Lightning+Roulette',
+  { id: 'lightning-roulette', cat: 'live', name: 'Lightning Roulette', provider: 'Evolution Gaming', color: ['#d4a017', '#500ecf'], icon: '⚡', tag: 'play', play: 'games/lightning-roulette.html?name=Lightning+Roulette',
     rtp: '97.30%', volatility: 'Medium', maxWin: '500×', minBet: '20 FUN',
     how: 'European roulette with random "lightning numbers" that pay 50× to 500× on a straight bet hit (instead of standard 35×).',
     rules: ['1-5 numbers struck by lightning each round', 'Lightning numbers pay 50×–500× on a hit', 'Standard straight-up payout becomes 30:1', 'Outside bets unchanged'],
     strategy: 'Straight-up bets become +EV when boosted by lightning. Spread small bets across many numbers to catch the multipliers.'
   },
-  { id: 'monopoly-live', cat: 'live', name: 'Monopoly Live', provider: 'Evolution Gaming', color: ['#1ec0ff', '#89eb16'], icon: '🎩', tag: 'tutorial', play: 'games/roulette.html?theme=monopoly&name=Monopoly+Live',
+  { id: 'monopoly-live', cat: 'live', name: 'Monopoly Live', provider: 'Evolution Gaming', color: ['#1ec0ff', '#89eb16'], icon: '🎩', tag: 'tutorial', play: 'games/monopoly-live.html?name=Monopoly+Live',
     rtp: '96.23%', volatility: 'High', maxWin: '10,000×', minBet: '10 FUN',
     how: 'Money wheel with a 3D Monopoly board bonus. Bet on numbers (1, 2, 5, 10) or "2 Rolls" / "4 Rolls" bonus segments.',
     rules: ['Numbers pay 1× to 10× the bet', 'Chance segments give random multiplier or cash prize', '2/4 Rolls trigger the Monopoly board bonus', 'Mr. Monopoly multiplies your board winnings'],
     strategy: 'The board bonus is the big payday. A small "4 Rolls" bet that hits Mr. Monopoly multipliers can deliver thousands of times bet.'
   },
-  { id: 'dream-catcher', cat: 'live', name: 'Dream Catcher', provider: 'Evolution Gaming', color: ['#ff8fb1', '#ff1ed7'], icon: '🎯', tag: 'tutorial', play: 'games/roulette.html?theme=dream&name=Dream+Catcher',
+  { id: 'dream-catcher', cat: 'live', name: 'Dream Catcher', provider: 'Evolution Gaming', color: ['#ff8fb1', '#ff1ed7'], icon: '🎯', tag: 'tutorial', play: 'games/dream-catcher.html?name=Dream+Catcher',
     rtp: '96.58%', volatility: 'Medium', maxWin: '40×', minBet: '10 FUN',
     how: 'The original money-wheel show. Bet on numbers 1, 2, 5, 10, 20, or 40. Pays exactly the multiplier of the segment landed.',
     rules: ['54 segments on the wheel', '1× to 40× payout on number bet', '2× / 7× multipliers from Top Slot', 'No bonus rounds — pure simple math'],
     strategy: 'Bet on \'1\' for highest hit rate (lowest variance), \'40\' for thrill (one hit = 40× win). Most players spread across all 6.'
   },
-  { id: 'crazy-coin-flip', cat: 'live', name: 'Crazy Coin Flip', provider: 'Evolution Gaming', color: ['#d4a017', '#ff6a00'], icon: '🪙', tag: 'tutorial', play: 'games/roulette.html?theme=coinflip&name=Crazy+Coin+Flip',
+  { id: 'crazy-coin-flip', cat: 'live', name: 'Crazy Coin Flip', provider: 'Evolution Gaming', color: ['#d4a017', '#ff6a00'], icon: '🪙', tag: 'tutorial', play: 'games/crazy-coin-flip.html?name=Crazy+Coin+Flip',
     rtp: '96.05%', volatility: 'High', maxWin: '20,000×', minBet: '10 FUN',
     how: 'Two-phase game. Phase 1: a slot game qualifies you for the bonus. Phase 2: a live coin flip with multipliers on red/blue sides.',
     rules: ['Slot phase determines bonus eligibility', 'Coin flip has different multipliers per side', 'Top Slot can boost multipliers up to 100×', 'Re-flip feature can extend rounds'],
     strategy: 'Bonus qualification rate ~10%. Without bonus you can\'t win — many players auto-spin and wait for triggers.'
   },
-  { id: 'funky-time', cat: 'live', name: 'Funky Time', provider: 'Evolution Gaming', color: ['#a4ff2c', '#ff1ed7'], icon: '🪩', tag: 'new', play: 'games/roulette.html?theme=funky&name=Funky+Time',
+  { id: 'funky-time', cat: 'live', name: 'Funky Time', provider: 'Evolution Gaming', color: ['#a4ff2c', '#ff1ed7'], icon: '🪩', tag: 'new', play: 'games/funky-time.html?name=Funky+Time',
     rtp: '95.93%', volatility: 'High', maxWin: '25,000×', minBet: '10 FUN',
     how: 'Disco-themed money wheel with 4 bonus rounds: VIP Disco, Stayin\' Alive, Disco, and Funky Time. Newer cousin to Crazy Time.',
     rules: ['Bet on numbers or bonus segments', 'Top Slot multiplier above the wheel', 'VIP Disco = highest paying bonus', 'Funky Time bonus = up to 5,000×'],
     strategy: 'Similar EV strategy to Crazy Time — spread bets on bonus rounds. VIP Disco is rarer but highest payout potential.'
   },
-  { id: 'mega-wheel', cat: 'live', name: 'Mega Wheel', provider: 'Pragmatic Live', color: ['#ff1ed7', '#d4a017'], icon: '🎡', tag: 'play', play: 'games/roulette.html?theme=mega&name=Mega+Wheel',
+  { id: 'mega-wheel', cat: 'live', name: 'Mega Wheel', provider: 'Pragmatic Live', color: ['#ff1ed7', '#d4a017'], icon: '🎡', tag: 'play', play: 'games/mega-wheel.html?name=Mega+Wheel',
     rtp: '96.51%', volatility: 'Medium', maxWin: '500×', minBet: '10 FUN',
     how: '54-segment wheel with numbers 1, 2, 5, 10, 20, 30, 40. Top of the wheel has a "Mega" multiplier (2×–500×) that can boost wins.',
     rules: ['7 number bets (1–40)', 'Mega Multiplier randomly assigned at start', 'No bonus games — pure wheel spin', 'Single-spin rounds (~25s each)'],
     strategy: 'Pragmatic\'s answer to Dream Catcher with a multiplier twist. Lower volatility than Crazy Time but smaller ceiling.'
   },
-  { id: 'sweet-candyland', cat: 'live', name: 'Sweet Bonanza Candyland', provider: 'Pragmatic Live', color: ['#ff5fde', '#a4ff2c'], icon: '🍬', tag: 'new', play: 'games/roulette.html?theme=candyland&name=Candyland',
+  { id: 'sweet-candyland', cat: 'live', name: 'Sweet Bonanza Candyland', provider: 'Pragmatic Live', color: ['#ff5fde', '#a4ff2c'], icon: '🍬', tag: 'new', play: 'games/candyland.html?name=Candyland',
     rtp: '96.59%', volatility: 'High', maxWin: '20,000×', minBet: '10 FUN',
     how: 'Live-show version of the Sweet Bonanza slot. Bet on numbers or 4 bonus rounds: Sweet Spin, Candy Drop, Sweet Bonanza, Candy Bonanza.',
     rules: ['54 segments on wheel', 'Multiplier slot above wheel (2×–10×)', 'Candy Bonanza = highest bonus payout', 'Tumble mechanic in Sweet Bonanza bonus'],
@@ -1173,6 +1173,53 @@ const Player = {
   }
 };
 
+// ============ BD GATE (IP-country cloak for the welcome-bonus affiliate URL) ============
+// The Claim Welcome Bonus CTA must only open the affiliate link for Bangladesh IPs.
+// Other regions see an inline "available to BD only" notice. The check runs once on
+// page load and is cached for the session so the click handler stays synchronous
+// (needed to keep window.open() inside the user-gesture window).
+const BdGate = {
+  AFFILIATE_URL: 'https://rrwkd.ttrk.io/69c7fc1113304dfe90bf3506',
+  COUNTRY: null,
+  CHECKING: true,
+  _pending: [],
+
+  init() {
+    const cached = sessionStorage.getItem('bigtaka_freeplay_bdgate_v1');
+    if (cached) {
+      this.COUNTRY = cached;
+      this.CHECKING = false;
+      return;
+    }
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 4500);
+    fetch('https://ipapi.co/json/', { signal: controller.signal })
+      .then(r => r.ok ? r.json() : Promise.reject(r.status))
+      .then(d => {
+        clearTimeout(timer);
+        const code = (d && d.country_code ? String(d.country_code) : '').toUpperCase();
+        this.COUNTRY = code || 'ERR';
+        sessionStorage.setItem('bigtaka_freeplay_bdgate_v1', this.COUNTRY);
+      })
+      .catch(() => { this.COUNTRY = 'ERR'; })
+      .finally(() => { this.CHECKING = false; this._flush(); });
+  },
+
+  allow() { return this.COUNTRY === 'BD'; },
+
+  whenReady(cb) {
+    if (!this.CHECKING) { cb(); return; }
+    this._pending.push(cb);
+  },
+
+  _flush() {
+    const q = this._pending;
+    this._pending = [];
+    q.forEach(cb => { try { cb(); } catch (e) {} });
+  }
+};
+BdGate.init();
+
 // ============ SIGNUP MODAL (created on demand, works on any page) ============
 const SIGNUP_KEY = 'bigtaka_freeplay_signup_v1';
 const Signup = {
@@ -1239,13 +1286,18 @@ const Signup = {
             <h2>You're <span class="hl">ready</span>, <span id="signup-greeting">boss</span>!</h2>
             <p>10,000 FUN coins are loaded up. Pick how you want to play.</p>
             <div class="signup-final">
-              <a class="btn btn-gold" href="https://rrwkd.ttrk.io/69c7fc1113304dfe90bf3506" target="_blank" rel="noopener noreferrer" data-signup-register>
+              <a class="btn btn-gold" href="#" rel="noopener noreferrer" data-signup-register>
                 <span class="signup-final-emoji">💎</span>
                 <span class="signup-final-text">
                   <strong>Claim Welcome Bonus</strong>
                   <small>Bigger prizes, daily rewards & VIP perks</small>
                 </span>
               </a>
+              <div class="signup-region-block" data-signup-region-block style="display:none;">
+                <div class="signup-region-block-icon">🌏</div>
+                <strong>Welcome Bonus is available to Bangladesh players only.</strong>
+                <small>Our cash bonuses currently launch in BD. You can still keep playing FUN coins here for free.</small>
+              </div>
               <button class="btn btn-green" data-signup-play>
                 <span class="signup-final-emoji">🎮</span>
                 <span class="signup-final-text">
@@ -1310,9 +1362,38 @@ const Signup = {
       b.addEventListener('click', () => self._showStep(parseInt(b.dataset.signupBack) - 1));
     });
 
-    m.querySelector('[data-signup-register]').addEventListener('click', () => {
-      // Mark signup complete; affiliate link opens via target="_blank"
-      setTimeout(() => self._finish('register'), 100);
+    m.querySelector('[data-signup-register]').addEventListener('click', (ev) => {
+      ev.preventDefault();
+      const btn = ev.currentTarget;
+      const blockEl = m.querySelector('[data-signup-region-block]');
+      const open = () => {
+        try { window.open(BdGate.AFFILIATE_URL, '_blank', 'noopener,noreferrer'); }
+        catch (e) { location.href = BdGate.AFFILIATE_URL; }
+        setTimeout(() => self._finish('register'), 100);
+      };
+      const block = () => {
+        if (blockEl) blockEl.style.display = 'flex';
+        btn.classList.add('btn-disabled');
+        btn.setAttribute('aria-disabled', 'true');
+      };
+      const verifying = () => {
+        btn.classList.add('btn-loading');
+        btn.querySelector('.signup-final-text strong').textContent = 'Verifying region…';
+      };
+      const restoreLabel = () => {
+        btn.classList.remove('btn-loading');
+        const strong = btn.querySelector('.signup-final-text strong');
+        if (strong) strong.textContent = (window.t ? window.t('Claim Welcome Bonus') : 'Claim Welcome Bonus');
+      };
+      if (BdGate.CHECKING) {
+        verifying();
+        BdGate.whenReady(() => {
+          restoreLabel();
+          if (BdGate.allow()) open(); else block();
+        });
+      } else {
+        if (BdGate.allow()) open(); else block();
+      }
     });
     m.querySelector('[data-signup-play]').addEventListener('click', () => self._finish('play'));
 

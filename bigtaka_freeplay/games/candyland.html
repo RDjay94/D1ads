@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var p=location.pathname;if(p.endsWith('/')||/\.html?$/.test(p))return;var m='/bigtaka_freeplay';var i=p.lastIndexOf(m);if(i!==-1&&p.length===i+m.length){document.write('<base href="'+p+'/">');}else{var s=p.lastIndexOf('/');if(s>=0)document.write('<base href="'+p.substring(0,s+1)+'">');}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Candyland — Bigtaka Free Play</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+Bengali:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+.cl-stage { background: radial-gradient(circle at 30% 0%, rgba(255, 95, 222, 0.3), transparent 60%), radial-gradient(circle at 80% 80%, rgba(164, 255, 44, 0.18), transparent 60%), linear-gradient(180deg, #2a0d3a 0%, #100525 100%); border-radius: 20px; padding: 24px 14px; position: relative; overflow: hidden; }
+.cl-clouds { position: absolute; inset: 0; pointer-events: none; opacity: 0.4; background-image: radial-gradient(40px 30px at 15% 12%, #ffb3e0, transparent), radial-gradient(50px 35px at 80% 8%, #b6f7a1, transparent), radial-gradient(45px 30px at 60% 20%, #ffd0f0, transparent); }
+.cl-wheel-wrap { position: relative; width: min(420px, 90vw); aspect-ratio: 1; margin: 0 auto; z-index: 1; }
+.cl-wheel { width: 100%; height: 100%; border-radius: 50%; border: 8px solid #ff5fde; background: #2a0d3a; transition: transform 5s cubic-bezier(0.17,0.67,0.21,1); box-shadow: 0 0 50px rgba(255,95,222,0.5), inset 0 0 40px rgba(0,0,0,0.4); position: relative; overflow: hidden; }
+.cl-pointer { position: absolute; top: -6px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 16px solid transparent; border-right: 16px solid transparent; border-top: 28px solid #ff5fde; z-index: 5; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6)); }
+.cl-center { position: absolute; inset: 30%; border-radius: 50%; background: radial-gradient(circle, #ffd700 0%, #ff5fde 100%); border: 4px solid #fff; display: flex; align-items: center; justify-content: center; font-size: 36px; z-index: 4; box-shadow: inset 0 -10px 18px rgba(0,0,0,0.3); }
+.cl-bet-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
+.cl-bet-btn { padding: 18px 8px; border-radius: 14px; cursor: pointer; transition: all 0.15s; font-weight: 900; color: #fff; border: 2px solid transparent; position: relative; font-size: 14px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.cl-bet-btn:hover { transform: translateY(-2px); }
+.cl-bet-btn.picked { border-color: var(--gold); box-shadow: 0 0 18px rgba(255,215,0,0.5); }
+.cl-bet-btn .icon { font-size: 30px; }
+.cl-bet-btn .pay { font-size: 11px; opacity: 0.85; }
+.cl-bet-btn .chips { font-size: 10px; padding: 2px 6px; border-radius: 6px; background: rgba(0,0,0,0.45); color: var(--gold); display: none; }
+.cl-bet-btn.has-chip .chips { display: block; }
+.cl-bet-cherry { background: linear-gradient(135deg, #ff3868, #b00040); }
+.cl-bet-lemon { background: linear-gradient(135deg, #ffe35c, #c89211); color: #1a0c35; }
+.cl-bet-grape { background: linear-gradient(135deg, #a056e0, #500ecf); }
+.cl-bet-bubble { background: linear-gradient(135deg, #5fc7ff, #1e88e5); }
+.cl-bet-drop { background: linear-gradient(135deg, #ff5fde, #b80098); border: 2px solid var(--gold); }
+.cl-bet-rush { background: linear-gradient(135deg, #a4ff2c, #5a9f00); color: #1a0c35; border: 2px solid var(--gold); }
+.cl-result { font-size: clamp(38px, 6.5vw, 56px); font-weight: 900; font-style: italic; text-align: center; margin: 18px 0 6px; min-height: 64px; position: relative; z-index: 1; }
+.cl-result.win { color: var(--green); animation: clRes 0.5s ease; }
+.cl-result.bonus { color: #ff5fde; }
+.cl-result.loss { color: var(--text-muted); }
+@keyframes clRes { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+.cl-bonus-overlay { position: absolute; inset: 12px; border-radius: 20px; background: linear-gradient(180deg, rgba(255,95,222,0.95), rgba(80,14,207,0.95)); display: none; flex-direction: column; align-items: center; justify-content: center; padding: 18px; z-index: 10; text-align: center; }
+.cl-bonus-overlay.show { display: flex; animation: clBonus 0.4s ease; }
+@keyframes clBonus { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+.cl-bonus-overlay h2 { font-size: 28px; font-weight: 900; color: var(--gold); margin: 6px 0; text-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+.cl-bonus-overlay .candies { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 12px 0; max-width: 400px; }
+.cl-bonus-overlay .candy { aspect-ratio: 1; border-radius: 12px; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; transition: all 0.2s; position: relative; }
+.cl-bonus-overlay .candy:hover { background: rgba(255,255,255,0.3); transform: scale(1.06); }
+.cl-bonus-overlay .candy.revealed { background: var(--gold); color: #1a0c35; font-weight: 900; font-size: 16px; }
+.cl-rush-bar { width: 80%; max-width: 320px; height: 36px; background: rgba(255,255,255,0.15); border-radius: 18px; overflow: hidden; position: relative; margin: 12px 0; }
+.cl-rush-fill { height: 100%; background: linear-gradient(90deg, #ffe35c, #ff5fde); width: 0%; transition: width 0.18s ease-out; }
+.cl-rush-mult { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 18px; font-weight: 900; color: #fff; text-shadow: 0 2px 6px rgba(0,0,0,0.5); }
+.cl-history { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-top: 12px; position: relative; z-index: 1; }
+.cl-history-pill { padding: 6px 10px; border-radius: 10px; font-size: 14px; }
+</style>
+</head>
+<body>
+
+<nav class="nav"><div class="nav-inner">
+  <a href="../index.html" class="logo"><img src="../assets/bigtaka-freetoplay.png" alt="Bigtaka Free Play" /></a>
+  <div class="nav-right">
+    <div class="nav-auth">
+      <button class="btn btn-ghost btn-sm nav-cta nav-login" data-open-signup>Log In</button>
+      <button class="btn btn-gold btn-sm nav-cta nav-signup" data-open-signup>Sign Up</button>
+    </div>
+    <button class="sfx-toggle" data-sfx-btn title="Toggle sounds"><span data-sfx-icon>🔊</span></button>
+    <div class="wallet">
+      <img class="wallet-icon" src="../assets/takacoincoin.png" alt="Taka" />
+      <div><div class="wallet-label">Balance</div><div class="wallet-amount"><span data-wallet>10,000</span> FUN</div></div>
+      <button class="wallet-reset" data-wallet-reset title="Reset balance">⟳</button>
+    </div>
+  </div>
+</div></nav>
+
+<div class="play-wrap"><div class="container">
+  <a href="../index.html" class="back-link">← Back to all games</a>
+  <div class="play-head"><div class="play-title-block">
+    <h1>Candyland <span class="practice-stamp" style="position:static;display:inline-flex;margin-left:8px;font-size:11px;vertical-align:middle">🎯 Practice Mode</span></h1>
+    <p class="play-sub">Bet on candy symbols. Land Candy Drop for cascading multipliers — or Sugar Rush for a progressive climb.</p>
+  </div></div>
+
+  <div class="play-layout">
+    <div class="play-canvas-wrap cl-stage">
+      <div class="cl-clouds"></div>
+
+      <div class="cl-wheel-wrap">
+        <div class="cl-pointer"></div>
+        <div class="cl-wheel" id="wheel"></div>
+        <div class="cl-center">🍭</div>
+
+        <!-- Bonus overlay (Candy Drop or Sugar Rush) -->
+        <div class="cl-bonus-overlay" id="bonus-overlay">
+          <h2 id="bonus-title">🍬 Candy Drop</h2>
+          <p style="color:#fff;opacity:0.9;font-size:14px" id="bonus-sub">Pick 6 candies to reveal hidden multipliers</p>
+          <div class="candies" id="candy-grid"></div>
+          <div class="cl-rush-bar" id="rush-bar" style="display:none"><div class="cl-rush-fill" id="rush-fill"></div><div class="cl-rush-mult" id="rush-mult">1×</div></div>
+          <div id="bonus-total" style="font-size:32px;font-weight:900;color:var(--gold);margin-top:8px"></div>
+          <button class="btn btn-gold btn-sm" id="bonus-close" style="display:none;margin-top:10px">Collect</button>
+        </div>
+      </div>
+
+      <div class="cl-result" id="result">Place your bet</div>
+      <div class="cl-history" id="history"></div>
+
+      <div class="status-row" style="display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--text-muted);margin-top:14px;padding-top:14px;border-top:1px solid var(--border);position:relative;z-index:1">
+        <span style="color:var(--green);font-weight:700;">● Live Demo</span>
+        <span>Provider: <strong style="color:#fff">Pragmatic Live</strong></span>
+        <span>RTP: <strong style="color:#fff">96.59%</strong></span>
+      </div>
+    </div>
+
+    <aside class="play-side">
+      <div class="panel">
+        <h4>Bet on a Candy</h4>
+        <div style="display:flex;align-items:center;gap:8px;margin:8px 0">
+          <label style="font-size:12px;color:var(--text-muted);flex:1">Bet per pick</label>
+          <input id="bet-amount" type="number" value="50" min="10" max="2000" step="10" style="width:90px;padding:6px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:#fff" />
+        </div>
+        <div class="cl-bet-grid">
+          <button class="cl-bet-btn cl-bet-cherry" data-bet="cherry"><div class="icon">🍒</div><div>Cherry</div><div class="pay">×2</div><div class="chips"></div></button>
+          <button class="cl-bet-btn cl-bet-lemon" data-bet="lemon"><div class="icon">🍋</div><div>Lemon</div><div class="pay">×3</div><div class="chips"></div></button>
+          <button class="cl-bet-btn cl-bet-grape" data-bet="grape"><div class="icon">🍇</div><div>Grape</div><div class="pay">×5</div><div class="chips"></div></button>
+          <button class="cl-bet-btn cl-bet-bubble" data-bet="bubble"><div class="icon">🍬</div><div>Bubble</div><div class="pay">×10</div><div class="chips"></div></button>
+          <button class="cl-bet-btn cl-bet-drop" data-bet="drop"><div class="icon">🌈</div><div>Candy Drop</div><div class="pay">Bonus</div><div class="chips"></div></button>
+          <button class="cl-bet-btn cl-bet-rush" data-bet="rush"><div class="icon">🚀</div><div>Sugar Rush</div><div class="pay">Bonus</div><div class="chips"></div></button>
+        </div>
+        <div style="margin-top:14px;display:flex;gap:8px">
+          <button class="btn btn-ghost btn-sm" id="clear-bets" style="flex:1">Clear</button>
+          <button class="btn btn-gold" id="spin-btn" style="flex:2;font-size:15px">🍭 SPIN!</button>
+        </div>
+      </div>
+      <div class="panel" style="margin-top:14px">
+        <h4>Bonus Rounds</h4>
+        <p style="font-size:13px;color:var(--text-muted);line-height:1.55"><strong>Candy Drop</strong> — Pick 6 candies from a 16-tile board. Hidden multipliers cascade and add up.<br/><br/><strong>Sugar Rush</strong> — A time-limited multiplier climbs from 1× upward. Cash out before the timer ends.</p>
+      </div>
+    </aside>
+  </div>
+</div></div>
+
+<script src="../i18n.js"></script>
+<script src="../app.js"></script>
+<script>
+(function(){
+  // 54 segments. Cherry(20) Lemon(14) Grape(10) Bubble(6) Drop(3) Rush(1)
+  const SEGMENTS = [];
+  for (let i = 0; i < 20; i++) SEGMENTS.push('cherry');
+  for (let i = 0; i < 14; i++) SEGMENTS.push('lemon');
+  for (let i = 0; i < 10; i++) SEGMENTS.push('grape');
+  for (let i = 0; i < 6; i++) SEGMENTS.push('bubble');
+  for (let i = 0; i < 3; i++) SEGMENTS.push('drop');
+  for (let i = 0; i < 1; i++) SEGMENTS.push('rush');
+  for (let i = SEGMENTS.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [SEGMENTS[i], SEGMENTS[j]] = [SEGMENTS[j], SEGMENTS[i]]; }
+  const N = SEGMENTS.length;
+  const META = {
+    cherry: { c: '#ff3868', ic: '🍒', pay: 2 },
+    lemon:  { c: '#ffe35c', ic: '🍋', pay: 3 },
+    grape:  { c: '#a056e0', ic: '🍇', pay: 5 },
+    bubble: { c: '#5fc7ff', ic: '🍬', pay: 10 },
+    drop:   { c: '#ff5fde', ic: '🌈', pay: 0 },
+    rush:   { c: '#a4ff2c', ic: '🚀', pay: 0 },
+  };
+
+  const wheel = document.getElementById('wheel');
+  function renderWheel() {
+    const step = 360 / N;
+    const stops = SEGMENTS.map((s, i) => `${META[s].c} ${i * step}deg ${(i + 1) * step}deg`);
+    wheel.style.background = `conic-gradient(${stops.join(', ')})`;
+    let labels = '';
+    SEGMENTS.forEach((s, i) => {
+      const angle = i * step + step / 2;
+      labels += `<div style="position:absolute;top:50%;left:50%;transform:rotate(${angle}deg) translateY(-180%);transform-origin:0 0;font-size:18px;pointer-events:none">${META[s].ic}</div>`;
+    });
+    wheel.innerHTML = labels;
+  }
+  renderWheel();
+
+  let bets = {}; let currentRotation = 0; let spinning = false;
+  const betInput = document.getElementById('bet-amount');
+  const resultEl = document.getElementById('result');
+  const historyEl = document.getElementById('history');
+
+  document.querySelectorAll('.cl-bet-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (spinning) return;
+      const amt = parseInt(betInput.value) || 50;
+      if (!Wallet.canBet(amt)) { toast('Not enough FUN coins', 'warn'); return; }
+      const k = btn.dataset.bet;
+      bets[k] = (bets[k] || 0) + amt;
+      Wallet.subtract(amt);
+      btn.classList.add('has-chip', 'picked');
+      btn.querySelector('.chips').textContent = bets[k] + ' FUN';
+      Sfx.bet();
+    });
+  });
+  document.getElementById('clear-bets').addEventListener('click', () => {
+    if (spinning) return;
+    let r = 0; for (const k in bets) r += bets[k];
+    if (r > 0) { Wallet.add(r); Sfx.click(); }
+    bets = {};
+    document.querySelectorAll('.cl-bet-btn').forEach(b => { b.classList.remove('has-chip', 'picked'); b.querySelector('.chips').textContent = ''; });
+  });
+
+  document.getElementById('spin-btn').addEventListener('click', () => {
+    if (spinning) return;
+    if (Object.keys(bets).length === 0) { resultEl.textContent = 'Place a bet first'; return; }
+    spinning = true; Sfx.spin && Sfx.spin();
+    resultEl.textContent = '';
+    const idx = Math.floor(Math.random() * N);
+    const step = 360 / N;
+    const targetAngle = -(idx * step + step / 2);
+    const turns = 5 + Math.floor(Math.random() * 4);
+    currentRotation = currentRotation - (currentRotation % 360) + turns * 360 + targetAngle;
+    wheel.style.transform = `rotate(${currentRotation}deg)`;
+    setTimeout(() => handleResult(SEGMENTS[idx]), 5100);
+  });
+
+  function handleResult(seg) {
+    spinning = false;
+    const pill = document.createElement('div'); pill.className = 'cl-history-pill'; pill.style.background = META[seg].c; pill.textContent = META[seg].ic;
+    historyEl.insertBefore(pill, historyEl.firstChild); while (historyEl.children.length > 10) historyEl.removeChild(historyEl.lastChild);
+
+    if (seg === 'drop' || seg === 'rush') {
+      // Only paid if the player bet on the specific bonus
+      const betAmt = bets[seg] || 0;
+      if (betAmt === 0) {
+        resultEl.textContent = `${META[seg].ic} ${seg === 'drop' ? 'Candy Drop' : 'Sugar Rush'} · No bet`;
+        resultEl.className = 'cl-result loss';
+        Sfx.loss && Sfx.loss();
+        bets = {}; refreshBetButtons();
+        return;
+      }
+      if (seg === 'drop') startCandyDrop(betAmt);
+      else startSugarRush(betAmt);
+      return;
+    }
+
+    let win = 0;
+    if (bets[seg]) win = bets[seg] * (META[seg].pay + 1);
+    if (win > 0) {
+      Wallet.add(win);
+      resultEl.innerHTML = `${META[seg].ic} ${seg.toUpperCase()} · WIN ${win.toLocaleString()} FUN`;
+      resultEl.className = 'cl-result win';
+      Sfx.win && Sfx.win();
+    } else {
+      resultEl.textContent = `${META[seg].ic} ${seg.toUpperCase()} · No win`;
+      resultEl.className = 'cl-result loss';
+      Sfx.loss && Sfx.loss();
+    }
+    bets = {}; refreshBetButtons();
+  }
+
+  function refreshBetButtons() {
+    document.querySelectorAll('.cl-bet-btn').forEach(b => { b.classList.remove('has-chip', 'picked'); b.querySelector('.chips').textContent = ''; });
+  }
+
+  // Candy Drop bonus: 16-tile grid. Pick 6 candies, multipliers cascade.
+  function startCandyDrop(bet) {
+    const ov = document.getElementById('bonus-overlay');
+    document.getElementById('bonus-title').textContent = '🍬 Candy Drop';
+    document.getElementById('bonus-sub').textContent = 'Pick 6 candies to reveal hidden multipliers';
+    document.getElementById('rush-bar').style.display = 'none';
+    document.getElementById('bonus-total').textContent = '';
+    const grid = document.getElementById('candy-grid');
+    grid.innerHTML = '';
+    const tiles = [];
+    for (let i = 0; i < 16; i++) {
+      const m = pickCandyMult();
+      const d = document.createElement('div'); d.className = 'candy'; d.textContent = ['🍒','🍋','🍇','🍬','🍭','🍫','🧁','🍩'][Math.floor(Math.random()*8)]; d.dataset.mult = m;
+      grid.appendChild(d); tiles.push({ el: d, mult: m });
+    }
+    let picks = 0; let total = 0;
+    grid.onclick = (e) => {
+      const t = e.target.closest('.candy'); if (!t || t.classList.contains('revealed') || picks >= 6) return;
+      const mult = parseFloat(t.dataset.mult);
+      t.classList.add('revealed'); t.textContent = mult + '×';
+      total += bet * mult; picks++;
+      document.getElementById('bonus-total').textContent = (total).toLocaleString() + ' FUN';
+      Sfx.gem && Sfx.gem();
+      if (picks === 6) {
+        Wallet.add(Math.floor(total));
+        document.getElementById('bonus-close').style.display = '';
+        Sfx.bigWin && Sfx.bigWin();
+      }
+    };
+    document.getElementById('bonus-close').onclick = () => {
+      ov.classList.remove('show');
+      resultEl.innerHTML = `🌈 Candy Drop · WIN ${Math.floor(total).toLocaleString()} FUN`;
+      resultEl.className = 'cl-result win';
+      bets = {}; refreshBetButtons();
+      document.getElementById('bonus-close').style.display = 'none';
+    };
+    ov.classList.add('show');
+  }
+  function pickCandyMult() { const r = Math.random(); if (r < 0.5) return 0.5; if (r < 0.85) return 2 + Math.floor(Math.random()*3); if (r < 0.98) return 5 + Math.floor(Math.random()*10); return 25 + Math.floor(Math.random()*26); }
+
+  // Sugar Rush: progressive multiplier climbs from 1x to 50x. Player clicks to cash out.
+  function startSugarRush(bet) {
+    const ov = document.getElementById('bonus-overlay');
+    document.getElementById('bonus-title').textContent = '🚀 Sugar Rush';
+    document.getElementById('bonus-sub').textContent = 'Multiplier climbs · Cash out before time runs out!';
+    const grid = document.getElementById('candy-grid'); grid.innerHTML = '';
+    document.getElementById('rush-bar').style.display = '';
+    const fill = document.getElementById('rush-fill');
+    const multEl = document.getElementById('rush-mult');
+    document.getElementById('bonus-total').textContent = '';
+    const closeBtn = document.getElementById('bonus-close'); closeBtn.style.display = ''; closeBtn.textContent = 'CASH OUT';
+    let m = 1; let pct = 0; let stopped = false;
+    const target = 8 + Math.random() * 25;
+    const durSec = 6;
+    const start = performance.now();
+    function tick(now) {
+      if (stopped) return;
+      const t = (now - start) / 1000;
+      const progress = t / durSec;
+      m = 1 + (target - 1) * progress;
+      pct = Math.min(100, progress * 100);
+      fill.style.width = pct + '%';
+      multEl.textContent = m.toFixed(2) + '×';
+      if (t >= durSec) { stop(true); return; }
+      requestAnimationFrame(tick);
+    }
+    function stop(timeUp) {
+      stopped = true;
+      const finalMult = timeUp ? 0 : m;
+      const win = Math.floor(bet * finalMult);
+      if (!timeUp) Wallet.add(win);
+      document.getElementById('bonus-total').textContent = timeUp ? 'Time up · No win' : (win.toLocaleString() + ' FUN');
+      closeBtn.textContent = 'Collect';
+      closeBtn.onclick = () => {
+        ov.classList.remove('show');
+        if (timeUp) {
+          resultEl.textContent = '🚀 Sugar Rush · Time expired';
+          resultEl.className = 'cl-result loss';
+        } else {
+          resultEl.innerHTML = `🚀 Sugar Rush · ${finalMult.toFixed(2)}× · WIN ${win.toLocaleString()} FUN`;
+          resultEl.className = 'cl-result win';
+        }
+        bets = {}; refreshBetButtons();
+        closeBtn.style.display = 'none';
+      };
+      if (!timeUp) Sfx.bigWin && Sfx.bigWin(); else Sfx.loss && Sfx.loss();
+    }
+    closeBtn.onclick = () => { if (!stopped) stop(false); };
+    requestAnimationFrame(tick);
+    ov.classList.add('show');
+  }
+})();
+</script>
+
+</body>
+</html>

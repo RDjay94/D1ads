@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var p=location.pathname;if(p.endsWith('/')||/\.html?$/.test(p))return;var m='/bigtaka_freeplay';var i=p.lastIndexOf(m);if(i!==-1&&p.length===i+m.length){document.write('<base href="'+p+'/">');}else{var s=p.lastIndexOf('/');if(s>=0)document.write('<base href="'+p.substring(0,s+1)+'">');}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dream Catcher — Bigtaka Free Play</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+Bengali:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+.dc-stage { background: radial-gradient(circle at 50% 30%, rgba(212, 160, 23, 0.25), transparent 60%), linear-gradient(180deg, #3a1812 0%, #1a0a06 100%); border-radius: 20px; padding: 24px 14px; }
+.dc-wheel-wrap { position: relative; width: min(440px, 90vw); aspect-ratio: 1; margin: 0 auto; }
+.dc-wheel { width: 100%; height: 100%; border-radius: 50%; border: 8px solid #d4a017; background: #2a0e07; transition: transform 5s cubic-bezier(0.17,0.67,0.21,1); box-shadow: 0 0 60px rgba(212,160,23,0.4), inset 0 0 50px rgba(0,0,0,0.55); position: relative; overflow: hidden; }
+.dc-wheel.respin { transition-duration: 4s; }
+.dc-pegs { position: absolute; inset: 0; border-radius: 50%; pointer-events: none; }
+.dc-pegs::before { content: ''; position: absolute; inset: 6px; border-radius: 50%; border: 2px dashed rgba(255, 224, 130, 0.35); }
+.dc-pointer { position: absolute; top: -8px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 18px solid transparent; border-right: 18px solid transparent; border-top: 32px solid #d4a017; z-index: 5; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.7)); }
+.dc-center { position: absolute; inset: 32%; border-radius: 50%; background: radial-gradient(circle, #d4a017 0%, #7a4a0d 100%); border: 4px solid #fff; display: flex; align-items: center; justify-content: center; font-family: 'Inter', serif; font-size: 14px; font-weight: 900; color: #1a0c35; z-index: 4; box-shadow: inset 0 -8px 16px rgba(0,0,0,0.4); text-align: center; line-height: 1.1; }
+.dc-feather { position: absolute; width: 14px; height: 28px; background: linear-gradient(180deg, transparent, #fff5d0); border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%; transform-origin: bottom; opacity: 0.55; }
+.dc-bet-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
+.dc-bet-btn { padding: 18px 8px; border-radius: 12px; background: var(--surface-2); border: 2px solid var(--border); font-size: 24px; font-weight: 900; font-style: italic; cursor: pointer; color: #fff; transition: all 0.15s; position: relative; }
+.dc-bet-btn:hover { transform: translateY(-2px); border-color: #d4a017; }
+.dc-bet-btn.b1 { color: #1a0c35; background: linear-gradient(135deg, #dcdcdc, #888); }
+.dc-bet-btn.b2 { color: #fff; background: linear-gradient(135deg, #4a82e0, #2f5cb8); }
+.dc-bet-btn.b5 { color: #fff; background: linear-gradient(135deg, #ff6a00, #c4451a); }
+.dc-bet-btn.b10 { color: #1a0c35; background: linear-gradient(135deg, #ffe35c, #c89211); }
+.dc-bet-btn.b20 { color: #fff; background: linear-gradient(135deg, #ff1ed7, #b80098); }
+.dc-bet-btn.b40 { color: #fff; background: linear-gradient(135deg, #500ecf, #2e0788); }
+.dc-bet-btn .chips { position: absolute; bottom: 4px; left: 4px; right: 4px; font-size: 10px; font-weight: 800; color: #d4a017; background: rgba(0,0,0,0.5); border-radius: 6px; padding: 2px 4px; display: none; }
+.dc-bet-btn.has-chip .chips { display: block; }
+.dc-x2-banner { display: none; padding: 16px; border-radius: 14px; text-align: center; margin: 12px 0; background: linear-gradient(135deg, #d4a017, #ff6a00); color: #1a0c35; font-weight: 900; box-shadow: 0 0 30px rgba(212,160,23,0.7); border: 2px solid #fff5d0; }
+.dc-x2-banner.show { display: block; animation: dcX2Pulse 0.5s ease 2; }
+@keyframes dcX2Pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+.dc-result { font-size: clamp(44px, 7vw, 68px); font-weight: 900; font-style: italic; text-align: center; margin: 18px 0 6px; color: #ffe082; min-height: 70px; }
+.dc-result.win { color: #89eb16; animation: dcRes 0.5s ease; }
+@keyframes dcRes { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+.dc-history { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-top: 12px; }
+.dc-history-pill { padding: 6px 10px; border-radius: 10px; font-size: 13px; font-weight: 800; font-style: italic; border: 1px solid rgba(255,255,255,0.15); }
+</style>
+</head>
+<body>
+
+<nav class="nav"><div class="nav-inner">
+  <a href="../index.html" class="logo"><img src="../assets/bigtaka-freetoplay.png" alt="Bigtaka Free Play" /></a>
+  <div class="nav-right">
+    <div class="nav-auth">
+      <button class="btn btn-ghost btn-sm nav-cta nav-login" data-open-signup>Log In</button>
+      <button class="btn btn-gold btn-sm nav-cta nav-signup" data-open-signup>Sign Up</button>
+    </div>
+    <button class="sfx-toggle" data-sfx-btn title="Toggle sounds"><span data-sfx-icon>🔊</span></button>
+    <div class="wallet">
+      <img class="wallet-icon" src="../assets/takacoincoin.png" alt="Taka" />
+      <div><div class="wallet-label">Balance</div><div class="wallet-amount"><span data-wallet>10,000</span> FUN</div></div>
+      <button class="wallet-reset" data-wallet-reset title="Reset balance">⟳</button>
+    </div>
+  </div>
+</div></nav>
+
+<div class="play-wrap"><div class="container">
+  <a href="../index.html" class="back-link">← Back to all games</a>
+  <div class="play-head"><div class="play-title-block">
+    <h1>Dream Catcher <span class="practice-stamp" style="position:static;display:inline-flex;margin-left:8px;font-size:11px;vertical-align:middle">🎯 Practice Mode</span></h1>
+    <p class="play-sub">The original money wheel. Land a 2× and the wheel respins with all wins doubled.</p>
+  </div></div>
+
+  <div class="play-layout">
+    <div class="play-canvas-wrap dc-stage">
+
+      <div class="dc-wheel-wrap">
+        <div class="dc-pointer"></div>
+        <div class="dc-wheel" id="wheel"></div>
+        <div class="dc-pegs"></div>
+        <div class="dc-center">DREAM<br/>CATCHER</div>
+      </div>
+
+      <div class="dc-x2-banner" id="x2-banner">🔁 2× MULTIPLIER ACTIVE · WHEEL RESPINNING · ALL WINS DOUBLED</div>
+
+      <div class="dc-result" id="result">Place your bet</div>
+      <div class="dc-history" id="history"></div>
+
+      <div class="status-row" style="display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--text-muted);margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+        <span style="color:var(--green);font-weight:700;">● Live Demo</span>
+        <span>Provider: <strong style="color:#fff">Evolution Gaming</strong></span>
+        <span>RTP: <strong style="color:#fff">96.58%</strong></span>
+      </div>
+    </div>
+
+    <aside class="play-side">
+      <div class="panel">
+        <h4>Place Your Bet</h4>
+        <div style="display:flex;align-items:center;gap:8px;margin:8px 0">
+          <label style="font-size:12px;color:var(--text-muted);flex:1">Bet per number</label>
+          <input id="bet-amount" type="number" value="50" min="10" max="5000" step="10" style="width:90px;padding:6px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:#fff" />
+        </div>
+        <div class="dc-bet-grid">
+          <button class="dc-bet-btn b1" data-bet="1">1<div class="chips"></div></button>
+          <button class="dc-bet-btn b2" data-bet="2">2<div class="chips"></div></button>
+          <button class="dc-bet-btn b5" data-bet="5">5<div class="chips"></div></button>
+          <button class="dc-bet-btn b10" data-bet="10">10<div class="chips"></div></button>
+          <button class="dc-bet-btn b20" data-bet="20">20<div class="chips"></div></button>
+          <button class="dc-bet-btn b40" data-bet="40">40<div class="chips"></div></button>
+        </div>
+        <div style="margin-top:14px;display:flex;gap:8px">
+          <button class="btn btn-ghost btn-sm" id="clear-bets" style="flex:1">Clear</button>
+          <button class="btn btn-gold" id="spin-btn" style="flex:2;font-size:15px">SPIN WHEEL</button>
+        </div>
+      </div>
+      <div class="panel" style="margin-top:14px">
+        <h4>The 2× Magic</h4>
+        <p style="font-size:13px;color:var(--text-muted);line-height:1.55">When the wheel lands on a 2× segment, the entire wheel respins and your active payout doubles. Chain 2×s and the multiplier compounds — 4×, 8×, 16×… until a number is hit.</p>
+      </div>
+    </aside>
+  </div>
+</div></div>
+
+<script src="../i18n.js"></script>
+<script src="../app.js"></script>
+<script>
+(function(){
+  // 54 segments. Numbers 1, 2, 5, 10, 20, 40, plus 2 "x2" multiplier slots.
+  const SEGMENTS = [];
+  for (let i = 0; i < 23; i++) SEGMENTS.push({ type: 'num', value: 1 });
+  for (let i = 0; i < 15; i++) SEGMENTS.push({ type: 'num', value: 2 });
+  for (let i = 0; i < 7; i++) SEGMENTS.push({ type: 'num', value: 5 });
+  for (let i = 0; i < 4; i++) SEGMENTS.push({ type: 'num', value: 10 });
+  for (let i = 0; i < 2; i++) SEGMENTS.push({ type: 'num', value: 20 });
+  for (let i = 0; i < 1; i++) SEGMENTS.push({ type: 'num', value: 40 });
+  for (let i = 0; i < 2; i++) SEGMENTS.push({ type: 'x2' });
+  // Shuffle
+  for (let i = SEGMENTS.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [SEGMENTS[i], SEGMENTS[j]] = [SEGMENTS[j], SEGMENTS[i]]; }
+  const N = SEGMENTS.length;
+  const COLOR_NUM = { 1: '#bbb', 2: '#3768c8', 5: '#e07c33', 10: '#ffe35c', 20: '#ff39c1', 40: '#7d3eff' };
+  const TXT_NUM = { 1: '#000', 2: '#fff', 5: '#fff', 10: '#000', 20: '#fff', 40: '#fff' };
+
+  const wheel = document.getElementById('wheel');
+  function renderWheel() {
+    const step = 360 / N;
+    const stops = SEGMENTS.map((seg, i) => {
+      const c = seg.type === 'x2' ? '#ff1ed7' : COLOR_NUM[seg.value];
+      return `${c} ${i * step}deg ${(i + 1) * step}deg`;
+    });
+    wheel.style.background = `conic-gradient(${stops.join(', ')})`;
+    let labels = '';
+    SEGMENTS.forEach((seg, i) => {
+      const angle = i * step + step / 2;
+      const txt = seg.type === 'x2' ? '×2' : seg.value;
+      const col = seg.type === 'x2' ? '#fff' : TXT_NUM[seg.value];
+      labels += `<div style="position:absolute;top:50%;left:50%;transform:rotate(${angle}deg) translateY(-180%);transform-origin:0 0;font-size:14px;font-weight:900;font-style:italic;color:${col};text-shadow:0 1px 2px rgba(0,0,0,0.6);pointer-events:none">${txt}</div>`;
+    });
+    wheel.innerHTML = labels;
+  }
+  renderWheel();
+
+  let bets = {}; let currentRotation = 0; let spinning = false; let multiplierStack = 1;
+  const betInput = document.getElementById('bet-amount');
+  const resultEl = document.getElementById('result');
+  const historyEl = document.getElementById('history');
+  const x2Banner = document.getElementById('x2-banner');
+
+  document.querySelectorAll('.dc-bet-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (spinning) return;
+      const amount = parseInt(betInput.value) || 50;
+      if (!Wallet.canBet(amount)) { toast('Not enough FUN coins', 'warn'); return; }
+      const num = parseInt(btn.dataset.bet);
+      bets[num] = (bets[num] || 0) + amount;
+      Wallet.subtract(amount);
+      btn.classList.add('has-chip');
+      btn.querySelector('.chips').textContent = bets[num] + ' FUN';
+      Sfx.bet();
+    });
+  });
+  document.getElementById('clear-bets').addEventListener('click', () => {
+    if (spinning) return;
+    let refund = 0; for (const k in bets) refund += bets[k];
+    if (refund > 0) { Wallet.add(refund); Sfx.click(); }
+    bets = {};
+    document.querySelectorAll('.dc-bet-btn').forEach(b => { b.classList.remove('has-chip'); b.querySelector('.chips').textContent = ''; });
+  });
+
+  function spinOnce(isRespin) {
+    spinning = true; Sfx.spin && Sfx.spin();
+    if (!isRespin) resultEl.textContent = '';
+    const winIdx = Math.floor(Math.random() * N);
+    const step = 360 / N;
+    const targetAngle = -(winIdx * step + step / 2);
+    const turns = 5 + Math.floor(Math.random() * 4);
+    currentRotation = currentRotation - (currentRotation % 360) + turns * 360 + targetAngle;
+    wheel.classList.toggle('respin', !!isRespin);
+    wheel.style.transform = `rotate(${currentRotation}deg)`;
+    setTimeout(() => handleResult(SEGMENTS[winIdx]), isRespin ? 4100 : 5100);
+  }
+
+  function handleResult(seg) {
+    if (seg.type === 'x2') {
+      multiplierStack *= 2;
+      x2Banner.classList.add('show');
+      x2Banner.textContent = `🔁 ${multiplierStack}× MULTIPLIER ACTIVE · WHEEL RESPINNING · ALL WINS ×${multiplierStack}`;
+      // History
+      const pill = document.createElement('div'); pill.className = 'dc-history-pill'; pill.style.background = '#ff1ed7'; pill.style.color = '#fff'; pill.textContent = `×2`;
+      historyEl.insertBefore(pill, historyEl.firstChild); while (historyEl.children.length > 10) historyEl.removeChild(historyEl.lastChild);
+      Sfx.bigWin && Sfx.bigWin();
+      setTimeout(() => spinOnce(true), 900);
+      return;
+    }
+    spinning = false;
+    x2Banner.classList.remove('show');
+    const winNum = seg.value;
+    let win = 0;
+    if (bets[winNum]) {
+      // Payout = bet * (number + 1) * multiplier stack
+      win = Math.floor(bets[winNum] * (winNum + 1) * multiplierStack);
+    }
+    if (win > 0) {
+      Wallet.add(win);
+      const stackTxt = multiplierStack > 1 ? ` ×${multiplierStack}` : '';
+      resultEl.innerHTML = `${winNum} · WIN ${win.toLocaleString()} FUN${stackTxt ? ' <span style="color:#d4a017">' + stackTxt + '</span>' : ''}`;
+      resultEl.className = 'dc-result win';
+      Sfx.win && Sfx.win();
+    } else {
+      resultEl.textContent = `${winNum} · No win`;
+      resultEl.className = 'dc-result';
+      Sfx.loss && Sfx.loss();
+    }
+    const pill = document.createElement('div'); pill.className = 'dc-history-pill'; pill.style.background = COLOR_NUM[winNum]; pill.style.color = TXT_NUM[winNum]; pill.textContent = winNum;
+    historyEl.insertBefore(pill, historyEl.firstChild); while (historyEl.children.length > 10) historyEl.removeChild(historyEl.lastChild);
+    bets = {}; multiplierStack = 1;
+    document.querySelectorAll('.dc-bet-btn').forEach(b => { b.classList.remove('has-chip'); b.querySelector('.chips').textContent = ''; });
+  }
+
+  document.getElementById('spin-btn').addEventListener('click', () => {
+    if (spinning) return;
+    if (Object.keys(bets).length === 0) { resultEl.textContent = 'Place a bet first'; return; }
+    multiplierStack = 1; spinOnce(false);
+  });
+})();
+</script>
+
+</body>
+</html>

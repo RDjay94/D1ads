@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var p=location.pathname;if(p.endsWith('/')||/\.html?$/.test(p))return;var m='/bigtaka_freeplay';var i=p.lastIndexOf(m);if(i!==-1&&p.length===i+m.length){document.write('<base href="'+p+'/">');}else{var s=p.lastIndexOf('/');if(s>=0)document.write('<base href="'+p.substring(0,s+1)+'">');}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Lightning Roulette — Bigtaka Free Play</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+Bengali:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+.lr-stage { background: radial-gradient(ellipse at 50% 0%, rgba(28, 117, 255, 0.25), transparent 60%), linear-gradient(180deg, #0c1538 0%, #0a0418 100%); border-radius: 20px; padding: 24px 14px; position: relative; overflow: hidden; }
+.lr-stage::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,0.4), transparent), radial-gradient(1px 1px at 80% 20%, rgba(0,255,255,0.4), transparent), radial-gradient(1px 1px at 50% 70%, rgba(255,255,255,0.3), transparent); background-size: 200px 200px; pointer-events: none; opacity: 0.5; }
+.lr-wheel-wrap { position: relative; width: min(380px, 80vw); aspect-ratio: 1; margin: 0 auto; }
+.lr-wheel { width: 100%; height: 100%; border-radius: 50%; border: 8px solid #c0c0c0; background: #0a0418; transition: transform 5s cubic-bezier(0.17,0.67,0.21,1); box-shadow: 0 0 50px rgba(28,117,255,0.5), inset 0 0 40px rgba(0,0,0,0.5); position: relative; overflow: hidden; }
+.lr-pointer { position: absolute; top: -6px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 14px solid transparent; border-right: 14px solid transparent; border-top: 24px solid #fff; z-index: 5; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.7)); }
+.lr-ball { position: absolute; width: 14px; height: 14px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #fff, #aaa); top: 6px; left: 50%; transform: translateX(-50%); z-index: 4; box-shadow: 0 0 8px rgba(255,255,255,0.7); transition: transform 5s cubic-bezier(0.17,0.67,0.21,1); }
+.lr-center { position: absolute; inset: 30%; border-radius: 50%; background: radial-gradient(circle, #d4a017 0%, #7a4a0d 100%); border: 4px solid #c0c0c0; z-index: 3; box-shadow: inset 0 -10px 18px rgba(0,0,0,0.5); }
+.lr-lightning-strip { background: linear-gradient(135deg, rgba(28,117,255,0.2), rgba(80,14,207,0.2)); border: 1px solid rgba(28,117,255,0.45); border-radius: 14px; padding: 12px; margin-bottom: 14px; }
+.lr-lightning-strip .hdr { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; color: #82c8ff; margin-bottom: 8px; }
+.lr-lightning-strip .bolts { display: flex; gap: 8px; flex-wrap: wrap; }
+.lr-bolt { position: relative; padding: 8px 12px; border-radius: 10px; background: linear-gradient(135deg, #fff, #82c8ff); color: #0a0418; font-weight: 900; min-width: 70px; text-align: center; box-shadow: 0 0 14px rgba(130, 200, 255, 0.6); }
+.lr-bolt .n { font-size: 18px; font-style: italic; }
+.lr-bolt .m { font-size: 11px; font-weight: 800; }
+.lr-bolt.epic { background: linear-gradient(135deg, #ffd700, #ff8a00); box-shadow: 0 0 18px rgba(255,215,0,0.7); }
+.lr-board { display: grid; grid-template-columns: 36px repeat(12, 1fr); gap: 3px; margin-top: 14px; }
+.lr-cell { padding: 8px 4px; text-align: center; font-size: 13px; font-weight: 800; font-style: italic; border-radius: 6px; cursor: pointer; transition: all 0.12s; position: relative; user-select: none; }
+.lr-cell:hover { transform: translateY(-1px); outline: 2px solid var(--gold); }
+.lr-cell.red { background: #c41a1a; color: #fff; }
+.lr-cell.black { background: #1a1a1a; color: #fff; }
+.lr-cell.green { background: #0d8a30; color: #fff; grid-row: 1 / span 3; align-self: stretch; display: flex; align-items: center; justify-content: center; }
+.lr-cell.bolt::after { content: '⚡'; position: absolute; top: -8px; right: -2px; font-size: 11px; filter: drop-shadow(0 0 4px #ffd700); }
+.lr-cell.bolt-epic { box-shadow: 0 0 14px #ffd700, inset 0 0 8px #ffe082; }
+.lr-cell .chips { position: absolute; bottom: -2px; right: -2px; font-size: 9px; padding: 1px 4px; border-radius: 6px; background: var(--gold); color: #1a0c35; font-weight: 900; display: none; }
+.lr-cell.has-chip .chips { display: block; }
+.lr-outside { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-top: 8px; }
+.lr-outside .lr-cell { padding: 10px 4px; font-size: 12px; background: #2a1a3a; color: #fff; }
+.lr-outside .lr-cell.red { background: #c41a1a; }
+.lr-outside .lr-cell.black { background: #1a1a1a; }
+.lr-result { font-size: clamp(40px, 7vw, 64px); font-weight: 900; font-style: italic; text-align: center; margin: 18px 0 6px; min-height: 70px; }
+.lr-result.win { color: var(--green); animation: lrRes 0.5s ease; }
+.lr-result.bolt-win { color: #ffd700; text-shadow: 0 0 24px rgba(255,215,0,0.6); }
+.lr-result.loss { color: var(--text-muted); }
+@keyframes lrRes { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.18); } }
+.lr-history { display: flex; gap: 5px; justify-content: center; flex-wrap: wrap; margin-top: 12px; }
+.lr-history-pill { padding: 5px 9px; border-radius: 8px; font-size: 13px; font-weight: 800; font-style: italic; }
+</style>
+</head>
+<body>
+
+<nav class="nav"><div class="nav-inner">
+  <a href="../index.html" class="logo"><img src="../assets/bigtaka-freetoplay.png" alt="Bigtaka Free Play" /></a>
+  <div class="nav-right">
+    <div class="nav-auth">
+      <button class="btn btn-ghost btn-sm nav-cta nav-login" data-open-signup>Log In</button>
+      <button class="btn btn-gold btn-sm nav-cta nav-signup" data-open-signup>Sign Up</button>
+    </div>
+    <button class="sfx-toggle" data-sfx-btn title="Toggle sounds"><span data-sfx-icon>🔊</span></button>
+    <div class="wallet">
+      <img class="wallet-icon" src="../assets/takacoincoin.png" alt="Taka" />
+      <div><div class="wallet-label">Balance</div><div class="wallet-amount"><span data-wallet>10,000</span> FUN</div></div>
+      <button class="wallet-reset" data-wallet-reset title="Reset balance">⟳</button>
+    </div>
+  </div>
+</div></nav>
+
+<div class="play-wrap"><div class="container">
+  <a href="../index.html" class="back-link">← Back to all games</a>
+  <div class="play-head"><div class="play-title-block">
+    <h1>Lightning Roulette <span class="practice-stamp" style="position:static;display:inline-flex;margin-left:8px;font-size:11px;vertical-align:middle">🎯 Practice Mode</span></h1>
+    <p class="play-sub">European single-zero roulette + random lightning numbers paying 50× to 500× on straight bets.</p>
+  </div></div>
+
+  <div class="play-layout">
+    <div class="play-canvas-wrap lr-stage">
+
+      <div class="lr-lightning-strip">
+        <div class="hdr">⚡ Lightning numbers this round <span style="margin-left:auto;color:#fff;font-weight:700">Straight-up wins pay 30:1 + ⚡ multiplier</span></div>
+        <div class="bolts" id="bolts"></div>
+      </div>
+
+      <div class="lr-wheel-wrap">
+        <div class="lr-pointer"></div>
+        <div class="lr-wheel" id="wheel"></div>
+        <div class="lr-ball" id="ball"></div>
+        <div class="lr-center"></div>
+      </div>
+
+      <div class="lr-result" id="result">Place your bet</div>
+      <div class="lr-history" id="history"></div>
+
+      <div class="status-row" style="display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--text-muted);margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+        <span style="color:var(--green);font-weight:700;">● Live Demo</span>
+        <span>Provider: <strong style="color:#fff">Evolution Gaming</strong></span>
+        <span>RTP: <strong style="color:#fff">97.30%</strong></span>
+      </div>
+    </div>
+
+    <aside class="play-side">
+      <div class="panel">
+        <h4>Betting Table</h4>
+        <div style="display:flex;align-items:center;gap:8px;margin:8px 0">
+          <label style="font-size:12px;color:var(--text-muted);flex:1">Bet per chip</label>
+          <input id="bet-amount" type="number" value="50" min="10" max="2000" step="10" style="width:90px;padding:6px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:#fff" />
+        </div>
+        <div class="lr-board" id="board"></div>
+        <div class="lr-outside" id="outside-board"></div>
+        <div style="margin-top:14px;display:flex;gap:8px">
+          <button class="btn btn-ghost btn-sm" id="clear-bets" style="flex:1">Clear</button>
+          <button class="btn btn-green" id="spin-btn" style="flex:2;font-size:15px">⚡ SPIN!</button>
+        </div>
+      </div>
+      <div class="panel" style="margin-top:14px">
+        <h4>Lightning Math</h4>
+        <p style="font-size:13px;color:var(--text-muted);line-height:1.55">Each spin, 1–5 numbers are struck by lightning with random multipliers: 50× (common), 100× (medium), 300× (rare), 500× (epic). Land a straight bet on a lightning number and the boosted multiplier replaces the normal 30:1 payout.</p>
+      </div>
+    </aside>
+  </div>
+</div></div>
+
+<script src="../i18n.js"></script>
+<script src="../app.js"></script>
+<script>
+(function(){
+  // European roulette wheel order (single zero)
+  const WHEEL_ORDER = [0,32,15,19,4,21,2,25,17,34,6,27,13,36,11,30,8,23,10,5,24,16,33,1,20,14,31,9,22,18,29,7,28,12,35,3,26];
+  const RED_NUMS = new Set([1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36]);
+  const N = WHEEL_ORDER.length; // 37
+
+  // Render wheel
+  const wheel = document.getElementById('wheel');
+  function renderWheel() {
+    const step = 360 / N;
+    const stops = WHEEL_ORDER.map((num, i) => {
+      const c = num === 0 ? '#0d8a30' : (RED_NUMS.has(num) ? '#c41a1a' : '#1a1a1a');
+      return `${c} ${i * step}deg ${(i + 1) * step}deg`;
+    });
+    wheel.style.background = `conic-gradient(${stops.join(', ')})`;
+    let labels = '';
+    WHEEL_ORDER.forEach((num, i) => {
+      const angle = i * step + step / 2;
+      labels += `<div style="position:absolute;top:50%;left:50%;transform:rotate(${angle}deg) translateY(-170%);transform-origin:0 0;font-size:11px;font-weight:900;font-style:italic;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.8);pointer-events:none">${num}</div>`;
+    });
+    wheel.innerHTML = labels;
+  }
+  renderWheel();
+
+  // Build betting board: standard roulette layout
+  const board = document.getElementById('board');
+  function makeCell(num) {
+    const c = document.createElement('div');
+    c.className = 'lr-cell ' + (num === 0 ? 'green' : (RED_NUMS.has(num) ? 'red' : 'black'));
+    c.dataset.num = num;
+    c.innerHTML = num + '<div class="chips"></div>';
+    return c;
+  }
+  // 0 cell spans 3 rows
+  board.appendChild(makeCell(0));
+  // Row 1: 3, 6, 9, 12, ...
+  for (let r = 2; r >= 0; r--) {
+    for (let col = 0; col < 12; col++) {
+      const num = col * 3 + (r + 1);
+      board.appendChild(makeCell(num));
+    }
+  }
+
+  // Outside bets
+  const outside = document.getElementById('outside-board');
+  const outsideBets = [
+    { id: '1to18', label: '1–18', test: n => n >= 1 && n <= 18, payout: 1 },
+    { id: 'even', label: 'EVEN', test: n => n > 0 && n % 2 === 0, payout: 1 },
+    { id: 'red', label: 'RED', test: n => RED_NUMS.has(n), payout: 1, className: 'red' },
+    { id: 'black', label: 'BLACK', test: n => n > 0 && !RED_NUMS.has(n), payout: 1, className: 'black' },
+    { id: 'odd', label: 'ODD', test: n => n > 0 && n % 2 === 1, payout: 1 },
+    { id: '19to36', label: '19–36', test: n => n >= 19 && n <= 36, payout: 1 },
+  ];
+  outsideBets.forEach(b => {
+    const el = document.createElement('div'); el.className = 'lr-cell ' + (b.className || ''); el.dataset.outside = b.id;
+    el.innerHTML = b.label + '<div class="chips"></div>';
+    outside.appendChild(el);
+  });
+
+  let straightBets = {}; // {num: amount}
+  let outsideBetsMap = {}; // {id: amount}
+  let lightning = []; // [{num, mult}, ...]
+  let currentRotation = 0; let ballRotation = 0; let spinning = false;
+
+  const MULT_POOL = [
+    { mult: 50, weight: 50 },
+    { mult: 100, weight: 30 },
+    { mult: 300, weight: 15 },
+    { mult: 500, weight: 5 },
+  ];
+  function pickMult() { const total = MULT_POOL.reduce((s,m)=>s+m.weight,0); let r = Math.random()*total; for (const m of MULT_POOL) { if (r < m.weight) return m.mult; r -= m.weight; } return 50; }
+
+  function rollLightning() {
+    const count = 1 + Math.floor(Math.random() * 5); // 1-5
+    lightning = [];
+    const used = new Set();
+    while (lightning.length < count) {
+      const n = Math.floor(Math.random() * 37);
+      if (used.has(n)) continue;
+      used.add(n);
+      lightning.push({ num: n, mult: pickMult() });
+    }
+    // Render bolts strip
+    const bolts = document.getElementById('bolts');
+    bolts.innerHTML = lightning.map(l => `<div class="lr-bolt ${l.mult >= 300 ? 'epic' : ''}"><div class="n">${l.num}</div><div class="m">${l.mult}×</div></div>`).join('');
+    // Decorate board cells
+    document.querySelectorAll('.lr-cell.bolt, .lr-cell.bolt-epic').forEach(c => c.classList.remove('bolt', 'bolt-epic'));
+    lightning.forEach(l => {
+      const cell = board.querySelector(`.lr-cell[data-num="${l.num}"]`);
+      if (!cell) return;
+      cell.classList.add('bolt');
+      if (l.mult >= 300) cell.classList.add('bolt-epic');
+    });
+  }
+  rollLightning();
+
+  // Wire up bets
+  function refresh() {
+    document.querySelectorAll('.lr-cell[data-num]').forEach(c => {
+      const num = parseInt(c.dataset.num);
+      const amt = straightBets[num];
+      c.classList.toggle('has-chip', !!amt);
+      const chip = c.querySelector('.chips'); if (chip) chip.textContent = amt ? amt : '';
+    });
+    document.querySelectorAll('.lr-cell[data-outside]').forEach(c => {
+      const id = c.dataset.outside;
+      const amt = outsideBetsMap[id];
+      c.classList.toggle('has-chip', !!amt);
+      const chip = c.querySelector('.chips'); if (chip) chip.textContent = amt ? amt : '';
+    });
+  }
+  function chipAmount() { return Math.max(10, parseInt(document.getElementById('bet-amount').value) || 50); }
+
+  board.addEventListener('click', e => {
+    const cell = e.target.closest('.lr-cell[data-num]'); if (!cell || spinning) return;
+    const amt = chipAmount();
+    if (!Wallet.canBet(amt)) { toast('Not enough FUN coins', 'warn'); return; }
+    const num = parseInt(cell.dataset.num);
+    straightBets[num] = (straightBets[num] || 0) + amt; Wallet.subtract(amt); refresh(); Sfx.bet();
+  });
+  outside.addEventListener('click', e => {
+    const cell = e.target.closest('.lr-cell[data-outside]'); if (!cell || spinning) return;
+    const amt = chipAmount();
+    if (!Wallet.canBet(amt)) { toast('Not enough FUN coins', 'warn'); return; }
+    const id = cell.dataset.outside;
+    outsideBetsMap[id] = (outsideBetsMap[id] || 0) + amt; Wallet.subtract(amt); refresh(); Sfx.bet();
+  });
+
+  document.getElementById('clear-bets').addEventListener('click', () => {
+    if (spinning) return;
+    let refund = 0;
+    for (const k in straightBets) refund += straightBets[k];
+    for (const k in outsideBetsMap) refund += outsideBetsMap[k];
+    if (refund > 0) { Wallet.add(refund); Sfx.click(); }
+    straightBets = {}; outsideBetsMap = {}; refresh();
+  });
+
+  const resultEl = document.getElementById('result');
+  const historyEl = document.getElementById('history');
+
+  document.getElementById('spin-btn').addEventListener('click', () => {
+    if (spinning) return;
+    const totalBet = Object.values(straightBets).reduce((s,a)=>s+a,0) + Object.values(outsideBetsMap).reduce((s,a)=>s+a,0);
+    if (totalBet === 0) { resultEl.textContent = 'Place a bet first'; resultEl.className = 'lr-result'; return; }
+    spinning = true; Sfx.spin && Sfx.spin();
+    resultEl.textContent = ''; resultEl.className = 'lr-result';
+    const winIdx = Math.floor(Math.random() * N);
+    const winNum = WHEEL_ORDER[winIdx];
+    const step = 360 / N;
+    const targetAngle = -(winIdx * step + step / 2);
+    const turns = 6 + Math.floor(Math.random() * 4);
+    currentRotation = currentRotation - (currentRotation % 360) + turns * 360 + targetAngle;
+    wheel.style.transform = `rotate(${currentRotation}deg)`;
+    // Ball spins opposite direction
+    const ball = document.getElementById('ball');
+    ballRotation = ballRotation - (ballRotation % 360) - (turns * 360) - targetAngle;
+    ball.style.transformOrigin = '50% calc(50% + 50px)';
+    ball.style.transform = `translateX(-50%) rotate(${ballRotation}deg)`;
+    setTimeout(() => finalize(winNum), 5100);
+  });
+
+  function finalize(winNum) {
+    spinning = false;
+    let win = 0;
+    let boltHit = lightning.find(l => l.num === winNum);
+    // Straight bet
+    if (straightBets[winNum]) {
+      if (boltHit) {
+        win += straightBets[winNum] * boltHit.mult;
+      } else {
+        // Standard Lightning Roulette pays 30:1 on straight (instead of 35:1, the lightning fee)
+        win += straightBets[winNum] * 30;
+      }
+      // include stake back
+      win += straightBets[winNum];
+    }
+    // Outside bets
+    outsideBets.forEach(b => {
+      if (outsideBetsMap[b.id] && b.test(winNum)) {
+        win += outsideBetsMap[b.id] * (b.payout + 1);
+      }
+    });
+    if (win > 0) {
+      Wallet.add(win);
+      if (boltHit && straightBets[winNum]) {
+        resultEl.innerHTML = `${winNum} · ⚡ ${boltHit.mult}× LIGHTNING HIT · WIN ${win.toLocaleString()} FUN`;
+        resultEl.className = 'lr-result bolt-win';
+        Sfx.jackpot && Sfx.jackpot();
+      } else {
+        resultEl.textContent = `${winNum} · WIN ${win.toLocaleString()} FUN`;
+        resultEl.className = 'lr-result win';
+        Sfx.win && Sfx.win();
+      }
+    } else {
+      resultEl.textContent = `${winNum} · No win`;
+      resultEl.className = 'lr-result loss';
+      Sfx.loss && Sfx.loss();
+    }
+    const pill = document.createElement('div'); pill.className = 'lr-history-pill';
+    pill.style.background = winNum === 0 ? '#0d8a30' : (RED_NUMS.has(winNum) ? '#c41a1a' : '#1a1a1a');
+    pill.style.color = '#fff'; pill.textContent = winNum + (boltHit ? ' ⚡' : '');
+    historyEl.insertBefore(pill, historyEl.firstChild); while (historyEl.children.length > 12) historyEl.removeChild(historyEl.lastChild);
+    straightBets = {}; outsideBetsMap = {}; refresh();
+    setTimeout(rollLightning, 600);
+  }
+})();
+</script>
+
+</body>
+</html>

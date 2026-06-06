@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var p=location.pathname;if(p.endsWith('/')||/\.html?$/.test(p))return;var m='/bigtaka_freeplay';var i=p.lastIndexOf(m);if(i!==-1&&p.length===i+m.length){document.write('<base href="'+p+'/">');}else{var s=p.lastIndexOf('/');if(s>=0)document.write('<base href="'+p.substring(0,s+1)+'">');}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Crazy Time — Bigtaka Free Play</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+Bengali:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+.ct-stage { background: radial-gradient(circle at 50% 0%, rgba(255, 30, 215, 0.35), transparent 60%), radial-gradient(circle at 0% 70%, rgba(80, 14, 207, 0.25), transparent 60%), linear-gradient(180deg, #1a052a 0%, #100525 100%); border-radius: 20px; padding: 24px 14px; position: relative; overflow: hidden; }
+.ct-led { position: absolute; inset: 14px; border-radius: 18px; border: 2px solid; border-image: linear-gradient(45deg, #ff1ed7, #ffd700, #00e5ff, #ff1ed7) 1; opacity: 0.45; pointer-events: none; animation: ctLed 4s linear infinite; }
+@keyframes ctLed { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.7; } }
+.ct-top-slot { background: linear-gradient(135deg, #500ecf, #ff1ed7); padding: 10px 14px; border-radius: 12px; display: flex; align-items: center; gap: 14px; justify-content: center; max-width: 380px; margin: 0 auto 14px; border: 2px solid var(--gold); box-shadow: 0 0 20px rgba(255,215,0,0.3); position: relative; z-index: 2; }
+.ct-slot-cell { background: #1a0c35; padding: 8px 14px; border-radius: 8px; font-weight: 900; font-style: italic; color: var(--gold); min-width: 70px; text-align: center; font-size: 16px; }
+.ct-wheel-wrap { position: relative; width: min(420px, 90vw); aspect-ratio: 1; margin: 0 auto; z-index: 2; }
+.ct-wheel { width: 100%; height: 100%; border-radius: 50%; border: 8px solid #ff1ed7; background: #1a052a; transition: transform 5s cubic-bezier(0.17,0.67,0.21,1); box-shadow: 0 0 60px rgba(255,30,215,0.6), inset 0 0 40px rgba(0,0,0,0.5); position: relative; overflow: hidden; }
+.ct-pointer { position: absolute; top: -6px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 16px solid transparent; border-right: 16px solid transparent; border-top: 28px solid var(--gold); z-index: 5; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6)); }
+.ct-center { position: absolute; inset: 30%; border-radius: 50%; background: radial-gradient(circle, #ff1ed7 0%, #500ecf 100%); border: 4px solid var(--gold); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 900; font-style: italic; color: #fff; z-index: 4; text-align: center; line-height: 1.1; box-shadow: inset 0 -10px 18px rgba(0,0,0,0.3); }
+.ct-bet-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 14px; }
+.ct-bet-btn { padding: 14px 6px; border-radius: 12px; cursor: pointer; transition: all 0.15s; font-weight: 900; color: #fff; border: 2px solid transparent; position: relative; font-size: 13px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.ct-bet-btn:hover { transform: translateY(-2px); }
+.ct-bet-btn .chips { font-size: 10px; padding: 2px 6px; border-radius: 6px; background: rgba(0,0,0,0.45); color: var(--gold); display: none; margin-top: 2px; }
+.ct-bet-btn.has-chip .chips { display: block; }
+.ct-b1 { background: linear-gradient(135deg, #5fc7ff, #1e88e5); }
+.ct-b2 { background: linear-gradient(135deg, #ffe35c, #c89211); color: #1a0c35; }
+.ct-b5 { background: linear-gradient(135deg, #ff8a00, #c4451a); }
+.ct-b10 { background: linear-gradient(135deg, #a056e0, #500ecf); }
+.ct-bcoin { background: linear-gradient(135deg, #1cc064, #0a8740); border: 2px solid var(--gold); }
+.ct-bpach { background: linear-gradient(135deg, #ff1ed7, #b80098); border: 2px solid var(--gold); }
+.ct-bcash { background: linear-gradient(135deg, #d4a017, #7a4a0d); border: 2px solid var(--gold); }
+.ct-bcrazy { background: linear-gradient(135deg, #ff1ed7, #500ecf); border: 3px solid var(--gold); box-shadow: 0 0 18px rgba(255,30,215,0.5); }
+.ct-result { font-size: clamp(36px, 6vw, 52px); font-weight: 900; font-style: italic; text-align: center; margin: 18px 0 6px; min-height: 60px; position: relative; z-index: 2; }
+.ct-result.win { color: var(--green); animation: ctRes 0.5s ease; }
+.ct-result.bonus { color: #ff1ed7; }
+.ct-result.loss { color: var(--text-muted); }
+@keyframes ctRes { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+.ct-bonus-overlay { position: absolute; inset: 12px; border-radius: 20px; background: linear-gradient(180deg, rgba(80,14,207,0.97), rgba(26,5,42,0.97)); display: none; flex-direction: column; align-items: center; justify-content: center; padding: 16px; z-index: 10; }
+.ct-bonus-overlay.show { display: flex; animation: ctBonus 0.4s ease; }
+@keyframes ctBonus { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); } }
+.ct-bonus-overlay h2 { font-size: 26px; color: var(--gold); margin: 0 0 8px; text-align: center; }
+/* Coin Flip */
+.ct-coin-wrap { display: flex; flex-direction: column; align-items: center; }
+.ct-coin { width: 160px; aspect-ratio: 1; border-radius: 50%; position: relative; transform-style: preserve-3d; transition: transform 2.5s cubic-bezier(0.17,0.67,0.21,1); }
+.ct-coin-face { position: absolute; inset: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 900; font-style: italic; backface-visibility: hidden; }
+.ct-coin-face.red { background: radial-gradient(circle, #ff4a4a, #b00020); color: #fff; border: 4px solid #ff8a8a; }
+.ct-coin-face.blue { background: radial-gradient(circle, #4a82e0, #1e4ba0); color: #fff; border: 4px solid #8ab5ff; transform: rotateY(180deg); }
+/* Pachinko */
+.ct-pachinko { width: 100%; max-width: 360px; aspect-ratio: 0.9; background: rgba(0,0,0,0.4); border-radius: 12px; position: relative; overflow: hidden; }
+.ct-peg { position: absolute; width: 8px; height: 8px; border-radius: 50%; background: #fff; box-shadow: 0 0 4px #fff; }
+.ct-puck { position: absolute; width: 16px; height: 16px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 10px var(--gold); transition: top 0.08s linear, left 0.08s linear; }
+.ct-buckets { position: absolute; bottom: 0; left: 0; right: 0; display: flex; gap: 2px; padding: 2px; }
+.ct-bucket { flex: 1; padding: 6px 2px; text-align: center; font-size: 11px; font-weight: 900; font-style: italic; color: #1a0c35; border-radius: 4px; }
+/* Cash Hunt */
+.ct-cashhunt { display: grid; grid-template-columns: repeat(9, 1fr); gap: 3px; padding: 4px; max-width: 380px; }
+.ct-cash-tile { aspect-ratio: 1; background: rgba(255,255,255,0.15); border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: all 0.15s; }
+.ct-cash-tile:hover { background: rgba(255,215,0,0.35); transform: scale(1.1); }
+.ct-cash-tile.revealed { background: var(--gold); color: #1a0c35; font-weight: 900; font-size: 10px; }
+/* Crazy Time inner wheel */
+.ct-inner-wheel { width: 240px; aspect-ratio: 1; border-radius: 50%; border: 5px solid var(--gold); background: #2a0d3a; position: relative; transition: transform 4s cubic-bezier(0.17,0.67,0.21,1); box-shadow: 0 0 30px rgba(255,30,215,0.5); }
+.ct-inner-pointer { position: absolute; top: -4px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 18px solid var(--gold); z-index: 5; }
+.ct-flapper-row { display: flex; gap: 8px; margin-bottom: 10px; }
+.ct-flapper { padding: 8px 12px; border-radius: 8px; background: var(--gold); color: #1a0c35; font-weight: 900; font-style: italic; }
+.ct-history { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-top: 12px; position: relative; z-index: 2; }
+.ct-history-pill { padding: 6px 10px; border-radius: 10px; font-size: 13px; font-weight: 800; color: #fff; }
+</style>
+</head>
+<body>
+
+<nav class="nav"><div class="nav-inner">
+  <a href="../index.html" class="logo"><img src="../assets/bigtaka-freetoplay.png" alt="Bigtaka Free Play" /></a>
+  <div class="nav-right">
+    <div class="nav-auth">
+      <button class="btn btn-ghost btn-sm nav-cta nav-login" data-open-signup>Log In</button>
+      <button class="btn btn-gold btn-sm nav-cta nav-signup" data-open-signup>Sign Up</button>
+    </div>
+    <button class="sfx-toggle" data-sfx-btn title="Toggle sounds"><span data-sfx-icon>🔊</span></button>
+    <div class="wallet">
+      <img class="wallet-icon" src="../assets/takacoincoin.png" alt="Taka" />
+      <div><div class="wallet-label">Balance</div><div class="wallet-amount"><span data-wallet>10,000</span> FUN</div></div>
+      <button class="wallet-reset" data-wallet-reset title="Reset balance">⟳</button>
+    </div>
+  </div>
+</div></nav>
+
+<div class="play-wrap"><div class="container">
+  <a href="../index.html" class="back-link">← Back to all games</a>
+  <div class="play-head"><div class="play-title-block">
+    <h1>Crazy Time <span class="practice-stamp" style="position:static;display:inline-flex;margin-left:8px;font-size:11px;vertical-align:middle">🎯 Practice Mode</span></h1>
+    <p class="play-sub">Bet on numbers or 4 unique bonus games — Coin Flip, Pachinko, Cash Hunt, and Crazy Time itself.</p>
+  </div></div>
+
+  <div class="play-layout">
+    <div class="play-canvas-wrap ct-stage">
+      <div class="ct-led"></div>
+
+      <div class="ct-top-slot">
+        <div class="ct-slot-cell" id="slot-target">5</div>
+        <div style="color:#fff;font-weight:700;font-size:13px;letter-spacing:0.1em">TOP SLOT</div>
+        <div class="ct-slot-cell" id="slot-mult">25×</div>
+      </div>
+
+      <div class="ct-wheel-wrap">
+        <div class="ct-pointer"></div>
+        <div class="ct-wheel" id="wheel"></div>
+        <div class="ct-center">CRAZY<br/>TIME</div>
+
+        <!-- Bonus overlay (4 different mini-games) -->
+        <div class="ct-bonus-overlay" id="bonus-overlay">
+          <h2 id="bonus-title">Bonus</h2>
+          <div id="bonus-body"></div>
+          <div id="bonus-total" style="font-size:28px;font-weight:900;color:var(--gold);margin-top:10px"></div>
+          <button class="btn btn-gold btn-sm" id="bonus-close" style="display:none;margin-top:10px">Collect</button>
+        </div>
+      </div>
+
+      <div class="ct-result" id="result">Place your bet</div>
+      <div class="ct-history" id="history"></div>
+
+      <div class="status-row" style="display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--text-muted);margin-top:14px;padding-top:14px;border-top:1px solid var(--border);position:relative;z-index:2">
+        <span style="color:var(--green);font-weight:700;">● Live Demo</span>
+        <span>Provider: <strong style="color:#fff">Evolution Gaming</strong></span>
+        <span>RTP: <strong style="color:#fff">96.08%</strong></span>
+      </div>
+    </div>
+
+    <aside class="play-side">
+      <div class="panel">
+        <h4>Place Your Bet</h4>
+        <div style="display:flex;align-items:center;gap:8px;margin:8px 0">
+          <label style="font-size:12px;color:var(--text-muted);flex:1">Bet amount</label>
+          <input id="bet-amount" type="number" value="50" min="10" max="2000" step="10" style="width:90px;padding:6px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:#fff" />
+        </div>
+        <div class="ct-bet-grid">
+          <button class="ct-bet-btn ct-b1" data-bet="1">1<div class="chips"></div></button>
+          <button class="ct-bet-btn ct-b2" data-bet="2">2<div class="chips"></div></button>
+          <button class="ct-bet-btn ct-b5" data-bet="5">5<div class="chips"></div></button>
+          <button class="ct-bet-btn ct-b10" data-bet="10">10<div class="chips"></div></button>
+          <button class="ct-bet-btn ct-bcoin" data-bet="coin">🪙 Coin Flip<div class="chips"></div></button>
+          <button class="ct-bet-btn ct-bpach" data-bet="pachinko">🎯 Pachinko<div class="chips"></div></button>
+          <button class="ct-bet-btn ct-bcash" data-bet="cash">💰 Cash Hunt<div class="chips"></div></button>
+          <button class="ct-bet-btn ct-bcrazy" data-bet="crazy">🎡 Crazy Time<div class="chips"></div></button>
+        </div>
+        <div style="margin-top:14px;display:flex;gap:8px">
+          <button class="btn btn-ghost btn-sm" id="clear-bets" style="flex:1">Clear</button>
+          <button class="btn btn-gold" id="spin-btn" style="flex:2;font-size:15px">🎡 SPIN!</button>
+        </div>
+      </div>
+      <div class="panel" style="margin-top:14px">
+        <h4>4 Bonus Games</h4>
+        <p style="font-size:13px;color:var(--text-muted);line-height:1.5"><strong>Coin Flip</strong> — Red or blue, each with a random multiplier.<br/><strong>Pachinko</strong> — Drop a puck through pegs into multiplier buckets.<br/><strong>Cash Hunt</strong> — Pick from 108 hidden multipliers.<br/><strong>Crazy Time</strong> — Pick a flapper (green/blue/yellow), inner wheel spins with stacked multipliers.</p>
+      </div>
+    </aside>
+  </div>
+</div></div>
+
+<script src="../i18n.js"></script>
+<script src="../app.js"></script>
+<script>
+(function(){
+  // 54 segments
+  const SEGMENTS = [];
+  for (let i = 0; i < 21; i++) SEGMENTS.push({ k: 'num', v: 1 });
+  for (let i = 0; i < 13; i++) SEGMENTS.push({ k: 'num', v: 2 });
+  for (let i = 0; i < 7; i++) SEGMENTS.push({ k: 'num', v: 5 });
+  for (let i = 0; i < 4; i++) SEGMENTS.push({ k: 'num', v: 10 });
+  for (let i = 0; i < 4; i++) SEGMENTS.push({ k: 'coin' });
+  for (let i = 0; i < 2; i++) SEGMENTS.push({ k: 'pachinko' });
+  for (let i = 0; i < 2; i++) SEGMENTS.push({ k: 'cash' });
+  for (let i = 0; i < 1; i++) SEGMENTS.push({ k: 'crazy' });
+  for (let i = SEGMENTS.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [SEGMENTS[i], SEGMENTS[j]] = [SEGMENTS[j], SEGMENTS[i]]; }
+  const N = SEGMENTS.length;
+  const COLOR = { 1: '#5fc7ff', 2: '#ffe35c', 5: '#ff8a00', 10: '#a056e0', coin: '#1cc064', pachinko: '#ff1ed7', cash: '#d4a017', crazy: '#ff1ed7' };
+  const LABEL = { 1: '1', 2: '2', 5: '5', 10: '10', coin: '🪙', pachinko: '🎯', cash: '💰', crazy: '🎡' };
+
+  const wheel = document.getElementById('wheel');
+  function renderWheel() {
+    const step = 360 / N;
+    const stops = SEGMENTS.map((s, i) => `${COLOR[s.k === 'num' ? s.v : s.k]} ${i * step}deg ${(i + 1) * step}deg`);
+    wheel.style.background = `conic-gradient(${stops.join(', ')})`;
+    let labels = '';
+    SEGMENTS.forEach((s, i) => {
+      const angle = i * step + step / 2;
+      const txt = s.k === 'num' ? LABEL[s.v] : LABEL[s.k];
+      labels += `<div style="position:absolute;top:50%;left:50%;transform:rotate(${angle}deg) translateY(-180%);transform-origin:0 0;font-size:14px;font-weight:900;font-style:italic;color:#1a0c35;text-shadow:0 1px 1px rgba(255,255,255,0.3);pointer-events:none">${txt}</div>`;
+    });
+    wheel.innerHTML = labels;
+  }
+  renderWheel();
+
+  function pickSlotMult() { const r = Math.random(); if (r < 0.4) return 2; if (r < 0.7) return 5; if (r < 0.88) return 10; if (r < 0.96) return 25; return 50; }
+  function pickSlotTarget() { const opts = ['1','2','5','10','coin','pachinko','cash','crazy']; return opts[Math.floor(Math.random()*opts.length)]; }
+  let slotMult = pickSlotMult(); let slotTarget = pickSlotTarget();
+  function refreshSlot() { document.getElementById('slot-target').textContent = slotTarget in LABEL ? LABEL[slotTarget] : slotTarget; document.getElementById('slot-mult').textContent = slotMult + '×'; }
+  refreshSlot();
+
+  let bets = {}; let currentRotation = 0; let spinning = false;
+  const resultEl = document.getElementById('result');
+  const historyEl = document.getElementById('history');
+
+  document.querySelectorAll('.ct-bet-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (spinning) return;
+      const amt = Math.max(10, parseInt(document.getElementById('bet-amount').value) || 50);
+      if (!Wallet.canBet(amt)) { toast('Not enough FUN coins', 'warn'); return; }
+      const k = btn.dataset.bet;
+      bets[k] = (bets[k] || 0) + amt; Wallet.subtract(amt);
+      btn.classList.add('has-chip');
+      btn.querySelector('.chips').textContent = bets[k] + ' FUN';
+      Sfx.bet();
+    });
+  });
+  document.getElementById('clear-bets').addEventListener('click', () => {
+    if (spinning) return;
+    let r = 0; for (const k in bets) r += bets[k];
+    if (r > 0) { Wallet.add(r); Sfx.click(); }
+    bets = {}; refreshBetBtns();
+  });
+  function refreshBetBtns() { document.querySelectorAll('.ct-bet-btn').forEach(b => { b.classList.remove('has-chip'); b.querySelector('.chips').textContent = ''; }); }
+
+  document.getElementById('spin-btn').addEventListener('click', () => {
+    if (spinning) return;
+    if (Object.keys(bets).length === 0) { resultEl.textContent = 'Place a bet first'; return; }
+    spinning = true; Sfx.spin && Sfx.spin();
+    resultEl.textContent = '';
+    const idx = Math.floor(Math.random() * N);
+    const step = 360 / N;
+    const targetAngle = -(idx * step + step / 2);
+    const turns = 5 + Math.floor(Math.random() * 4);
+    currentRotation = currentRotation - (currentRotation % 360) + turns * 360 + targetAngle;
+    wheel.style.transform = `rotate(${currentRotation}deg)`;
+    setTimeout(() => handleResult(SEGMENTS[idx]), 5100);
+  });
+
+  function handleResult(seg) {
+    spinning = false;
+    const key = seg.k === 'num' ? String(seg.v) : seg.k;
+    const pill = document.createElement('div'); pill.className = 'ct-history-pill';
+    pill.style.background = seg.k === 'num' ? COLOR[seg.v] : COLOR[seg.k];
+    pill.textContent = seg.k === 'num' ? seg.v : LABEL[seg.k];
+    historyEl.insertBefore(pill, historyEl.firstChild); while (historyEl.children.length > 10) historyEl.removeChild(historyEl.lastChild);
+
+    const slotApplies = (slotTarget === key);
+
+    if (seg.k === 'coin') { if (bets.coin) startCoinFlip(bets.coin, slotApplies ? slotMult : 1); else noBetBonus('🪙 Coin Flip'); return; }
+    if (seg.k === 'pachinko') { if (bets.pachinko) startPachinko(bets.pachinko, slotApplies ? slotMult : 1); else noBetBonus('🎯 Pachinko'); return; }
+    if (seg.k === 'cash') { if (bets.cash) startCashHunt(bets.cash, slotApplies ? slotMult : 1); else noBetBonus('💰 Cash Hunt'); return; }
+    if (seg.k === 'crazy') { if (bets.crazy) startCrazyTime(bets.crazy, slotApplies ? slotMult : 1); else noBetBonus('🎡 Crazy Time'); return; }
+
+    let win = 0;
+    if (bets[key]) {
+      const eff = slotApplies ? slotMult : seg.v;
+      win = bets[key] * (eff + 1);
+    }
+    if (win > 0) {
+      Wallet.add(win);
+      resultEl.innerHTML = `${seg.v} · WIN ${win.toLocaleString()} FUN${slotApplies ? ' <span style="color:var(--gold)"> ⚡ ' + slotMult + '×</span>' : ''}`;
+      resultEl.className = 'ct-result win'; Sfx.win && Sfx.win();
+    } else {
+      resultEl.textContent = `${seg.v} · No win`; resultEl.className = 'ct-result loss'; Sfx.loss && Sfx.loss();
+    }
+    resetRound();
+  }
+  function noBetBonus(name) { resultEl.textContent = name + ' · No bet placed'; resultEl.className = 'ct-result loss'; Sfx.loss && Sfx.loss(); resetRound(); }
+  function resetRound() { bets = {}; refreshBetBtns(); slotMult = pickSlotMult(); slotTarget = pickSlotTarget(); refreshSlot(); }
+
+  const ov = document.getElementById('bonus-overlay');
+  const body = document.getElementById('bonus-body');
+  const totalEl = document.getElementById('bonus-total');
+  const closeBtn = document.getElementById('bonus-close');
+
+  function openBonus(title, html) {
+    document.getElementById('bonus-title').textContent = title;
+    body.innerHTML = html; totalEl.textContent = ''; closeBtn.style.display = 'none'; ov.classList.add('show');
+  }
+  function closeBonus(msg, winAmt, isWin) {
+    ov.classList.remove('show');
+    if (isWin) { resultEl.innerHTML = msg + ` · WIN ${winAmt.toLocaleString()} FUN`; resultEl.className = 'ct-result bonus'; }
+    else { resultEl.textContent = msg; resultEl.className = 'ct-result loss'; }
+    resetRound();
+  }
+
+  // 1. Coin Flip
+  function startCoinFlip(bet, slot) {
+    const red = pickMult(); const blue = pickMult();
+    openBonus('🪙 Coin Flip', `
+      <div class="ct-coin-wrap">
+        <div class="ct-coin" id="ct-coin"><div class="ct-coin-face red">${red}×</div><div class="ct-coin-face blue">${blue}×</div></div>
+        <div style="display:flex;gap:12px;margin-top:14px">
+          <button class="btn" style="background:#c41a1a;color:#fff;font-weight:900" id="pick-red">RED ${red}×</button>
+          <button class="btn" style="background:#1e4ba0;color:#fff;font-weight:900" id="pick-blue">BLUE ${blue}×</button>
+        </div>
+      </div>
+    `);
+    const coin = document.getElementById('ct-coin');
+    let picked = false;
+    function flip(side) {
+      if (picked) return; picked = true;
+      const win = Math.random() < 0.5 ? 'red' : 'blue';
+      const turns = 5 + Math.floor(Math.random() * 4);
+      coin.style.transition = 'transform 2.5s cubic-bezier(0.17,0.67,0.21,1)';
+      coin.style.transform = `rotateY(${turns * 360 + (win === 'blue' ? 180 : 0)}deg)`;
+      Sfx.coin && Sfx.coin();
+      setTimeout(() => {
+        const mult = win === 'red' ? red : blue;
+        const isWin = side === win;
+        const won = isWin ? Math.floor(bet * mult * slot) : 0;
+        if (isWin) Wallet.add(won);
+        totalEl.textContent = isWin ? `${win.toUpperCase()} · ${mult}× · WIN ${won.toLocaleString()} FUN` : `${win.toUpperCase()} won · You picked ${side.toUpperCase()}`;
+        closeBtn.style.display = '';
+        closeBtn.onclick = () => closeBonus('🪙 Coin Flip', won, isWin);
+        if (isWin) Sfx.bigWin && Sfx.bigWin(); else Sfx.loss && Sfx.loss();
+      }, 2700);
+    }
+    document.getElementById('pick-red').onclick = () => flip('red');
+    document.getElementById('pick-blue').onclick = () => flip('blue');
+  }
+  function pickMult() { const r = Math.random(); if (r < 0.5) return 2 + Math.floor(Math.random()*4); if (r < 0.85) return 5 + Math.floor(Math.random()*11); if (r < 0.97) return 16 + Math.floor(Math.random()*35); return 50 + Math.floor(Math.random()*51); }
+
+  // 2. Pachinko
+  function startPachinko(bet, slot) {
+    const buckets = [2, 5, 10, 25, 50, 25, 10, 5, 2];
+    openBonus('🎯 Pachinko', `
+      <div class="ct-pachinko" id="pach">
+        <div class="ct-puck" id="puck" style="top:-20px;left:50%"></div>
+        <div class="ct-buckets">${buckets.map(b => `<div class="ct-bucket" style="background:linear-gradient(135deg,#ff1ed7,#500ecf)">${b}×</div>`).join('')}</div>
+      </div>
+      <button class="btn btn-gold btn-sm" id="drop-btn" style="margin-top:12px">Drop Puck</button>
+    `);
+    document.getElementById('drop-btn').onclick = () => {
+      const pach = document.getElementById('pach');
+      const puck = document.getElementById('puck');
+      const w = pach.clientWidth; const h = pach.clientHeight;
+      // Animate puck dropping
+      let x = w / 2; let y = -20; const step = 30; const rows = 10;
+      const targetBucket = Math.floor(Math.random() * buckets.length);
+      const targetX = (targetBucket + 0.5) * (w / buckets.length);
+      let row = 0;
+      function fall() {
+        if (row >= rows) {
+          // Final settle
+          puck.style.top = (h - 28) + 'px';
+          puck.style.left = (targetX - 8) + 'px';
+          setTimeout(() => {
+            const mult = buckets[targetBucket];
+            const win = Math.floor(bet * mult * slot);
+            Wallet.add(win);
+            totalEl.textContent = `${mult}× · WIN ${win.toLocaleString()} FUN`;
+            closeBtn.style.display = '';
+            closeBtn.onclick = () => closeBonus('🎯 Pachinko', win, true);
+            Sfx.bigWin && Sfx.bigWin();
+          }, 400);
+          return;
+        }
+        y += h / (rows + 2);
+        // drift toward targetX gradually
+        x += (targetX - x) / (rows - row);
+        x += (Math.random() - 0.5) * step;
+        puck.style.top = y + 'px';
+        puck.style.left = (x - 8) + 'px';
+        row++;
+        Sfx.tick && Sfx.tick();
+        setTimeout(fall, 200);
+      }
+      document.getElementById('drop-btn').disabled = true;
+      fall();
+    };
+  }
+
+  // 3. Cash Hunt (108 hidden multipliers, pick 1)
+  function startCashHunt(bet, slot) {
+    const TILES = 108;
+    let tilesHtml = '';
+    const mults = [];
+    for (let i = 0; i < TILES; i++) {
+      const m = (function(){ const r = Math.random(); if (r < 0.5) return 1 + Math.floor(Math.random()*5); if (r < 0.8) return 5 + Math.floor(Math.random()*15); if (r < 0.95) return 25 + Math.floor(Math.random()*50); return 100 + Math.floor(Math.random()*500); })();
+      mults.push(m);
+      tilesHtml += `<div class="ct-cash-tile" data-i="${i}">${['🎯','💰','💎','🎁','⭐','🔔'][i%6]}</div>`;
+    }
+    openBonus('💰 Cash Hunt', `
+      <p style="color:#fff;opacity:0.9;font-size:13px;margin-bottom:6px">108 targets · Pick one to reveal your multiplier</p>
+      <div class="ct-cashhunt" style="display:grid;grid-template-columns:repeat(12, 1fr);gap:2px;padding:4px;max-width:380px">${tilesHtml}</div>
+    `);
+    let picked = false;
+    body.querySelector('.ct-cashhunt').onclick = (e) => {
+      if (picked) return;
+      const t = e.target.closest('.ct-cash-tile'); if (!t) return;
+      picked = true;
+      const i = parseInt(t.dataset.i);
+      const m = mults[i];
+      t.classList.add('revealed'); t.textContent = m + '×';
+      const win = Math.floor(bet * m * slot);
+      Wallet.add(win);
+      totalEl.textContent = `${m}× · WIN ${win.toLocaleString()} FUN`;
+      closeBtn.style.display = '';
+      closeBtn.onclick = () => closeBonus('💰 Cash Hunt', win, true);
+      if (m >= 100) Sfx.jackpot && Sfx.jackpot(); else Sfx.bigWin && Sfx.bigWin();
+    };
+  }
+
+  // 4. Crazy Time inner wheel (pick flapper, inner wheel spins)
+  function startCrazyTime(bet, slot) {
+    openBonus('🎡 Crazy Time', `
+      <p style="color:#fff;opacity:0.9;font-size:13px;margin-bottom:8px">Pick a flapper. The inner wheel spins with stacked multipliers.</p>
+      <div class="ct-flapper-row">
+        <button class="ct-flapper" data-f="green" style="background:#1cc064">GREEN</button>
+        <button class="ct-flapper" data-f="blue" style="background:#4a82e0;color:#fff">BLUE</button>
+        <button class="ct-flapper" data-f="yellow" style="background:#ffd700">YELLOW</button>
+      </div>
+      <div style="position:relative;display:flex;justify-content:center;margin-top:10px">
+        <div class="ct-inner-pointer"></div>
+        <div class="ct-inner-wheel" id="cinner"></div>
+      </div>
+    `);
+    const inner = document.getElementById('cinner');
+    // 32 segments, multipliers ranging 5x to 200x by colour
+    const innerSegs = [];
+    for (let i = 0; i < 32; i++) {
+      const r = Math.random();
+      let m, c;
+      if (r < 0.4) { m = 5 + Math.floor(Math.random()*10); c = '#1cc064'; }
+      else if (r < 0.75) { m = 15 + Math.floor(Math.random()*25); c = '#4a82e0'; }
+      else if (r < 0.97) { m = 40 + Math.floor(Math.random()*60); c = '#ffd700'; }
+      else { m = 100 + Math.floor(Math.random()*100); c = '#ff1ed7'; }
+      innerSegs.push({ m, c });
+    }
+    const step = 360 / innerSegs.length;
+    const stops = innerSegs.map((s, i) => `${s.c} ${i * step}deg ${(i + 1) * step}deg`);
+    inner.style.background = `conic-gradient(${stops.join(', ')})`;
+    let lbl = ''; innerSegs.forEach((s, i) => { const a = i * step + step / 2; lbl += `<div style="position:absolute;top:50%;left:50%;transform:rotate(${a}deg) translateY(-130%);transform-origin:0 0;font-size:10px;font-weight:900;color:#1a0c35;text-shadow:0 1px 0 rgba(255,255,255,0.4);pointer-events:none">${s.m}</div>`; });
+    inner.innerHTML = lbl;
+
+    let picked = false;
+    body.querySelectorAll('.ct-flapper').forEach(f => {
+      f.onclick = () => {
+        if (picked) return; picked = true;
+        const idx = Math.floor(Math.random() * innerSegs.length);
+        const target = -(idx * step + step / 2);
+        const turns = 5 + Math.floor(Math.random() * 4);
+        inner.style.transform = `rotate(${turns * 360 + target}deg)`;
+        Sfx.spin && Sfx.spin();
+        setTimeout(() => {
+          const result = innerSegs[idx];
+          const win = Math.floor(bet * result.m * slot);
+          Wallet.add(win);
+          totalEl.textContent = `${result.m}× · WIN ${win.toLocaleString()} FUN`;
+          closeBtn.style.display = '';
+          closeBtn.onclick = () => closeBonus('🎡 Crazy Time', win, true);
+          if (result.m >= 100) Sfx.jackpot && Sfx.jackpot(); else Sfx.bigWin && Sfx.bigWin();
+        }, 4100);
+      };
+    });
+  }
+})();
+</script>
+
+</body>
+</html>

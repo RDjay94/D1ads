@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var p=location.pathname;if(p.endsWith('/')||/\.html?$/.test(p))return;var m='/bigtaka_freeplay';var i=p.lastIndexOf(m);if(i!==-1&&p.length===i+m.length){document.write('<base href="'+p+'/">');}else{var s=p.lastIndexOf('/');if(s>=0)document.write('<base href="'+p.substring(0,s+1)+'">');}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mega Wheel — Bigtaka Free Play</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+Bengali:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+.mw-stage { background: radial-gradient(circle at 50% 0%, rgba(255, 30, 215, 0.18), transparent 70%), #100525; border-radius: 20px; padding: 24px 14px; }
+.mw-wheel-wrap { position: relative; width: min(420px, 90vw); aspect-ratio: 1; margin: 0 auto; }
+.mw-wheel { width: 100%; height: 100%; border-radius: 50%; border: 6px solid var(--gold); background: #1a0c35; transition: transform 5s cubic-bezier(0.17,0.67,0.21,1); box-shadow: 0 0 40px rgba(255,30,215,0.35), inset 0 0 40px rgba(0,0,0,0.5); position: relative; overflow: hidden; }
+.mw-pointer { position: absolute; top: -6px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 16px solid transparent; border-right: 16px solid transparent; border-top: 28px solid var(--gold); z-index: 5; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6)); }
+.mw-center { position: absolute; inset: 28%; border-radius: 50%; background: linear-gradient(135deg, #500ecf, #ff1ed7); border: 4px solid var(--gold); display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 900; font-style: italic; color: var(--gold); box-shadow: inset 0 -8px 16px rgba(0,0,0,0.3); z-index: 4; }
+.mw-mega-banner { background: linear-gradient(135deg, #ff1ed7, #500ecf); padding: 16px; border-radius: 14px; text-align: center; margin-bottom: 18px; border: 2px solid var(--gold); box-shadow: 0 0 30px rgba(255,30,215,0.4); }
+.mw-mega-banner .lbl { font-size: 11px; font-weight: 800; letter-spacing: 0.18em; opacity: 0.9; }
+.mw-mega-banner .num { font-size: clamp(36px, 7vw, 56px); font-weight: 900; color: var(--gold); font-style: italic; line-height: 1; letter-spacing: -0.02em; }
+.mw-mega-banner .num.flash { animation: megaFlash 0.4s ease 3; }
+@keyframes megaFlash { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+.mw-bet-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 14px; }
+.mw-bet-btn { padding: 14px 8px; border-radius: 12px; background: var(--surface-2); border: 2px solid var(--border); font-size: 22px; font-weight: 900; font-style: italic; cursor: pointer; color: #fff; transition: all 0.15s; position: relative; }
+.mw-bet-btn:hover { transform: translateY(-2px); border-color: var(--gold); }
+.mw-bet-btn.bet1 { color: #1a0c35; background: linear-gradient(135deg, #c8c8c8, #888); }
+.mw-bet-btn.bet2 { color: #fff; background: linear-gradient(135deg, #4a82e0, #2f5cb8); }
+.mw-bet-btn.bet5 { color: #fff; background: linear-gradient(135deg, #ff8a00, #d4691a); }
+.mw-bet-btn.bet10 { color: #1a0c35; background: linear-gradient(135deg, #ffe35c, #c89211); }
+.mw-bet-btn.bet20 { color: #fff; background: linear-gradient(135deg, #ff1ed7, #b80098); }
+.mw-bet-btn.bet40 { color: #fff; background: linear-gradient(135deg, #500ecf, #2e0788); }
+.mw-bet-btn .chips { position: absolute; bottom: 4px; left: 4px; right: 4px; font-size: 10px; font-weight: 800; color: var(--gold); background: rgba(0,0,0,0.45); border-radius: 6px; padding: 2px 4px; display: none; }
+.mw-bet-btn.has-chip .chips { display: block; }
+.mw-result { font-size: clamp(44px, 7vw, 68px); font-weight: 900; font-style: italic; text-align: center; margin: 20px 0 6px; color: var(--gold); min-height: 70px; }
+.mw-result.win { color: var(--green); animation: resPulse 0.5s ease; }
+.mw-result.loss { color: var(--text-muted); }
+@keyframes resPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.18); } }
+.mw-mega-applied { display: inline-block; background: var(--gold); color: #1a0c35; font-weight: 900; padding: 4px 10px; border-radius: 8px; margin-top: 4px; font-size: 14px; }
+.mw-history { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-top: 12px; }
+.mw-history-pill { padding: 6px 10px; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--border); font-size: 13px; font-weight: 800; font-style: italic; }
+</style>
+</head>
+<body>
+
+<nav class="nav"><div class="nav-inner">
+  <a href="../index.html" class="logo"><img src="../assets/bigtaka-freetoplay.png" alt="Bigtaka Free Play" /></a>
+  <div class="nav-right">
+    <div class="nav-auth">
+      <button class="btn btn-ghost btn-sm nav-cta nav-login" data-open-signup>Log In</button>
+      <button class="btn btn-gold btn-sm nav-cta nav-signup" data-open-signup>Sign Up</button>
+    </div>
+    <button class="sfx-toggle" data-sfx-btn title="Toggle sounds"><span data-sfx-icon>🔊</span></button>
+    <div class="wallet">
+      <img class="wallet-icon" src="../assets/takacoincoin.png" alt="Taka" />
+      <div><div class="wallet-label">Balance</div><div class="wallet-amount"><span data-wallet>10,000</span> FUN</div></div>
+      <button class="wallet-reset" data-wallet-reset title="Reset balance">⟳</button>
+    </div>
+  </div>
+</div></nav>
+
+<div class="play-wrap"><div class="container">
+  <a href="../index.html" class="back-link">← Back to all games</a>
+  <div class="play-head"><div class="play-title-block">
+    <h1>Mega Wheel <span class="practice-stamp" style="position:static;display:inline-flex;margin-left:8px;font-size:11px;vertical-align:middle">🎯 Practice Mode</span></h1>
+    <p class="play-sub">Bet on a number. Top Mega Multiplier can supercharge any win up to 500×.</p>
+  </div></div>
+
+  <div class="play-layout">
+    <div class="play-canvas-wrap mw-stage">
+
+      <div class="mw-mega-banner">
+        <div class="lbl">⚡ MEGA MULTIPLIER THIS ROUND</div>
+        <div class="num" id="mega-num">—</div>
+      </div>
+
+      <div class="mw-wheel-wrap">
+        <div class="mw-pointer"></div>
+        <div class="mw-wheel" id="wheel"></div>
+        <div class="mw-center">MEGA<br/>WHEEL</div>
+      </div>
+
+      <div class="mw-result" id="result">Place your bet</div>
+      <div class="mw-history" id="history"></div>
+
+      <div class="status-row" style="display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--text-muted);margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+        <span style="color:var(--green);font-weight:700;">● Live Demo</span>
+        <span>Provider: <strong style="color:#fff">Pragmatic Live</strong></span>
+        <span>RTP: <strong style="color:#fff">96.51%</strong></span>
+      </div>
+    </div>
+
+    <aside class="play-side">
+      <div class="panel">
+        <h4>Place Your Bet</h4>
+        <div style="display:flex;align-items:center;gap:8px;margin:8px 0">
+          <label style="font-size:12px;color:var(--text-muted);flex:1">Bet per number</label>
+          <input id="bet-amount" type="number" value="50" min="10" max="5000" step="10" style="width:90px;padding:6px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:#fff" />
+        </div>
+        <div class="mw-bet-grid">
+          <button class="mw-bet-btn bet1" data-bet="1">1<div class="chips"></div></button>
+          <button class="mw-bet-btn bet2" data-bet="2">2<div class="chips"></div></button>
+          <button class="mw-bet-btn bet5" data-bet="5">5<div class="chips"></div></button>
+          <button class="mw-bet-btn bet10" data-bet="10">10<div class="chips"></div></button>
+          <button class="mw-bet-btn bet20" data-bet="20">20<div class="chips"></div></button>
+          <button class="mw-bet-btn bet40" data-bet="40">40<div class="chips"></div></button>
+        </div>
+        <div style="margin-top:14px;display:flex;gap:8px">
+          <button class="btn btn-ghost btn-sm" id="clear-bets" style="flex:1">Clear</button>
+          <button class="btn btn-green" id="spin-btn" style="flex:2;font-size:15px">SPIN!</button>
+        </div>
+      </div>
+      <div class="panel" style="margin-top:14px">
+        <h4>How to Play</h4>
+        <p style="font-size:13px;color:var(--text-muted);line-height:1.55">Place chips on numbers 1, 2, 5, 10, 20, or 40. The wheel has 54 segments — larger numbers are rarer. Before each spin, a Mega Multiplier (2×–500×) is randomly applied. If your number wins AND it matches the Mega Multiplier slot, your payout is multiplied.</p>
+      </div>
+    </aside>
+  </div>
+</div></div>
+
+<script src="../i18n.js"></script>
+<script src="../app.js"></script>
+<script>
+(function(){
+  const SEGMENTS = [];
+  // 54-segment distribution
+  for (let i = 0; i < 24; i++) SEGMENTS.push(1);
+  for (let i = 0; i < 15; i++) SEGMENTS.push(2);
+  for (let i = 0; i < 7; i++) SEGMENTS.push(5);
+  for (let i = 0; i < 4; i++) SEGMENTS.push(10);
+  for (let i = 0; i < 2; i++) SEGMENTS.push(20);
+  for (let i = 0; i < 2; i++) SEGMENTS.push(40);
+  // Shuffle so layout looks natural
+  for (let i = SEGMENTS.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [SEGMENTS[i], SEGMENTS[j]] = [SEGMENTS[j], SEGMENTS[i]]; }
+  const N = SEGMENTS.length;
+  const COLORS = { 1: '#888', 2: '#2f5cb8', 5: '#d4691a', 10: '#c89211', 20: '#b80098', 40: '#500ecf' };
+  const TEXT_COLOR = { 1: '#000', 2: '#fff', 5: '#fff', 10: '#000', 20: '#fff', 40: '#fff' };
+
+  // Render wheel via conic-gradient
+  const wheel = document.getElementById('wheel');
+  function renderWheel() {
+    const stops = [];
+    const step = 360 / N;
+    SEGMENTS.forEach((seg, i) => {
+      const from = i * step, to = from + step;
+      stops.push(`${COLORS[seg]} ${from}deg ${to}deg`);
+    });
+    wheel.style.background = `conic-gradient(${stops.join(', ')})`;
+    // Overlay numbers
+    let labelsHtml = '';
+    SEGMENTS.forEach((seg, i) => {
+      const angle = i * step + step / 2;
+      labelsHtml += `<div style="position:absolute;top:50%;left:50%;transform:rotate(${angle}deg) translateY(-180%);transform-origin:0 0;font-size:14px;font-weight:900;font-style:italic;color:${TEXT_COLOR[seg]};text-shadow:0 1px 2px rgba(0,0,0,0.5);pointer-events:none">${seg}</div>`;
+    });
+    wheel.innerHTML = labelsHtml;
+  }
+  renderWheel();
+
+  const MEGA_POOL = [2, 3, 5, 10, 20, 50, 100, 500];
+  function pickMega() { const r = Math.random(); if (r < 0.5) return MEGA_POOL[0+Math.floor(Math.random()*2)]; if (r < 0.8) return MEGA_POOL[2+Math.floor(Math.random()*2)]; if (r < 0.95) return MEGA_POOL[4+Math.floor(Math.random()*2)]; return MEGA_POOL[6+Math.floor(Math.random()*2)]; }
+
+  let megaMult = pickMega(); document.getElementById('mega-num').textContent = megaMult + '×';
+  let megaTarget = SEGMENTS[Math.floor(Math.random() * N)]; // The number Mega Multiplier applies to
+  let bets = {}; // {1: amount, 2: amount, ...}
+  let currentRotation = 0; let spinning = false;
+  const betInput = document.getElementById('bet-amount');
+  const resultEl = document.getElementById('result');
+  const historyEl = document.getElementById('history');
+
+  document.querySelectorAll('.mw-bet-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (spinning) return;
+      const amount = parseInt(betInput.value) || 50;
+      if (!Wallet.canBet(amount)) { toast('Not enough FUN coins', 'warn'); return; }
+      const num = parseInt(btn.dataset.bet);
+      bets[num] = (bets[num] || 0) + amount;
+      Wallet.subtract(amount);
+      btn.classList.add('has-chip');
+      btn.querySelector('.chips').textContent = bets[num] + ' FUN';
+      Sfx.bet();
+    });
+  });
+
+  document.getElementById('clear-bets').addEventListener('click', () => {
+    if (spinning) return;
+    let refund = 0; for (const k in bets) refund += bets[k];
+    if (refund > 0) { Wallet.add(refund); Sfx.click(); }
+    bets = {};
+    document.querySelectorAll('.mw-bet-btn').forEach(b => { b.classList.remove('has-chip'); b.querySelector('.chips').textContent = ''; });
+  });
+
+  document.getElementById('spin-btn').addEventListener('click', () => {
+    if (spinning) return;
+    if (Object.keys(bets).length === 0) { resultEl.textContent = 'Place a bet first'; resultEl.className = 'mw-result'; return; }
+    spinning = true; Sfx.spin && Sfx.spin();
+    resultEl.textContent = ''; resultEl.className = 'mw-result';
+    const winIdx = Math.floor(Math.random() * N);
+    const winNum = SEGMENTS[winIdx];
+    const step = 360 / N;
+    const targetAngle = -(winIdx * step + step / 2);
+    const turns = 6 + Math.floor(Math.random() * 4);
+    currentRotation = currentRotation - (currentRotation % 360) + turns * 360 + targetAngle;
+    wheel.style.transform = `rotate(${currentRotation}deg)`;
+    setTimeout(() => {
+      finalize(winNum);
+    }, 5100);
+  });
+
+  function finalize(winNum) {
+    spinning = false;
+    let win = 0;
+    let megaHit = false;
+    if (bets[winNum]) {
+      let payout = bets[winNum] * (winNum + 1); // 1 pays 2x (1 + stake back), 40 pays 41x
+      if (winNum === megaTarget) { payout = bets[winNum] * megaMult * (winNum + 1) / (winNum + 1) + bets[winNum] * megaMult; payout = bets[winNum] * megaMult + bets[winNum] * winNum; megaHit = true; }
+      win = Math.floor(payout);
+    }
+    if (win > 0) {
+      Wallet.add(win);
+      resultEl.innerHTML = `${winNum} · WIN ${win.toLocaleString()} FUN` + (megaHit ? `<br/><span class="mw-mega-applied">⚡ Mega Multiplier ${megaMult}× applied!</span>` : '');
+      resultEl.className = 'mw-result win';
+      if (megaHit || win >= bets[winNum] * 10) Sfx.bigWin && Sfx.bigWin(); else Sfx.win && Sfx.win();
+    } else {
+      resultEl.textContent = `${winNum} · No win`;
+      resultEl.className = 'mw-result loss';
+      Sfx.loss && Sfx.loss();
+    }
+    // History
+    const pill = document.createElement('div'); pill.className = 'mw-history-pill'; pill.style.color = TEXT_COLOR[winNum]; pill.style.background = COLORS[winNum]; pill.textContent = winNum;
+    historyEl.insertBefore(pill, historyEl.firstChild); while (historyEl.children.length > 10) historyEl.removeChild(historyEl.lastChild);
+    // Reset for next round
+    bets = {};
+    document.querySelectorAll('.mw-bet-btn').forEach(b => { b.classList.remove('has-chip'); b.querySelector('.chips').textContent = ''; });
+    megaMult = pickMega(); megaTarget = SEGMENTS[Math.floor(Math.random() * N)];
+    const numEl = document.getElementById('mega-num'); numEl.textContent = megaMult + '×'; numEl.classList.remove('flash'); void numEl.offsetWidth; numEl.classList.add('flash');
+  }
+})();
+</script>
+
+</body>
+</html>

@@ -495,6 +495,31 @@ img { display: block; max-width: 100%; }
   50% { transform: rotate(-3deg) translateY(-14px); }
 }
 
+.hero-brand-logo {
+  position: absolute;
+  left: 50%;
+  bottom: -10%;
+  transform: translateX(-50%) rotate(-3deg);
+  width: 84%;
+  max-width: 420px;
+  filter: drop-shadow(0 18px 38px rgba(0,0,0,0.55)) drop-shadow(0 0 60px rgba(255, 215, 0, 0.35));
+  animation: heroLogoFloat 6s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 3;
+}
+.hero-brand-logo img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+@keyframes heroLogoFloat {
+  0%, 100% { transform: translateX(-50%) rotate(-3deg) translateY(0); }
+  50% { transform: translateX(-50%) rotate(-1deg) translateY(-8px); }
+}
+@media (max-width: 720px) {
+  .hero-brand-logo { bottom: -14%; width: 78%; }
+}
+
 .hero-chips {
   position: absolute;
   inset: 0;
@@ -896,6 +921,35 @@ img { display: block; max-width: 100%; }
   margin-bottom: 14px;
   background: linear-gradient(135deg, var(--purple-glow), var(--purple));
   box-shadow: 0 8px 18px rgba(80, 14, 207, 0.4);
+}
+
+.cat-grid-big {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+}
+.cat-grid-big .cat-card {
+  padding: 38px 18px;
+  text-align: center;
+}
+.cat-grid-big .cat-icon {
+  width: 130px;
+  height: 130px;
+  border-radius: 26px;
+  font-size: 78px;
+  margin: 0 auto 18px;
+  box-shadow: 0 20px 44px rgba(0,0,0,0.45), 0 0 60px rgba(80, 14, 207, 0.35);
+}
+.cat-grid-big .cat-name {
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  margin-bottom: 0;
+}
+@media (max-width: 540px) {
+  .cat-grid-big { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .cat-grid-big .cat-card { padding: 26px 12px; }
+  .cat-grid-big .cat-icon { width: 96px; height: 96px; font-size: 58px; margin-bottom: 14px; }
+  .cat-grid-big .cat-name { font-size: 17px; }
 }
 
 .cat-card.slots .cat-icon { background: linear-gradient(135deg, #ffe35c, #c89211); box-shadow: 0 8px 18px rgba(255, 215, 0, 0.35); color: #1a0c35; }
@@ -1846,6 +1900,25 @@ img { display: block; max-width: 100%; }
 .signup-final .btn-ghost .signup-final-emoji { display: none; }
 .signup-final .btn-ghost .signup-final-text { align-items: center; }
 .signup-final .btn-ghost .signup-final-text small { display: none; }
+
+.signup-region-block {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 14px 16px;
+  border-radius: 14px;
+  background: rgba(255, 30, 215, 0.12);
+  border: 1px solid rgba(255, 30, 215, 0.4);
+  color: var(--text);
+  text-align: center;
+  margin-top: 4px;
+}
+.signup-region-block-icon { font-size: 32px; line-height: 1; }
+.signup-region-block strong { font-size: 14px; }
+.signup-region-block small { color: var(--text-muted); font-size: 12px; line-height: 1.4; }
+.btn-disabled { opacity: 0.55; pointer-events: none; filter: grayscale(0.4); }
+.btn-loading { opacity: 0.7; pointer-events: none; }
 
 @media (max-width: 480px) {
   .signup-card { padding: 24px 18px; }

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var p=location.pathname;if(p.endsWith('/')||/\.html?$/.test(p))return;var m='/bigtaka_freeplay';var i=p.lastIndexOf(m);if(i!==-1&&p.length===i+m.length){document.write('<base href="'+p+'/">');}else{var s=p.lastIndexOf('/');if(s>=0)document.write('<base href="'+p.substring(0,s+1)+'">');}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Monopoly Live — Bigtaka Free Play</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+Bengali:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+.ml-stage { background: radial-gradient(circle at 50% 0%, rgba(28, 192, 100, 0.25), transparent 60%), linear-gradient(180deg, #1a3a1f 0%, #0d1f10 100%); border-radius: 20px; padding: 24px 14px; position: relative; }
+.ml-wheel-wrap { position: relative; width: min(380px, 80vw); aspect-ratio: 1; margin: 0 auto; }
+.ml-wheel { width: 100%; height: 100%; border-radius: 50%; border: 8px solid #d4a017; background: #0d1f10; transition: transform 5s cubic-bezier(0.17,0.67,0.21,1); box-shadow: 0 0 40px rgba(212,160,23,0.4), inset 0 0 40px rgba(0,0,0,0.5); position: relative; overflow: hidden; }
+.ml-pointer { position: absolute; top: -6px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 16px solid transparent; border-right: 16px solid transparent; border-top: 28px solid #d4a017; z-index: 5; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6)); }
+.ml-center { position: absolute; inset: 30%; border-radius: 50%; background: radial-gradient(circle, #fff 0%, #c4c4c4 100%); border: 4px solid #d4a017; display: flex; align-items: center; justify-content: center; font-size: 32px; z-index: 4; }
+.ml-bet-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 14px; }
+.ml-bet-btn { padding: 16px 6px; border-radius: 12px; cursor: pointer; transition: all 0.15s; font-weight: 900; color: #fff; border: 2px solid transparent; position: relative; font-size: 14px; display: flex; flex-direction: column; align-items: center; }
+.ml-bet-btn:hover { transform: translateY(-2px); }
+.ml-bet-btn .chips { font-size: 10px; padding: 2px 6px; border-radius: 6px; background: rgba(0,0,0,0.45); color: var(--gold); display: none; margin-top: 2px; }
+.ml-bet-btn.has-chip .chips { display: block; }
+.ml-b1 { background: linear-gradient(135deg, #4a82e0, #2f5cb8); }
+.ml-b2 { background: linear-gradient(135deg, #ffe35c, #c89211); color: #1a0c35; }
+.ml-b5 { background: linear-gradient(135deg, #ff8a00, #c4451a); }
+.ml-b10 { background: linear-gradient(135deg, #a056e0, #500ecf); }
+.ml-b2roll { background: linear-gradient(135deg, #1cc064, #0a8740); border: 2px solid var(--gold); }
+.ml-b4roll { background: linear-gradient(135deg, #ff1ed7, #b80098); border: 2px solid var(--gold); }
+.ml-bchance { background: linear-gradient(135deg, #d4a017, #7a4a0d); border: 2px solid #fff; }
+.ml-result { font-size: clamp(38px, 6.5vw, 56px); font-weight: 900; font-style: italic; text-align: center; margin: 18px 0 6px; min-height: 64px; }
+.ml-result.win { color: var(--green); animation: mlRes 0.5s ease; }
+.ml-result.bonus { color: #ffd700; }
+.ml-result.loss { color: var(--text-muted); }
+@keyframes mlRes { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+.ml-board-overlay { position: absolute; inset: 12px; border-radius: 20px; background: linear-gradient(180deg, rgba(28,192,100,0.97), rgba(13,49,27,0.97)); display: none; flex-direction: column; align-items: center; justify-content: center; padding: 16px; z-index: 10; }
+.ml-board-overlay.show { display: flex; animation: mlBonus 0.4s ease; }
+@keyframes mlBonus { from { opacity: 0; } to { opacity: 1; } }
+.ml-board-overlay h2 { color: #fff; font-size: 24px; margin: 0 0 8px; text-align: center; }
+.ml-board { display: grid; grid-template-columns: repeat(7, 1fr); grid-template-rows: repeat(5, 1fr); gap: 4px; width: 100%; max-width: 480px; aspect-ratio: 1.4 / 1; margin: 8px 0; }
+.ml-tile { background: #fff; color: #1a0c35; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; padding: 6px 4px; text-align: center; position: relative; transition: all 0.2s; }
+.ml-tile.color-1 { background: #c4451a; color: #fff; }
+.ml-tile.color-2 { background: #4a82e0; color: #fff; }
+.ml-tile.color-3 { background: #1cc064; color: #fff; }
+.ml-tile.color-4 { background: #ff1ed7; color: #fff; }
+.ml-tile.color-5 { background: #ffd700; color: #1a0c35; }
+.ml-tile.color-6 { background: #500ecf; color: #fff; }
+.ml-tile.color-7 { background: #ff8a00; color: #fff; }
+.ml-tile.chance { background: #d4a017; color: #1a0c35; }
+.ml-tile.start { background: #fff; color: #1a0c35; border: 2px dashed #1a0c35; }
+.ml-tile.active { box-shadow: 0 0 0 3px var(--gold), 0 0 20px var(--gold); transform: scale(1.08); }
+.ml-token { position: absolute; top: 4px; right: 4px; width: 16px; height: 16px; border-radius: 50%; background: radial-gradient(circle, #fff, #888); border: 2px solid #1a0c35; box-shadow: 0 2px 4px rgba(0,0,0,0.4); }
+.ml-roll-counter { color: #fff; font-size: 18px; font-weight: 900; margin: 8px 0; }
+.ml-board-total { color: var(--gold); font-size: 32px; font-weight: 900; font-style: italic; margin: 8px 0; min-height: 40px; }
+.ml-history { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-top: 12px; }
+.ml-history-pill { padding: 6px 10px; border-radius: 10px; font-size: 13px; font-weight: 800; color: #fff; }
+</style>
+</head>
+<body>
+
+<nav class="nav"><div class="nav-inner">
+  <a href="../index.html" class="logo"><img src="../assets/bigtaka-freetoplay.png" alt="Bigtaka Free Play" /></a>
+  <div class="nav-right">
+    <div class="nav-auth">
+      <button class="btn btn-ghost btn-sm nav-cta nav-login" data-open-signup>Log In</button>
+      <button class="btn btn-gold btn-sm nav-cta nav-signup" data-open-signup>Sign Up</button>
+    </div>
+    <button class="sfx-toggle" data-sfx-btn title="Toggle sounds"><span data-sfx-icon>🔊</span></button>
+    <div class="wallet">
+      <img class="wallet-icon" src="../assets/takacoincoin.png" alt="Taka" />
+      <div><div class="wallet-label">Balance</div><div class="wallet-amount"><span data-wallet>10,000</span> FUN</div></div>
+      <button class="wallet-reset" data-wallet-reset title="Reset balance">⟳</button>
+    </div>
+  </div>
+</div></nav>
+
+<div class="play-wrap"><div class="container">
+  <a href="../index.html" class="back-link">← Back to all games</a>
+  <div class="play-head"><div class="play-title-block">
+    <h1>Monopoly Live <span class="practice-stamp" style="position:static;display:inline-flex;margin-left:8px;font-size:11px;vertical-align:middle">🎯 Practice Mode</span></h1>
+    <p class="play-sub">Land "2 Rolls" or "4 Rolls" to enter Mr. Monopoly's 3D board bonus and stack property multipliers.</p>
+  </div></div>
+
+  <div class="play-layout">
+    <div class="play-canvas-wrap ml-stage">
+
+      <div class="ml-wheel-wrap">
+        <div class="ml-pointer"></div>
+        <div class="ml-wheel" id="wheel"></div>
+        <div class="ml-center">🎩</div>
+
+        <div class="ml-board-overlay" id="board-overlay">
+          <h2 id="board-title">🎩 Mr. Monopoly's Walk</h2>
+          <div class="ml-roll-counter" id="roll-counter">Rolls remaining: 2</div>
+          <div class="ml-board" id="board"></div>
+          <div class="ml-board-total" id="board-total">—</div>
+          <button class="btn btn-gold btn-sm" id="board-close" style="display:none">Collect</button>
+        </div>
+      </div>
+
+      <div class="ml-result" id="result">Place your bet</div>
+      <div class="ml-history" id="history"></div>
+
+      <div class="status-row" style="display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--text-muted);margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+        <span style="color:var(--green);font-weight:700;">● Live Demo</span>
+        <span>Provider: <strong style="color:#fff">Evolution Gaming</strong></span>
+        <span>RTP: <strong style="color:#fff">96.23%</strong></span>
+      </div>
+    </div>
+
+    <aside class="play-side">
+      <div class="panel">
+        <h4>Place Your Bet</h4>
+        <div style="display:flex;align-items:center;gap:8px;margin:8px 0">
+          <label style="font-size:12px;color:var(--text-muted);flex:1">Bet amount</label>
+          <input id="bet-amount" type="number" value="50" min="10" max="2000" step="10" style="width:90px;padding:6px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:#fff" />
+        </div>
+        <div class="ml-bet-grid">
+          <button class="ml-bet-btn ml-b1" data-bet="1">1<div class="chips"></div></button>
+          <button class="ml-bet-btn ml-b2" data-bet="2">2<div class="chips"></div></button>
+          <button class="ml-bet-btn ml-b5" data-bet="5">5<div class="chips"></div></button>
+          <button class="ml-bet-btn ml-b10" data-bet="10">10<div class="chips"></div></button>
+          <button class="ml-bet-btn ml-b2roll" data-bet="2roll" style="grid-column:span 2">🎲 2 Rolls<div class="chips"></div></button>
+          <button class="ml-bet-btn ml-b4roll" data-bet="4roll" style="grid-column:span 2">🎲🎲 4 Rolls<div class="chips"></div></button>
+          <button class="ml-bet-btn ml-bchance" data-bet="chance" style="grid-column:span 4">🎁 Chance<div class="chips"></div></button>
+        </div>
+        <div style="margin-top:14px;display:flex;gap:8px">
+          <button class="btn btn-ghost btn-sm" id="clear-bets" style="flex:1">Clear</button>
+          <button class="btn btn-gold" id="spin-btn" style="flex:2;font-size:15px">🎡 SPIN!</button>
+        </div>
+      </div>
+      <div class="panel" style="margin-top:14px">
+        <h4>The Board Bonus</h4>
+        <p style="font-size:13px;color:var(--text-muted);line-height:1.55">When the wheel lands on a Rolls segment, Mr. Monopoly walks the 24-tile board for that many rolls. Each property he passes adds a multiplier. Chance tiles boost or extend the walk.</p>
+      </div>
+    </aside>
+  </div>
+</div></div>
+
+<script src="../i18n.js"></script>
+<script src="../app.js"></script>
+<script>
+(function(){
+  // 54 segments. 1(22) 2(15) 5(7) 10(4) 2roll(3) 4roll(2) chance(1)
+  const SEGMENTS = [];
+  for (let i = 0; i < 22; i++) SEGMENTS.push({ k: 'num', v: 1 });
+  for (let i = 0; i < 15; i++) SEGMENTS.push({ k: 'num', v: 2 });
+  for (let i = 0; i < 7; i++) SEGMENTS.push({ k: 'num', v: 5 });
+  for (let i = 0; i < 4; i++) SEGMENTS.push({ k: 'num', v: 10 });
+  for (let i = 0; i < 3; i++) SEGMENTS.push({ k: '2roll' });
+  for (let i = 0; i < 2; i++) SEGMENTS.push({ k: '4roll' });
+  for (let i = 0; i < 1; i++) SEGMENTS.push({ k: 'chance' });
+  for (let i = SEGMENTS.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [SEGMENTS[i], SEGMENTS[j]] = [SEGMENTS[j], SEGMENTS[i]]; }
+  const N = SEGMENTS.length;
+  const COLOR = { 1: '#4a82e0', 2: '#ffe35c', 5: '#ff8a00', 10: '#a056e0', '2roll': '#1cc064', '4roll': '#ff1ed7', chance: '#d4a017' };
+  const LABEL = { 1: '1', 2: '2', 5: '5', 10: '10', '2roll': '🎲', '4roll': '🎲🎲', chance: '?' };
+
+  const wheel = document.getElementById('wheel');
+  function renderWheel() {
+    const step = 360 / N;
+    const stops = SEGMENTS.map((s, i) => `${COLOR[s.k === 'num' ? s.v : s.k]} ${i * step}deg ${(i + 1) * step}deg`);
+    wheel.style.background = `conic-gradient(${stops.join(', ')})`;
+    let labels = '';
+    SEGMENTS.forEach((s, i) => {
+      const angle = i * step + step / 2;
+      const txt = s.k === 'num' ? s.v : LABEL[s.k];
+      labels += `<div style="position:absolute;top:50%;left:50%;transform:rotate(${angle}deg) translateY(-180%);transform-origin:0 0;font-size:13px;font-weight:900;font-style:italic;color:#1a0c35;text-shadow:0 1px 1px rgba(255,255,255,0.3);pointer-events:none">${txt}</div>`;
+    });
+    wheel.innerHTML = labels;
+  }
+  renderWheel();
+
+  // 24-tile board (perimeter): GO, 7 props × 3 sides + chance + railroads
+  const PROPS = [
+    { name: 'GO', cls: 'start', mult: 0 },
+    { name: 'Park Pl', cls: 'color-2', mult: 2 }, { name: 'Mall', cls: 'color-2', mult: 2 },
+    { name: 'Chance', cls: 'chance', mult: 0, chance: true },
+    { name: 'Beach', cls: 'color-3', mult: 3 }, { name: 'Resort', cls: 'color-3', mult: 3 }, { name: 'Spa', cls: 'color-3', mult: 4 },
+    { name: 'Railroad', cls: 'color-2', mult: 5 },
+    { name: 'Bank', cls: 'color-4', mult: 6 }, { name: 'Tower', cls: 'color-4', mult: 7 },
+    { name: 'Chance', cls: 'chance', mult: 0, chance: true },
+    { name: 'Casino', cls: 'color-5', mult: 8 }, { name: 'Plaza', cls: 'color-5', mult: 10 },
+    { name: 'Railroad', cls: 'color-2', mult: 5 },
+    { name: 'Manor', cls: 'color-6', mult: 12 }, { name: 'Villa', cls: 'color-6', mult: 15 },
+    { name: 'Chance', cls: 'chance', mult: 0, chance: true },
+    { name: 'Airport', cls: 'color-7', mult: 18 }, { name: 'Sky Suite', cls: 'color-7', mult: 22 }, { name: 'Penthouse', cls: 'color-7', mult: 25 },
+    { name: 'Railroad', cls: 'color-2', mult: 5 },
+    { name: 'Palace', cls: 'color-1', mult: 30 }, { name: 'Boardwalk', cls: 'color-1', mult: 40 },
+    { name: 'GO', cls: 'start', mult: 0 }
+  ];
+
+  function renderBoard() {
+    const b = document.getElementById('board');
+    b.innerHTML = '';
+    // Layout as perimeter: top row, right col, bottom row reverse, left col reverse
+    // For simplicity use 7x5 grid with center hidden
+    const tilesOrder = [];
+    // top row 0..6
+    for (let i = 0; i < 7; i++) tilesOrder.push({ row: 1, col: i + 1 });
+    // right col
+    for (let i = 0; i < 5; i++) tilesOrder.push({ row: i + 2, col: 7 });
+    // bottom row reverse
+    for (let i = 5; i >= 0; i--) tilesOrder.push({ row: 7, col: i + 1 });
+    // left col reverse
+    for (let i = 4; i >= 0; i--) tilesOrder.push({ row: i + 2, col: 1 });
+    // Use a 7×7 grid then
+    b.style.gridTemplateColumns = 'repeat(7, 1fr)';
+    b.style.gridTemplateRows = 'repeat(7, 1fr)';
+    // empty center
+    b.innerHTML = '';
+    for (let r = 1; r <= 7; r++) {
+      for (let c = 1; c <= 7; c++) {
+        const onPerimeter = (r === 1 || r === 7 || c === 1 || c === 7);
+        if (!onPerimeter) continue;
+      }
+    }
+    // Use 24-tile path; place them around
+    PROPS.forEach((p, i) => {
+      const t = tilesOrder[i % tilesOrder.length];
+      const d = document.createElement('div'); d.className = 'ml-tile ' + p.cls; d.style.gridRow = t.row; d.style.gridColumn = t.col;
+      d.dataset.idx = i;
+      d.innerHTML = `${p.name}${p.mult > 0 ? '<br/><strong>' + p.mult + '×</strong>' : ''}`;
+      b.appendChild(d);
+    });
+    // Center decoration
+    const center = document.createElement('div');
+    center.style.gridRow = '2 / span 5'; center.style.gridColumn = '2 / span 5';
+    center.style.display = 'flex'; center.style.alignItems = 'center'; center.style.justifyContent = 'center';
+    center.style.fontSize = '60px';
+    center.textContent = '🎩';
+    b.appendChild(center);
+  }
+
+  let bets = {}; let currentRotation = 0; let spinning = false;
+  const resultEl = document.getElementById('result');
+  const historyEl = document.getElementById('history');
+
+  document.querySelectorAll('.ml-bet-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (spinning) return;
+      const amt = Math.max(10, parseInt(document.getElementById('bet-amount').value) || 50);
+      if (!Wallet.canBet(amt)) { toast('Not enough FUN coins', 'warn'); return; }
+      const k = btn.dataset.bet;
+      bets[k] = (bets[k] || 0) + amt; Wallet.subtract(amt);
+      btn.classList.add('has-chip');
+      btn.querySelector('.chips').textContent = bets[k] + ' FUN';
+      Sfx.bet();
+    });
+  });
+  document.getElementById('clear-bets').addEventListener('click', () => {
+    if (spinning) return;
+    let r = 0; for (const k in bets) r += bets[k];
+    if (r > 0) { Wallet.add(r); Sfx.click(); }
+    bets = {};
+    document.querySelectorAll('.ml-bet-btn').forEach(b => { b.classList.remove('has-chip'); b.querySelector('.chips').textContent = ''; });
+  });
+
+  document.getElementById('spin-btn').addEventListener('click', () => {
+    if (spinning) return;
+    if (Object.keys(bets).length === 0) { resultEl.textContent = 'Place a bet first'; return; }
+    spinning = true; Sfx.spin && Sfx.spin();
+    resultEl.textContent = '';
+    const idx = Math.floor(Math.random() * N);
+    const step = 360 / N;
+    const targetAngle = -(idx * step + step / 2);
+    const turns = 5 + Math.floor(Math.random() * 4);
+    currentRotation = currentRotation - (currentRotation % 360) + turns * 360 + targetAngle;
+    wheel.style.transform = `rotate(${currentRotation}deg)`;
+    setTimeout(() => handleResult(SEGMENTS[idx]), 5100);
+  });
+
+  function handleResult(seg) {
+    spinning = false;
+    const key = seg.k === 'num' ? String(seg.v) : seg.k;
+    const pill = document.createElement('div'); pill.className = 'ml-history-pill';
+    pill.style.background = seg.k === 'num' ? COLOR[seg.v] : COLOR[seg.k];
+    pill.textContent = seg.k === 'num' ? seg.v : LABEL[seg.k];
+    historyEl.insertBefore(pill, historyEl.firstChild); while (historyEl.children.length > 10) historyEl.removeChild(historyEl.lastChild);
+
+    if (seg.k === '2roll' || seg.k === '4roll') {
+      const bet = bets[seg.k] || 0;
+      if (bet === 0) { resultEl.textContent = `${LABEL[seg.k]} bonus · No bet`; resultEl.className = 'ml-result loss'; Sfx.loss && Sfx.loss(); resetRound(); return; }
+      const rolls = seg.k === '2roll' ? 2 : 4;
+      startBoardBonus(bet, rolls);
+      return;
+    }
+    if (seg.k === 'chance') {
+      const bet = bets.chance || 0;
+      if (bet === 0) { resultEl.textContent = '🎁 Chance · No bet'; resultEl.className = 'ml-result loss'; Sfx.loss && Sfx.loss(); resetRound(); return; }
+      // Chance gives a random instant multiplier 2-20x
+      const mult = 2 + Math.floor(Math.random() * 19);
+      const win = bet * mult;
+      Wallet.add(win);
+      resultEl.innerHTML = `🎁 Chance · ${mult}× · WIN ${win.toLocaleString()} FUN`;
+      resultEl.className = 'ml-result bonus';
+      Sfx.bigWin && Sfx.bigWin();
+      resetRound(); return;
+    }
+    // numeric
+    let win = 0;
+    if (bets[key]) win = bets[key] * (seg.v + 1);
+    if (win > 0) {
+      Wallet.add(win);
+      resultEl.innerHTML = `${seg.v} · WIN ${win.toLocaleString()} FUN`;
+      resultEl.className = 'ml-result win'; Sfx.win && Sfx.win();
+    } else {
+      resultEl.textContent = `${seg.v} · No win`; resultEl.className = 'ml-result loss'; Sfx.loss && Sfx.loss();
+    }
+    resetRound();
+  }
+
+  function resetRound() {
+    bets = {};
+    document.querySelectorAll('.ml-bet-btn').forEach(b => { b.classList.remove('has-chip'); b.querySelector('.chips').textContent = ''; });
+  }
+
+  function startBoardBonus(bet, rolls) {
+    renderBoard();
+    const ov = document.getElementById('board-overlay');
+    document.getElementById('board-title').textContent = '🎩 Mr. Monopoly · ' + rolls + ' Rolls';
+    const counter = document.getElementById('roll-counter');
+    const totalEl = document.getElementById('board-total');
+    const closeBtn = document.getElementById('board-close'); closeBtn.style.display = 'none';
+    ov.classList.add('show');
+    Sfx.bigWin && Sfx.bigWin();
+    let pos = 0; let multSum = 0; let rollsLeft = rolls;
+    totalEl.textContent = '—';
+    counter.textContent = `Rolls remaining: ${rollsLeft}`;
+    function placeToken() {
+      document.querySelectorAll('.ml-token').forEach(t => t.remove());
+      document.querySelectorAll('.ml-tile').forEach(t => t.classList.remove('active'));
+      const tile = document.querySelector(`.ml-tile[data-idx="${pos}"]`);
+      if (tile) {
+        tile.classList.add('active');
+        const tok = document.createElement('div'); tok.className = 'ml-token'; tile.appendChild(tok);
+      }
+    }
+    placeToken();
+    function roll() {
+      if (rollsLeft <= 0) {
+        const win = Math.floor(bet * multSum);
+        Wallet.add(win);
+        totalEl.textContent = `WIN ${win.toLocaleString()} FUN`;
+        closeBtn.style.display = '';
+        closeBtn.onclick = () => {
+          ov.classList.remove('show');
+          resultEl.innerHTML = `🎩 ${rolls} Rolls · ${multSum.toFixed(1)}× total · WIN ${win.toLocaleString()} FUN`;
+          resultEl.className = 'ml-result bonus';
+          resetRound();
+        };
+        return;
+      }
+      const dice = (1 + Math.floor(Math.random() * 6)) + (1 + Math.floor(Math.random() * 6));
+      pos = (pos + dice) % PROPS.length;
+      placeToken();
+      Sfx.tick && Sfx.tick();
+      const prop = PROPS[pos];
+      if (prop.chance) {
+        // Chance event: extra roll or +5x multiplier
+        if (Math.random() < 0.5) { rollsLeft += 1; counter.textContent = `🎁 Extra roll! Rolls remaining: ${rollsLeft}`; }
+        else { multSum += 5; counter.textContent = `🎁 +5× bonus! (${multSum.toFixed(1)}× total)`; }
+      } else if (prop.mult > 0) {
+        multSum += prop.mult;
+      }
+      rollsLeft -= 1;
+      counter.textContent = `${prop.name}: +${prop.mult}× · ${multSum.toFixed(1)}× total · Rolls left: ${rollsLeft}`;
+      setTimeout(roll, 1500);
+    }
+    setTimeout(roll, 800);
+  }
+})();
+</script>
+
+</body>
+</html>

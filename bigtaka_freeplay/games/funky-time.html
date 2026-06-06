@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var p=location.pathname;if(p.endsWith('/')||/\.html?$/.test(p))return;var m='/bigtaka_freeplay';var i=p.lastIndexOf(m);if(i!==-1&&p.length===i+m.length){document.write('<base href="'+p+'/">');}else{var s=p.lastIndexOf('/');if(s>=0)document.write('<base href="'+p.substring(0,s+1)+'">');}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Funky Time — Bigtaka Free Play</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+Bengali:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+.ft-stage { background: radial-gradient(circle at 50% 0%, rgba(255, 30, 215, 0.3), transparent 60%), repeating-linear-gradient(90deg, #1a052a 0px, #1a052a 50px, #1f0838 50px, #1f0838 100px); border-radius: 20px; padding: 24px 14px; position: relative; overflow: hidden; }
+.ft-disco { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 90px; height: 90px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #fff, #aaa 40%, #555 100%); box-shadow: 0 0 80px rgba(255, 200, 250, 0.7); opacity: 0.8; animation: ftDisco 4s linear infinite; }
+@keyframes ftDisco { from { transform: translateX(-50%) rotate(0deg); } to { transform: translateX(-50%) rotate(360deg); } }
+.ft-floor { position: absolute; bottom: 0; left: -50%; right: -50%; height: 30%; background: repeating-conic-gradient(from 0deg, #ff5fde 0deg 30deg, #5fc7ff 30deg 60deg, #a4ff2c 60deg 90deg, #ffe35c 90deg 120deg, #ff5fde 120deg 150deg, #5fc7ff 150deg 180deg, #a4ff2c 180deg 210deg, #ffe35c 210deg 240deg, #ff5fde 240deg 270deg, #5fc7ff 270deg 300deg, #a4ff2c 300deg 330deg, #ffe35c 330deg 360deg); transform: perspective(400px) rotateX(60deg); transform-origin: bottom; opacity: 0.18; pointer-events: none; }
+.ft-wheel-wrap { position: relative; width: min(420px, 90vw); aspect-ratio: 1; margin: 120px auto 0; z-index: 2; }
+.ft-wheel { width: 100%; height: 100%; border-radius: 50%; border: 8px solid #ff5fde; background: #2a0d3a; transition: transform 5s cubic-bezier(0.17,0.67,0.21,1); box-shadow: 0 0 50px rgba(255,95,222,0.5), inset 0 0 40px rgba(0,0,0,0.5); position: relative; overflow: hidden; }
+.ft-pointer { position: absolute; top: -6px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 16px solid transparent; border-right: 16px solid transparent; border-top: 28px solid #ffe35c; z-index: 5; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6)); }
+.ft-center { position: absolute; inset: 30%; border-radius: 50%; background: radial-gradient(circle, #ffe35c 0%, #ff5fde 100%); border: 4px solid #fff; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 900; color: #1a0c35; z-index: 4; box-shadow: inset 0 -10px 18px rgba(0,0,0,0.3); text-align: center; line-height: 1.1; }
+.ft-top-slot { background: linear-gradient(135deg, #500ecf, #ff1ed7); padding: 10px 14px; border-radius: 12px; display: flex; align-items: center; gap: 14px; justify-content: center; max-width: 360px; margin: 0 auto 14px; border: 2px solid var(--gold); box-shadow: 0 0 20px rgba(255,215,0,0.3); position: relative; z-index: 2; }
+.ft-slot-cell { background: #1a0c35; padding: 8px 14px; border-radius: 8px; font-weight: 900; font-style: italic; color: var(--gold); min-width: 80px; text-align: center; font-size: 16px; }
+.ft-bet-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 14px; }
+.ft-bet-btn { padding: 16px 8px; border-radius: 12px; cursor: pointer; transition: all 0.15s; font-weight: 900; color: #fff; border: 2px solid transparent; position: relative; font-size: 14px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.ft-bet-btn:hover { transform: translateY(-2px); }
+.ft-bet-btn .chips { font-size: 10px; padding: 2px 6px; border-radius: 6px; background: rgba(0,0,0,0.45); color: var(--gold); display: none; margin-top: 2px; }
+.ft-bet-btn.has-chip .chips { display: block; }
+.ft-b1 { background: linear-gradient(135deg, #5fc7ff, #1e88e5); }
+.ft-b2 { background: linear-gradient(135deg, #ffe35c, #c89211); color: #1a0c35; }
+.ft-b5 { background: linear-gradient(135deg, #ff8a00, #c4451a); }
+.ft-b10 { background: linear-gradient(135deg, #a056e0, #500ecf); }
+.ft-bbar { background: linear-gradient(135deg, #ff5fde, #b80098); border: 2px solid var(--gold); }
+.ft-bdisco { background: linear-gradient(135deg, #a4ff2c, #5a9f00); color: #1a0c35; border: 2px solid var(--gold); }
+.ft-bvip { background: linear-gradient(135deg, #ffd700, #ff8a00); color: #1a0c35; border: 2px solid #fff; }
+.ft-bfunky { background: linear-gradient(135deg, #ff1ed7, #500ecf); border: 3px solid var(--gold); box-shadow: 0 0 14px rgba(255,30,215,0.5); }
+.ft-result { font-size: clamp(38px, 6.5vw, 56px); font-weight: 900; font-style: italic; text-align: center; margin: 18px 0 6px; min-height: 64px; position: relative; z-index: 2; }
+.ft-result.win { color: var(--green); animation: ftRes 0.5s ease; }
+.ft-result.bonus { color: #ff5fde; }
+.ft-result.loss { color: var(--text-muted); }
+@keyframes ftRes { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+.ft-bonus-overlay { position: absolute; inset: 12px; border-radius: 20px; background: linear-gradient(180deg, rgba(255,30,215,0.95), rgba(80,14,207,0.95)); display: none; flex-direction: column; align-items: center; justify-content: center; padding: 18px; z-index: 10; text-align: center; }
+.ft-bonus-overlay.show { display: flex; animation: ftBonus 0.4s ease; }
+@keyframes ftBonus { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+.ft-bonus-overlay h2 { font-size: 30px; font-weight: 900; color: var(--gold); margin: 4px 0; text-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+.ft-cocktails { display: flex; gap: 12px; justify-content: center; margin: 18px 0; }
+.ft-cocktail { width: 70px; height: 110px; border: 3px solid var(--gold); border-radius: 12px; background: rgba(255,255,255,0.1); cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
+.ft-cocktail:hover { transform: translateY(-4px); box-shadow: 0 0 20px rgba(255,215,0,0.5); }
+.ft-cocktail.picked { border-color: #fff; box-shadow: 0 0 25px #fff; }
+.ft-cocktail-fill { position: absolute; bottom: 0; left: 0; right: 0; height: 60%; transition: all 0.4s; }
+.ft-cocktail-glass { font-size: 40px; position: absolute; bottom: 65%; left: 50%; transform: translateX(-50%); }
+.ft-history { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-top: 12px; position: relative; z-index: 2; }
+.ft-history-pill { padding: 6px 10px; border-radius: 10px; font-size: 13px; font-weight: 800; color: #fff; }
+</style>
+</head>
+<body>
+
+<nav class="nav"><div class="nav-inner">
+  <a href="../index.html" class="logo"><img src="../assets/bigtaka-freetoplay.png" alt="Bigtaka Free Play" /></a>
+  <div class="nav-right">
+    <div class="nav-auth">
+      <button class="btn btn-ghost btn-sm nav-cta nav-login" data-open-signup>Log In</button>
+      <button class="btn btn-gold btn-sm nav-cta nav-signup" data-open-signup>Sign Up</button>
+    </div>
+    <button class="sfx-toggle" data-sfx-btn title="Toggle sounds"><span data-sfx-icon>🔊</span></button>
+    <div class="wallet">
+      <img class="wallet-icon" src="../assets/takacoincoin.png" alt="Taka" />
+      <div><div class="wallet-label">Balance</div><div class="wallet-amount"><span data-wallet>10,000</span> FUN</div></div>
+      <button class="wallet-reset" data-wallet-reset title="Reset balance">⟳</button>
+    </div>
+  </div>
+</div></nav>
+
+<div class="play-wrap"><div class="container">
+  <a href="../index.html" class="back-link">← Back to all games</a>
+  <div class="play-head"><div class="play-title-block">
+    <h1>Funky Time <span class="practice-stamp" style="position:static;display:inline-flex;margin-left:8px;font-size:11px;vertical-align:middle">🎯 Practice Mode</span></h1>
+    <p class="play-sub">Disco vibes, money wheel, and 4 funky bonus rounds. Bar Bonus mixes cocktails for multipliers.</p>
+  </div></div>
+
+  <div class="play-layout">
+    <div class="play-canvas-wrap ft-stage">
+      <div class="ft-disco"></div>
+      <div class="ft-floor"></div>
+
+      <div class="ft-top-slot">
+        <div class="ft-slot-cell" id="slot-num">5</div>
+        <div style="color:#fff;font-weight:700;font-size:13px;letter-spacing:0.1em">TOP SLOT</div>
+        <div class="ft-slot-cell" id="slot-mult">10×</div>
+      </div>
+
+      <div class="ft-wheel-wrap">
+        <div class="ft-pointer"></div>
+        <div class="ft-wheel" id="wheel"></div>
+        <div class="ft-center">FUNKY<br/>TIME</div>
+
+        <div class="ft-bonus-overlay" id="bonus-overlay">
+          <h2 id="bonus-title">🍸 Bar Bonus</h2>
+          <p style="color:#fff;opacity:0.9;font-size:14px" id="bonus-sub">Pick a cocktail. Each drink hides a multiplier from 5× to 100×.</p>
+          <div class="ft-cocktails" id="cocktails"></div>
+          <div id="bonus-total" style="font-size:32px;font-weight:900;color:var(--gold);margin-top:8px"></div>
+          <button class="btn btn-gold btn-sm" id="bonus-close" style="display:none;margin-top:10px">Collect</button>
+        </div>
+      </div>
+
+      <div class="ft-result" id="result">Place your bet</div>
+      <div class="ft-history" id="history"></div>
+
+      <div class="status-row" style="display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--text-muted);margin-top:14px;padding-top:14px;border-top:1px solid var(--border);position:relative;z-index:2">
+        <span style="color:var(--green);font-weight:700;">● Live Demo</span>
+        <span>Provider: <strong style="color:#fff">Evolution Gaming</strong></span>
+        <span>RTP: <strong style="color:#fff">95.93%</strong></span>
+      </div>
+    </div>
+
+    <aside class="play-side">
+      <div class="panel">
+        <h4>Place Your Bet</h4>
+        <div style="display:flex;align-items:center;gap:8px;margin:8px 0">
+          <label style="font-size:12px;color:var(--text-muted);flex:1">Bet amount</label>
+          <input id="bet-amount" type="number" value="50" min="10" max="2000" step="10" style="width:90px;padding:6px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:#fff" />
+        </div>
+        <div class="ft-bet-grid">
+          <button class="ft-bet-btn ft-b1" data-bet="1">1<div class="chips"></div></button>
+          <button class="ft-bet-btn ft-b2" data-bet="2">2<div class="chips"></div></button>
+          <button class="ft-bet-btn ft-b5" data-bet="5">5<div class="chips"></div></button>
+          <button class="ft-bet-btn ft-b10" data-bet="10">10<div class="chips"></div></button>
+          <button class="ft-bet-btn ft-bbar" data-bet="bar">🍸 Bar<div class="chips"></div></button>
+          <button class="ft-bet-btn ft-bdisco" data-bet="disco">🪩 Stayin'<div class="chips"></div></button>
+          <button class="ft-bet-btn ft-bvip" data-bet="vip">👑 VIP<div class="chips"></div></button>
+          <button class="ft-bet-btn ft-bfunky" data-bet="funky">⭐ Funky<div class="chips"></div></button>
+        </div>
+        <div style="margin-top:14px;display:flex;gap:8px">
+          <button class="btn btn-ghost btn-sm" id="clear-bets" style="flex:1">Clear</button>
+          <button class="btn btn-gold" id="spin-btn" style="flex:2;font-size:15px">🕺 SPIN!</button>
+        </div>
+      </div>
+      <div class="panel" style="margin-top:14px">
+        <h4>Bonus Rounds</h4>
+        <p style="font-size:13px;color:var(--text-muted);line-height:1.55"><strong>Bar Bonus</strong> — Mix a cocktail by picking 1 of 4 drinks. Each drink hides a multiplier.<br/><br/><strong>Stayin' Alive / VIP / Funky Time</strong> — Themed bonus rounds with stacked multipliers, similar to Crazy Time's top slot mechanic.</p>
+      </div>
+    </aside>
+  </div>
+</div></div>
+
+<script src="../i18n.js"></script>
+<script src="../app.js"></script>
+<script>
+(function(){
+  // 54 segments. 1(21) 2(13) 5(7) 10(4) Bar(4) Disco(3) VIP(2) Funky(1) plus filler
+  const SEGMENTS = [];
+  for (let i = 0; i < 21; i++) SEGMENTS.push({ k: 'num', v: 1 });
+  for (let i = 0; i < 13; i++) SEGMENTS.push({ k: 'num', v: 2 });
+  for (let i = 0; i < 7; i++) SEGMENTS.push({ k: 'num', v: 5 });
+  for (let i = 0; i < 4; i++) SEGMENTS.push({ k: 'num', v: 10 });
+  for (let i = 0; i < 4; i++) SEGMENTS.push({ k: 'bar' });
+  for (let i = 0; i < 3; i++) SEGMENTS.push({ k: 'disco' });
+  for (let i = 0; i < 2; i++) SEGMENTS.push({ k: 'vip' });
+  for (let i = 0; i < 1; i++) SEGMENTS.push({ k: 'funky' });
+  // Total 55, drop one if needed
+  while (SEGMENTS.length > 54) SEGMENTS.pop();
+  for (let i = SEGMENTS.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [SEGMENTS[i], SEGMENTS[j]] = [SEGMENTS[j], SEGMENTS[i]]; }
+  const N = SEGMENTS.length;
+  const COLOR = { 1: '#5fc7ff', 2: '#ffe35c', 5: '#ff8a00', 10: '#a056e0', bar: '#ff5fde', disco: '#a4ff2c', vip: '#ffd700', funky: '#ff1ed7' };
+  const LABEL = { 1: '1', 2: '2', 5: '5', 10: '10', bar: '🍸', disco: '🪩', vip: '👑', funky: '⭐' };
+
+  const wheel = document.getElementById('wheel');
+  function renderWheel() {
+    const step = 360 / N;
+    const stops = SEGMENTS.map((s, i) => {
+      const c = s.k === 'num' ? COLOR[s.v] : COLOR[s.k];
+      return `${c} ${i * step}deg ${(i + 1) * step}deg`;
+    });
+    wheel.style.background = `conic-gradient(${stops.join(', ')})`;
+    let labels = '';
+    SEGMENTS.forEach((s, i) => {
+      const angle = i * step + step / 2;
+      const txt = s.k === 'num' ? LABEL[s.v] : LABEL[s.k];
+      labels += `<div style="position:absolute;top:50%;left:50%;transform:rotate(${angle}deg) translateY(-180%);transform-origin:0 0;font-size:15px;font-weight:900;font-style:italic;color:#1a0c35;text-shadow:0 1px 1px rgba(255,255,255,0.4);pointer-events:none">${txt}</div>`;
+    });
+    wheel.innerHTML = labels;
+  }
+  renderWheel();
+
+  function pickSlotMult() { const r = Math.random(); if (r < 0.4) return 2; if (r < 0.7) return 5; if (r < 0.9) return 10; if (r < 0.98) return 25; return 50; }
+  function pickSlotTarget() { const opts = [1,2,5,10,'bar','disco','vip','funky']; return opts[Math.floor(Math.random()*opts.length)]; }
+  let slotMult = pickSlotMult(); let slotTarget = pickSlotTarget();
+  function refreshSlot() {
+    const t = slotTarget;
+    document.getElementById('slot-num').textContent = t === 1 || t === 2 || t === 5 || t === 10 ? t : LABEL[t];
+    document.getElementById('slot-mult').textContent = slotMult + '×';
+  }
+  refreshSlot();
+
+  let bets = {}; let currentRotation = 0; let spinning = false;
+  const resultEl = document.getElementById('result');
+  const historyEl = document.getElementById('history');
+
+  document.querySelectorAll('.ft-bet-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (spinning) return;
+      const amt = Math.max(10, parseInt(document.getElementById('bet-amount').value) || 50);
+      if (!Wallet.canBet(amt)) { toast('Not enough FUN coins', 'warn'); return; }
+      const k = btn.dataset.bet;
+      bets[k] = (bets[k] || 0) + amt;
+      Wallet.subtract(amt);
+      btn.classList.add('has-chip');
+      btn.querySelector('.chips').textContent = bets[k] + ' FUN';
+      Sfx.bet();
+    });
+  });
+
+  document.getElementById('clear-bets').addEventListener('click', () => {
+    if (spinning) return;
+    let r = 0; for (const k in bets) r += bets[k];
+    if (r > 0) { Wallet.add(r); Sfx.click(); }
+    bets = {}; refreshBetBtns();
+  });
+  function refreshBetBtns() { document.querySelectorAll('.ft-bet-btn').forEach(b => { b.classList.remove('has-chip'); b.querySelector('.chips').textContent = ''; }); }
+
+  document.getElementById('spin-btn').addEventListener('click', () => {
+    if (spinning) return;
+    if (Object.keys(bets).length === 0) { resultEl.textContent = 'Place a bet first'; return; }
+    spinning = true; Sfx.spin && Sfx.spin();
+    resultEl.textContent = '';
+    const idx = Math.floor(Math.random() * N);
+    const step = 360 / N;
+    const targetAngle = -(idx * step + step / 2);
+    const turns = 5 + Math.floor(Math.random() * 4);
+    currentRotation = currentRotation - (currentRotation % 360) + turns * 360 + targetAngle;
+    wheel.style.transform = `rotate(${currentRotation}deg)`;
+    setTimeout(() => handleResult(SEGMENTS[idx]), 5100);
+  });
+
+  function handleResult(seg) {
+    spinning = false;
+    const key = seg.k === 'num' ? String(seg.v) : seg.k;
+    // History pill
+    const pill = document.createElement('div'); pill.className = 'ft-history-pill';
+    pill.style.background = seg.k === 'num' ? COLOR[seg.v] : COLOR[seg.k];
+    pill.textContent = seg.k === 'num' ? seg.v : LABEL[seg.k];
+    historyEl.insertBefore(pill, historyEl.firstChild); while (historyEl.children.length > 10) historyEl.removeChild(historyEl.lastChild);
+
+    // Slot top slot multiplier check
+    let slotApplies = false;
+    if (seg.k === 'num') { slotApplies = String(slotTarget) === String(seg.v); }
+    else { slotApplies = slotTarget === seg.k; }
+
+    if (seg.k === 'bar') {
+      if (bets.bar) startBarBonus(bets.bar, slotApplies ? slotMult : 1);
+      else { resultEl.textContent = '🍸 Bar Bonus · No bet'; resultEl.className = 'ft-result loss'; Sfx.loss && Sfx.loss(); resetRound(); }
+      return;
+    }
+    if (seg.k === 'disco' || seg.k === 'vip' || seg.k === 'funky') {
+      // Simplified bonus: multiplier × bet
+      const baseMult = seg.k === 'disco' ? 20 : seg.k === 'vip' ? 50 : 100;
+      const variance = seg.k === 'funky' ? 100 + Math.floor(Math.random() * 400) : baseMult + Math.floor(Math.random() * baseMult);
+      const bet = bets[seg.k] || 0;
+      if (bet === 0) { resultEl.textContent = LABEL[seg.k] + ' bonus · No bet'; resultEl.className = 'ft-result loss'; Sfx.loss && Sfx.loss(); resetRound(); return; }
+      const win = Math.floor(bet * variance * (slotApplies ? slotMult : 1));
+      Wallet.add(win);
+      const name = seg.k === 'disco' ? "Stayin' Alive" : seg.k === 'vip' ? 'VIP Disco' : 'Funky Time';
+      resultEl.innerHTML = `${LABEL[seg.k]} ${name.toUpperCase()} · ${variance}× · WIN ${win.toLocaleString()} FUN`;
+      resultEl.className = 'ft-result bonus';
+      Sfx.jackpot && Sfx.jackpot();
+      resetRound();
+      return;
+    }
+    // Numeric
+    let win = 0;
+    if (bets[key]) {
+      const baseMult = slotApplies ? slotMult : seg.v;
+      win = bets[key] * (baseMult + 1);
+    }
+    if (win > 0) {
+      Wallet.add(win);
+      resultEl.innerHTML = `${seg.v} · WIN ${win.toLocaleString()} FUN${slotApplies ? ' <span style="color:var(--gold)"> ⚡ Top Slot ' + slotMult + '×</span>' : ''}`;
+      resultEl.className = 'ft-result win';
+      Sfx.win && Sfx.win();
+    } else {
+      resultEl.textContent = `${seg.v} · No win`; resultEl.className = 'ft-result loss';
+      Sfx.loss && Sfx.loss();
+    }
+    resetRound();
+  }
+  function resetRound() {
+    bets = {}; refreshBetBtns();
+    slotMult = pickSlotMult(); slotTarget = pickSlotTarget(); refreshSlot();
+  }
+
+  // Bar Bonus
+  function startBarBonus(bet, slotMult) {
+    const ov = document.getElementById('bonus-overlay');
+    document.getElementById('bonus-title').textContent = '🍸 Bar Bonus';
+    document.getElementById('bonus-sub').textContent = 'Mix a cocktail. Each drink hides a multiplier 5× to 100×.';
+    const cocktailsEl = document.getElementById('cocktails');
+    cocktailsEl.innerHTML = '';
+    const totalEl = document.getElementById('bonus-total'); totalEl.textContent = '';
+    const closeBtn = document.getElementById('bonus-close'); closeBtn.style.display = 'none';
+    const colors = ['#ff5fde','#a4ff2c','#ffd700','#5fc7ff'];
+    const emojis = ['🍹','🍸','🥂','🍷'];
+    const tiles = [];
+    for (let i = 0; i < 4; i++) {
+      const m = pickCocktailMult();
+      const d = document.createElement('div'); d.className = 'ft-cocktail';
+      d.innerHTML = `<div class="ft-cocktail-glass">${emojis[i]}</div><div class="ft-cocktail-fill" style="background:${colors[i]}"></div>`;
+      cocktailsEl.appendChild(d); tiles.push({ el: d, mult: m });
+    }
+    cocktailsEl.onclick = (e) => {
+      const t = e.target.closest('.ft-cocktail'); if (!t) return;
+      const tile = tiles.find(x => x.el === t); if (!tile) return;
+      tiles.forEach(x => x.el.classList.add('disabled'));
+      t.classList.add('picked');
+      const win = Math.floor(bet * tile.mult * slotMult);
+      Wallet.add(win);
+      totalEl.innerHTML = `${tile.mult}× ${slotMult > 1 ? ' (⚡ ' + slotMult + '× slot)' : ''}<br/>WIN ${win.toLocaleString()} FUN`;
+      closeBtn.style.display = '';
+      Sfx.bigWin && Sfx.bigWin();
+      closeBtn.onclick = () => {
+        ov.classList.remove('show');
+        resultEl.innerHTML = `🍸 Bar Bonus · ${tile.mult}× · WIN ${win.toLocaleString()} FUN`;
+        resultEl.className = 'ft-result win';
+        resetRound();
+        closeBtn.style.display = 'none';
+      };
+    };
+    ov.classList.add('show');
+  }
+  function pickCocktailMult() { const r = Math.random(); if (r < 0.6) return 5 + Math.floor(Math.random() * 10); if (r < 0.9) return 15 + Math.floor(Math.random() * 25); return 50 + Math.floor(Math.random() * 50); }
+})();
+</script>
+
+</body>
+</html>

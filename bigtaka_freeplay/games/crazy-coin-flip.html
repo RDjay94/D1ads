@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var p=location.pathname;if(p.endsWith('/')||/\.html?$/.test(p))return;var m='/bigtaka_freeplay';var i=p.lastIndexOf(m);if(i!==-1&&p.length===i+m.length){document.write('<base href="'+p+'/">');}else{var s=p.lastIndexOf('/');if(s>=0)document.write('<base href="'+p.substring(0,s+1)+'">');}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Crazy Coin Flip — Bigtaka Free Play</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+Bengali:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+.ccf-stage { background: radial-gradient(ellipse at 50% 30%, rgba(255, 138, 0, 0.25), transparent 60%), linear-gradient(180deg, #2a0e1b 0%, #100525 100%); border-radius: 20px; padding: 24px 14px; position: relative; overflow: hidden; }
+.ccf-floor { position: absolute; bottom: 0; left: 0; right: 0; height: 30%; background-image: linear-gradient(0deg, rgba(255,138,0,0.18) 0%, transparent 100%), repeating-linear-gradient(90deg, transparent 0px, transparent 40px, rgba(255,255,255,0.06) 40px, rgba(255,255,255,0.06) 41px); pointer-events: none; transform: perspective(400px) rotateX(50deg); transform-origin: bottom; }
+.ccf-phase-tabs { display: flex; gap: 6px; justify-content: center; margin-bottom: 16px; position: relative; z-index: 1; }
+.ccf-phase { padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; background: var(--surface-2); color: var(--text-muted); border: 1px solid var(--border); }
+.ccf-phase.active { background: linear-gradient(135deg, #ff8a00, #c4451a); color: #fff; border-color: #ff8a00; box-shadow: 0 0 20px rgba(255,138,0,0.5); }
+.ccf-phase.complete { background: var(--surface-2); color: var(--gold); border-color: rgba(255,215,0,0.5); }
+.ccf-slot { display: flex; gap: 6px; justify-content: center; align-items: center; padding: 14px; border-radius: 14px; background: rgba(0,0,0,0.45); border: 2px solid var(--gold); box-shadow: 0 0 30px rgba(255,215,0,0.3); margin: 0 auto; max-width: 400px; }
+.ccf-reel { width: 60px; height: 80px; background: #1a0c35; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 38px; overflow: hidden; box-shadow: inset 0 -6px 12px rgba(0,0,0,0.6), inset 0 6px 12px rgba(255,255,255,0.05); position: relative; }
+.ccf-reel.spinning .ccf-reel-strip { animation: ccfReel 0.1s linear infinite; }
+.ccf-reel-strip { display: flex; flex-direction: column; align-items: center; }
+@keyframes ccfReel { 0% { transform: translateY(0); } 100% { transform: translateY(-80px); } }
+.ccf-coin-wrap { display: flex; flex-direction: column; align-items: center; margin: 18px 0; position: relative; z-index: 1; }
+.ccf-coin { width: min(200px, 50vw); aspect-ratio: 1; border-radius: 50%; position: relative; transform-style: preserve-3d; transition: transform 2.8s cubic-bezier(0.17,0.67,0.21,1); animation: ccfFloat 4s ease-in-out infinite; }
+@keyframes ccfFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+.ccf-coin.flipping { animation: none; }
+.ccf-face { position: absolute; inset: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 900; font-style: italic; backface-visibility: hidden; }
+.ccf-face.red { background: radial-gradient(circle at 30% 30%, #ff4a4a, #b00020); color: #fff; border: 6px solid #ff8a8a; box-shadow: 0 0 30px rgba(255,30,30,0.5), inset 0 -10px 20px rgba(0,0,0,0.3); }
+.ccf-face.blue { background: radial-gradient(circle at 30% 30%, #4a82e0, #1e4ba0); color: #fff; border: 6px solid #8ab5ff; box-shadow: 0 0 30px rgba(60,120,255,0.5), inset 0 -10px 20px rgba(0,0,0,0.3); transform: rotateY(180deg); }
+.ccf-mult-badge { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 6px 14px; background: var(--gold); color: #1a0c35; font-weight: 900; border-radius: 14px; font-size: 22px; font-style: italic; box-shadow: 0 6px 14px rgba(0,0,0,0.4); }
+.ccf-sides { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; position: relative; z-index: 1; }
+.ccf-side { padding: 16px; border-radius: 14px; cursor: pointer; text-align: center; font-weight: 900; transition: all 0.15s; border: 3px solid transparent; position: relative; }
+.ccf-side.red { background: linear-gradient(135deg, #ff4a4a, #b00020); color: #fff; }
+.ccf-side.blue { background: linear-gradient(135deg, #4a82e0, #1e4ba0); color: #fff; }
+.ccf-side:hover { transform: translateY(-2px); }
+.ccf-side.picked { border-color: var(--gold); box-shadow: 0 0 24px rgba(255,215,0,0.6); }
+.ccf-side .lbl { font-size: 14px; letter-spacing: 0.1em; }
+.ccf-side .mult { font-size: 26px; font-style: italic; margin-top: 6px; }
+.ccf-side .chips { font-size: 12px; opacity: 0.9; margin-top: 4px; min-height: 18px; }
+.ccf-result { font-size: clamp(40px, 7vw, 60px); font-weight: 900; font-style: italic; text-align: center; margin: 18px 0 6px; min-height: 70px; position: relative; z-index: 1; }
+.ccf-result.qualified { color: var(--gold); }
+.ccf-result.win { color: var(--green); animation: ccfRes 0.5s ease; }
+.ccf-result.loss { color: var(--text-muted); }
+@keyframes ccfRes { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.18); } }
+</style>
+</head>
+<body>
+
+<nav class="nav"><div class="nav-inner">
+  <a href="../index.html" class="logo"><img src="../assets/bigtaka-freetoplay.png" alt="Bigtaka Free Play" /></a>
+  <div class="nav-right">
+    <div class="nav-auth">
+      <button class="btn btn-ghost btn-sm nav-cta nav-login" data-open-signup>Log In</button>
+      <button class="btn btn-gold btn-sm nav-cta nav-signup" data-open-signup>Sign Up</button>
+    </div>
+    <button class="sfx-toggle" data-sfx-btn title="Toggle sounds"><span data-sfx-icon>🔊</span></button>
+    <div class="wallet">
+      <img class="wallet-icon" src="../assets/takacoincoin.png" alt="Taka" />
+      <div><div class="wallet-label">Balance</div><div class="wallet-amount"><span data-wallet>10,000</span> FUN</div></div>
+      <button class="wallet-reset" data-wallet-reset title="Reset balance">⟳</button>
+    </div>
+  </div>
+</div></nav>
+
+<div class="play-wrap"><div class="container">
+  <a href="../index.html" class="back-link">← Back to all games</a>
+  <div class="play-head"><div class="play-title-block">
+    <h1>Crazy Coin Flip <span class="practice-stamp" style="position:static;display:inline-flex;margin-left:8px;font-size:11px;vertical-align:middle">🎯 Practice Mode</span></h1>
+    <p class="play-sub">Phase 1: spin the slot to qualify. Phase 2: pick red or blue, watch the multiplier coin flip.</p>
+  </div></div>
+
+  <div class="play-layout">
+    <div class="play-canvas-wrap ccf-stage">
+      <div class="ccf-floor"></div>
+
+      <div class="ccf-phase-tabs">
+        <div class="ccf-phase" id="phase-tab-1">Phase 1 · Slot Qualifier</div>
+        <div class="ccf-phase" id="phase-tab-2">Phase 2 · Coin Flip Bonus</div>
+      </div>
+
+      <!-- Phase 1: slot -->
+      <div id="phase1-area" style="position:relative;z-index:1">
+        <div class="ccf-slot">
+          <div class="ccf-reel" id="reel1"><div class="ccf-reel-strip">🪙</div></div>
+          <div class="ccf-reel" id="reel2"><div class="ccf-reel-strip">🪙</div></div>
+          <div class="ccf-reel" id="reel3"><div class="ccf-reel-strip">🪙</div></div>
+        </div>
+        <p style="text-align:center;font-size:12px;color:var(--text-muted);margin-top:10px">Land 3 matching coin symbols to qualify for the bonus round</p>
+      </div>
+
+      <!-- Phase 2: coin flip -->
+      <div id="phase2-area" style="display:none;position:relative;z-index:1">
+        <div class="ccf-coin-wrap">
+          <div class="ccf-coin" id="coin">
+            <div class="ccf-face red"><span id="red-mult-coin">10×</span></div>
+            <div class="ccf-face blue"><span id="blue-mult-coin">10×</span></div>
+          </div>
+        </div>
+        <div class="ccf-sides">
+          <div class="ccf-side red" data-side="red">
+            <div class="lbl">RED</div>
+            <div class="mult" id="red-mult">10×</div>
+            <div class="chips" id="red-chip"></div>
+          </div>
+          <div class="ccf-side blue" data-side="blue">
+            <div class="lbl">BLUE</div>
+            <div class="mult" id="blue-mult">10×</div>
+            <div class="chips" id="blue-chip"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ccf-result" id="result">Place your qualifier bet</div>
+
+      <div class="status-row" style="display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--text-muted);margin-top:14px;padding-top:14px;border-top:1px solid var(--border);position:relative;z-index:1">
+        <span style="color:var(--green);font-weight:700;">● Live Demo</span>
+        <span>Provider: <strong style="color:#fff">Evolution Gaming</strong></span>
+        <span>RTP: <strong style="color:#fff">96.05%</strong></span>
+      </div>
+    </div>
+
+    <aside class="play-side">
+      <div class="panel">
+        <h4>Qualifier Bet</h4>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:10px">Place a bet to spin the qualifier slot. If you match 3 coins, you enter the Coin Flip bonus where you pick a side.</p>
+        <div style="display:flex;align-items:center;gap:8px">
+          <label style="font-size:12px;color:var(--text-muted);flex:1">Bet amount</label>
+          <input id="bet-amount" type="number" value="100" min="20" max="2000" step="20" style="width:90px;padding:6px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:#fff" />
+        </div>
+        <button class="btn btn-gold btn-block" id="spin-slot" style="margin-top:14px">🎰 SPIN QUALIFIER</button>
+      </div>
+      <div class="panel" style="margin-top:14px">
+        <h4>How the bonus pays</h4>
+        <p style="font-size:13px;color:var(--text-muted);line-height:1.55">If you qualify, both sides of the coin show random multipliers (2×–100×). Pick the side you think will land and the coin flips. Win = your bet × that side's multiplier. The Top Slot above the coin can occasionally boost one side's multiplier up to 100×.</p>
+      </div>
+    </aside>
+  </div>
+</div></div>
+
+<script src="../i18n.js"></script>
+<script src="../app.js"></script>
+<script>
+(function(){
+  const SYMBOLS = ['🪙','💰','💎','7️⃣','⭐','🔔','🍒'];
+  let phase = 1; // 1 = slot, 2 = coin flip
+  let bet = 0;
+  let redMult = 0, blueMult = 0;
+  let picked = null;
+  let phase1Bet = 0;
+
+  const tab1 = document.getElementById('phase-tab-1');
+  const tab2 = document.getElementById('phase-tab-2');
+  const phase1 = document.getElementById('phase1-area');
+  const phase2 = document.getElementById('phase2-area');
+  const resultEl = document.getElementById('result');
+  const coin = document.getElementById('coin');
+  const reels = [document.getElementById('reel1'), document.getElementById('reel2'), document.getElementById('reel3')];
+
+  function setPhase(p) {
+    phase = p;
+    tab1.classList.toggle('active', p === 1);
+    tab2.classList.toggle('active', p === 2);
+    tab1.classList.toggle('complete', p === 2);
+    phase1.style.display = p === 1 ? '' : 'none';
+    phase2.style.display = p === 2 ? '' : 'none';
+  }
+
+  function pickMult() {
+    const r = Math.random();
+    if (r < 0.55) return 2 + Math.floor(Math.random() * 4); // 2-5
+    if (r < 0.85) return 5 + Math.floor(Math.random() * 11); // 5-15
+    if (r < 0.97) return 15 + Math.floor(Math.random() * 30); // 15-44
+    return 50 + Math.floor(Math.random() * 51); // 50-100
+  }
+
+  document.getElementById('spin-slot').addEventListener('click', () => {
+    if (phase !== 1) return;
+    const amt = Math.max(20, parseInt(document.getElementById('bet-amount').value) || 100);
+    if (!Wallet.canBet(amt)) { toast('Not enough FUN coins', 'warn'); return; }
+    phase1Bet = amt; Wallet.subtract(amt); Sfx.bet();
+    resultEl.textContent = '';
+    reels.forEach(r => { r.classList.add('spinning'); r.querySelector('.ccf-reel-strip').innerHTML = SYMBOLS.map(s => `<div style="height:80px;display:flex;align-items:center;justify-content:center;font-size:38px">${s}</div>`).join(''); });
+    Sfx.spin && Sfx.spin();
+    // Roll outcomes. ~18% qualify for bonus
+    const qualify = Math.random() < 0.18;
+    const finalSyms = qualify ? ['🪙','🪙','🪙'] : (() => {
+      // Random non-matching outcome
+      const out = [];
+      while (true) {
+        out.length = 0;
+        for (let i = 0; i < 3; i++) out.push(SYMBOLS[Math.floor(Math.random()*SYMBOLS.length)]);
+        if (out[0] === '🪙' && out[1] === '🪙' && out[2] === '🪙') continue; // force non-jackpot
+        return out;
+      }
+    })();
+    setTimeout(() => { reels[0].classList.remove('spinning'); reels[0].querySelector('.ccf-reel-strip').innerHTML = `<div style="height:80px;display:flex;align-items:center;justify-content:center;font-size:38px">${finalSyms[0]}</div>`; Sfx.reelStop && Sfx.reelStop(); }, 900);
+    setTimeout(() => { reels[1].classList.remove('spinning'); reels[1].querySelector('.ccf-reel-strip').innerHTML = `<div style="height:80px;display:flex;align-items:center;justify-content:center;font-size:38px">${finalSyms[1]}</div>`; Sfx.reelStop && Sfx.reelStop(); }, 1400);
+    setTimeout(() => {
+      reels[2].classList.remove('spinning'); reels[2].querySelector('.ccf-reel-strip').innerHTML = `<div style="height:80px;display:flex;align-items:center;justify-content:center;font-size:38px">${finalSyms[2]}</div>`;
+      Sfx.reelStop && Sfx.reelStop();
+      setTimeout(() => {
+        if (qualify) {
+          resultEl.textContent = '🎉 QUALIFIED! Pick a side →';
+          resultEl.className = 'ccf-result qualified';
+          Sfx.bigWin && Sfx.bigWin();
+          redMult = pickMult(); blueMult = pickMult();
+          document.getElementById('red-mult').textContent = redMult + '×';
+          document.getElementById('blue-mult').textContent = blueMult + '×';
+          document.getElementById('red-mult-coin').textContent = redMult + '×';
+          document.getElementById('blue-mult-coin').textContent = blueMult + '×';
+          document.getElementById('red-chip').textContent = phase1Bet + ' FUN active';
+          document.getElementById('blue-chip').textContent = phase1Bet + ' FUN active';
+          setPhase(2);
+          picked = null;
+          document.querySelectorAll('.ccf-side').forEach(s => s.classList.remove('picked'));
+        } else {
+          resultEl.textContent = 'No qualifier · Try again';
+          resultEl.className = 'ccf-result loss';
+          Sfx.loss && Sfx.loss();
+        }
+      }, 400);
+    }, 1900);
+  });
+
+  document.querySelectorAll('.ccf-side').forEach(s => {
+    s.addEventListener('click', () => {
+      if (phase !== 2 || picked) return;
+      picked = s.dataset.side;
+      document.querySelectorAll('.ccf-side').forEach(x => x.classList.toggle('picked', x === s));
+      Sfx.click();
+      // Flip the coin
+      const win = Math.random() < 0.5 ? 'red' : 'blue';
+      const turns = 6 + Math.floor(Math.random() * 4);
+      const finalRot = turns * 360 + (win === 'blue' ? 180 : 0);
+      coin.classList.add('flipping');
+      coin.style.transform = `rotateY(${finalRot}deg)`;
+      setTimeout(() => {
+        const mult = win === 'red' ? redMult : blueMult;
+        const isWin = picked === win;
+        if (isWin) {
+          const payout = phase1Bet * mult;
+          Wallet.add(payout);
+          resultEl.innerHTML = `${win.toUpperCase()} · ${mult}× · WIN ${payout.toLocaleString()} FUN`;
+          resultEl.className = 'ccf-result win';
+          if (mult >= 50) Sfx.jackpot && Sfx.jackpot(); else if (mult >= 10) Sfx.bigWin && Sfx.bigWin(); else Sfx.win && Sfx.win();
+        } else {
+          resultEl.textContent = `${win.toUpperCase()} · You picked ${picked.toUpperCase()} · No win`;
+          resultEl.className = 'ccf-result loss';
+          Sfx.loss && Sfx.loss();
+        }
+        setTimeout(() => {
+          coin.classList.remove('flipping');
+          coin.style.transform = '';
+          setPhase(1);
+        }, 1800);
+      }, 2900);
+    });
+  });
+
+  setPhase(1);
+})();
+</script>
+
+</body>
+</html>
