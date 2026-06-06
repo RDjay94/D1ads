@@ -1295,8 +1295,8 @@ const Signup = {
               </a>
               <div class="signup-region-block" data-signup-region-block style="display:none;">
                 <div class="signup-region-block-icon">🌏</div>
-                <strong>Welcome Bonus is available to Bangladesh players only.</strong>
-                <small>Our cash bonuses currently launch in BD. You can still keep playing FUN coins here for free.</small>
+                <strong>Welcome Bonus is available to selected region only.</strong>
+                <small>Our bonuses currently launch in available country. You can still keep playing FUN coins here for free.</small>
               </div>
               <button class="btn btn-green" data-signup-play>
                 <span class="signup-final-emoji">🎮</span>

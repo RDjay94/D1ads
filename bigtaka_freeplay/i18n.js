@@ -325,8 +325,8 @@
     'Play Free First': 'প্রথমে ফ্রি খেলুন',
     'Practice with FUN coins': 'FUN কয়েন দিয়ে অনুশীলন করুন',
     'Verifying region…': 'অঞ্চল যাচাই করা হচ্ছে…',
-    'Welcome Bonus is available to Bangladesh players only.': 'স্বাগতম বোনাস শুধুমাত্র বাংলাদেশের প্লেয়ারদের জন্য উপলব্ধ।',
-    'Our cash bonuses currently launch in BD. You can still keep playing FUN coins here for free.': 'আমাদের ক্যাশ বোনাস বর্তমানে শুধু বাংলাদেশে চালু আছে। আপনি এখানে FUN কয়েন দিয়ে ফ্রি খেলা চালিয়ে যেতে পারেন।',
+    'Welcome Bonus is available to selected region only.': 'স্বাগতম বোনাস শুধুমাত্র নির্বাচিত অঞ্চলে উপলব্ধ।',
+    'Our bonuses currently launch in available country. You can still keep playing FUN coins here for free.': 'আমাদের বোনাস বর্তমানে উপলব্ধ দেশে চালু আছে। আপনি এখানে FUN কয়েন দিয়ে ফ্রি খেলা চালিয়ে যেতে পারেন।',
     'Welcome to Bigtaka,': 'বিগটাকায় স্বাগতম,',
 
     // ============ GAME PAGE COMMON ============
