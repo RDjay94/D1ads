@@ -175,8 +175,8 @@
   document.getElementById('spin-slot').addEventListener('click', () => {
     if (phase !== 1) return;
     const amt = Math.max(20, parseInt(document.getElementById('bet-amount').value) || 100);
-    if (!Wallet.canBet(amt)) { toast('Not enough FUN coins', 'warn'); return; }
-    phase1Bet = amt; Wallet.subtract(amt); Sfx.bet();
+    if (Wallet.get() < amt) { toast('Not enough FUN coins', 'warn'); return; }
+    phase1Bet = amt; Wallet.add(-amt); Sfx.bet();
     resultEl.textContent = '';
     reels.forEach(r => { r.classList.add('spinning'); r.querySelector('.ccf-reel-strip').innerHTML = SYMBOLS.map(s => `<div style="height:80px;display:flex;align-items:center;justify-content:center;font-size:38px">${s}</div>`).join(''); });
     Sfx.spin && Sfx.spin();

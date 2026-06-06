@@ -236,16 +236,16 @@
   board.addEventListener('click', e => {
     const cell = e.target.closest('.lr-cell[data-num]'); if (!cell || spinning) return;
     const amt = chipAmount();
-    if (!Wallet.canBet(amt)) { toast('Not enough FUN coins', 'warn'); return; }
+    if (Wallet.get() < amt) { toast('Not enough FUN coins', 'warn'); return; }
     const num = parseInt(cell.dataset.num);
-    straightBets[num] = (straightBets[num] || 0) + amt; Wallet.subtract(amt); refresh(); Sfx.bet();
+    straightBets[num] = (straightBets[num] || 0) + amt; Wallet.add(-amt); refresh(); Sfx.bet();
   });
   outside.addEventListener('click', e => {
     const cell = e.target.closest('.lr-cell[data-outside]'); if (!cell || spinning) return;
     const amt = chipAmount();
-    if (!Wallet.canBet(amt)) { toast('Not enough FUN coins', 'warn'); return; }
+    if (Wallet.get() < amt) { toast('Not enough FUN coins', 'warn'); return; }
     const id = cell.dataset.outside;
-    outsideBetsMap[id] = (outsideBetsMap[id] || 0) + amt; Wallet.subtract(amt); refresh(); Sfx.bet();
+    outsideBetsMap[id] = (outsideBetsMap[id] || 0) + amt; Wallet.add(-amt); refresh(); Sfx.bet();
   });
 
   document.getElementById('clear-bets').addEventListener('click', () => {

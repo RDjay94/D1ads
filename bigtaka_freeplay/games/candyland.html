@@ -177,10 +177,10 @@
     btn.addEventListener('click', () => {
       if (spinning) return;
       const amt = parseInt(betInput.value) || 50;
-      if (!Wallet.canBet(amt)) { toast('Not enough FUN coins', 'warn'); return; }
+      if (Wallet.get() < amt) { toast('Not enough FUN coins', 'warn'); return; }
       const k = btn.dataset.bet;
       bets[k] = (bets[k] || 0) + amt;
-      Wallet.subtract(amt);
+      Wallet.add(-amt);
       btn.classList.add('has-chip', 'picked');
       btn.querySelector('.chips').textContent = bets[k] + ' FUN';
       Sfx.bet();

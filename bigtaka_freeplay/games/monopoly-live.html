@@ -236,9 +236,9 @@
     btn.addEventListener('click', () => {
       if (spinning) return;
       const amt = Math.max(10, parseInt(document.getElementById('bet-amount').value) || 50);
-      if (!Wallet.canBet(amt)) { toast('Not enough FUN coins', 'warn'); return; }
+      if (Wallet.get() < amt) { toast('Not enough FUN coins', 'warn'); return; }
       const k = btn.dataset.bet;
-      bets[k] = (bets[k] || 0) + amt; Wallet.subtract(amt);
+      bets[k] = (bets[k] || 0) + amt; Wallet.add(-amt);
       btn.classList.add('has-chip');
       btn.querySelector('.chips').textContent = bets[k] + ' FUN';
       Sfx.bet();
