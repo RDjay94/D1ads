@@ -3119,69 +3119,86 @@ img { display: block; max-width: 100%; }
 /* ============================================================ */
 
 @media (max-width: 720px) {
-  /* ----- NAV ----- */
-  .nav-inner { padding: 10px 12px; gap: 6px; }
-  .nav-right { gap: 6px; }
-  .wallet { padding: 6px 10px 6px 6px; gap: 6px; }
-  .wallet-icon { width: 28px; height: 28px; }
-  .wallet-amount { font-size: 13px; }
-  .wallet-label { font-size: 9px; letter-spacing: 0.06em; }
-  .wallet-reset { width: 26px; height: 26px; font-size: 14px; }
-  .sfx-toggle { width: 36px; height: 36px; font-size: 16px; }
-  .lang-toggle { font-size: 12px; }
-  /* Compact nav CTA buttons */
-  .nav-cta { padding: 7px 11px !important; font-size: 12px !important; }
+  /* ----- NAV — looser, hide non-essential elements ----- */
+  .nav-inner { padding: 12px 14px; gap: 8px; min-height: 56px; }
+  .nav-right { gap: 8px; align-items: center; }
+  .wallet { padding: 8px 12px 8px 8px; gap: 8px; border-radius: 12px; }
+  .wallet-icon { width: 30px; height: 30px; }
+  .wallet-amount { font-size: 14px; font-weight: 800; }
+  .wallet-label { font-size: 9px; letter-spacing: 0.08em; opacity: 0.7; }
+  .wallet-reset { width: 28px; height: 28px; font-size: 14px; }
+  .sfx-toggle { width: 40px; height: 40px; font-size: 17px; border-radius: 10px; }
+  .lang-toggle { font-size: 12px; font-weight: 800; }
+  /* Compact nav CTA buttons — 40px touch target */
+  .nav-cta { padding: 10px 14px !important; font-size: 13px !important; min-height: 40px; border-radius: 10px !important; }
   .nav-login { display: none; }
   /* On mobile keep the Sign Up button visible on the hub */
   .nav-auth { display: inline-flex; }
 
-  /* ----- HERO ----- */
-  .hero { padding: 28px 0 24px; }
-  .hero h1 { font-size: clamp(28px, 8vw, 40px); line-height: 1.1; }
-  .hero .lede { font-size: 14px; }
-  .hero-info-bar { font-size: 12px; padding: 10px 12px; }
-  .hero-visual { max-width: 280px; aspect-ratio: 1; margin: 8px auto 0; }
+  /* ----- HERO — more breathing room ----- */
+  .hero { padding: 36px 0 32px; }
+  .hero-inner { gap: 32px; }
+  .hero h1 { font-size: clamp(28px, 8vw, 40px); line-height: 1.12; margin: 14px 0; }
+  .hero-tag { font-size: 11px; letter-spacing: 0.12em; padding: 6px 14px; }
+  .hero .lede { font-size: 15px; line-height: 1.55; margin-bottom: 22px; }
+  .hero-cta .btn { min-height: 52px; padding: 14px 24px; font-size: 15px; }
+  .hero-info-bar { font-size: 13px; padding: 12px 14px; margin-top: 18px; }
+  .hero-visual { max-width: 280px; aspect-ratio: 1; margin: 12px auto 0; }
   .hero-brand-logo { width: 88%; max-width: 280px; bottom: -18%; }
 
-  /* ----- FILTER CHIPS: horizontal scroll instead of wrapping ----- */
+  /* ----- FILTER CHIPS: horizontal scroll, generous tap targets ----- */
   .filter-chips {
     flex-wrap: nowrap;
     overflow-x: auto;
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
-    padding-bottom: 6px;
+    padding-bottom: 8px;
     margin: 0 -16px;
     padding-left: 16px;
     padding-right: 16px;
+    gap: 10px;
   }
   .filter-chips::-webkit-scrollbar { display: none; }
-  .chip-btn { flex-shrink: 0; white-space: nowrap; }
+  .chip-btn { flex-shrink: 0; white-space: nowrap; min-height: 44px; padding: 10px 18px; font-size: 14px; border-radius: 12px; }
 
-  /* ----- SECTIONS: tighter ----- */
-  .section { padding: 32px 0; }
-  .section-title { font-size: clamp(22px, 6vw, 28px); }
-  .section-subtitle { font-size: 14px; }
-  .section-head { gap: 12px; margin-bottom: 18px; }
+  /* ----- SECTIONS: more vertical breathing room ----- */
+  .section { padding: 44px 0; }
+  .section-title { font-size: clamp(22px, 6vw, 28px); margin-bottom: 6px; line-height: 1.2; }
+  .section-subtitle { font-size: 14px; line-height: 1.5; }
+  .section-head { gap: 16px; margin-bottom: 24px; }
 
-  /* ----- CATEGORY CARDS: keep big icons but tighter ----- */
-  .cat-grid-big .cat-icon { width: 96px; height: 96px; font-size: 54px; margin-bottom: 12px; border-radius: 22px; }
-  .cat-grid-big .cat-name { font-size: 18px; }
+  /* ----- CATEGORY CARDS: big icons + generous spacing ----- */
+  .cat-grid-big { gap: 14px; grid-template-columns: repeat(2, 1fr); }
+  .cat-grid-big .cat-card { padding: 28px 16px; }
+  .cat-grid-big .cat-icon { width: 102px; height: 102px; font-size: 60px; margin-bottom: 16px; border-radius: 24px; }
+  .cat-grid-big .cat-name { font-size: 19px; }
 
   /* ----- STEPS / FEATURES ----- */
-  .step { padding: 18px 16px; }
-  .step h3 { font-size: 17px; }
-  .step p { font-size: 13.5px; }
+  .steps { gap: 14px; }
+  .step { padding: 22px 18px; }
+  .step h3 { font-size: 18px; margin: 10px 0 8px; }
+  .step p { font-size: 14px; line-height: 1.55; }
+  .step-num { width: 36px; height: 36px; font-size: 16px; }
+  .features { gap: 14px; }
+  .feature { padding: 22px 18px; }
+  .feature h4 { font-size: 16px; margin: 10px 0 8px; }
+  .feature p { font-size: 13.5px; line-height: 1.55; }
 
   /* ----- GAME PAGE NAV / TITLE ----- */
-  .play-wrap { padding: 12px 0 28px; }
-  .play-head { gap: 8px; margin-bottom: 12px; }
-  .play-title-block h1 { font-size: clamp(22px, 6vw, 30px); }
-  .play-sub { font-size: 13px; }
-  .play-canvas-wrap { padding: 16px 10px; }
-  .play-side { padding: 4px 0 0; }
-  .play-side .panel { padding: 14px; }
-  .play-side .panel h4 { font-size: 14px; }
+  .play-wrap { padding: 18px 0 40px; }
+  .play-head { gap: 10px; margin-bottom: 18px; }
+  .play-title-block h1 { font-size: clamp(22px, 6vw, 30px); line-height: 1.2; margin-bottom: 6px; }
+  .play-sub { font-size: 14px; line-height: 1.5; }
+  .play-canvas-wrap { padding: 20px 14px; border-radius: 18px; }
+  .play-side { padding: 10px 0 0; display: grid; gap: 14px; }
+  .play-side .panel { padding: 18px 16px; border-radius: 16px; }
+  .play-side .panel h4 { font-size: 15px; margin-bottom: 12px; }
+  .play-side .panel p { font-size: 13.5px; line-height: 1.55; }
+  .play-side .btn { min-height: 48px; font-size: 14px; padding: 12px 18px; }
+  .play-side label { font-size: 13px !important; }
+  .play-side input[type="number"] { padding: 10px 12px !important; min-height: 44px; }
+  .back-link { font-size: 14px; padding: 8px 0; display: inline-block; min-height: 44px; line-height: 1.8; }
 
   /* ----- LIVE-CASINO DEALER CARD + FEED tighter on mobile ----- */
   .live-dealer { padding: 8px 12px; gap: 10px; }
@@ -3207,23 +3224,23 @@ img { display: block; max-width: 100%; }
 
 @media (max-width: 540px) {
   /* Tighter still — phones in portrait */
-  .nav-inner { padding: 8px 10px; }
-  .container { padding: 0 14px; }
+  .nav-inner { padding: 10px 12px; }
+  .container { padding: 0 16px; }
 
-  /* Game card grid: keep 2-col with tighter gap */
-  .grid { gap: 10px; }
-  .game-meta { padding: 10px 10px 8px; }
-  .game-title { font-size: 13px; }
-  .game-provider { font-size: 10px; letter-spacing: 0.05em; }
-  .game-tag { font-size: 9px; padding: 3px 6px; top: 8px; left: 8px; }
-  .jackpot-badge { font-size: 9px; }
+  /* Game card grid: keep 2-col with comfortable gap */
+  .grid { gap: 14px; }
+  .game-meta { padding: 12px 12px 10px; }
+  .game-title { font-size: 14px; line-height: 1.2; }
+  .game-provider { font-size: 10px; letter-spacing: 0.06em; }
+  .game-tag { font-size: 10px; padding: 4px 8px; top: 8px; left: 8px; border-radius: 8px; }
+  .jackpot-badge { font-size: 10px; padding: 4px 8px; }
 
-  /* New wheel-game bet grids: enforce 56px min touch target */
+  /* New wheel-game bet grids: enforce 60px min touch target + breathing room */
   .mw-bet-btn, .dc-bet-btn, .cl-bet-btn, .ft-bet-btn, .ml-bet-btn, .ct-bet-btn {
-    padding: 14px 4px; font-size: 13px; min-height: 56px;
+    padding: 16px 6px; font-size: 14px; min-height: 60px; border-radius: 14px;
   }
-  .mw-bet-grid, .ct-bet-grid, .ft-bet-grid, .ml-bet-grid { gap: 6px; }
-  .dc-bet-grid, .cl-bet-grid { gap: 6px; }
+  .mw-bet-grid, .ct-bet-grid, .ft-bet-grid, .ml-bet-grid { gap: 8px; }
+  .dc-bet-grid, .cl-bet-grid { gap: 8px; }
 
   /* Lightning Roulette table: shrink cells, scroll only for the inside grid */
   .lr-board { grid-template-columns: 26px repeat(12, minmax(0, 1fr)); gap: 2px; }
@@ -3330,30 +3347,29 @@ img { display: block; max-width: 100%; }
 }
 
 /* ============================================================ */
-/* Hub: extra-tight on the smallest phones                      */
+/* Hub on the smallest popular phones (iPhone SE 1st gen, etc.) */
 /* ============================================================ */
 @media (max-width: 360px) {
-  .container { padding: 0 12px; }
-  .nav { padding: 0; }
-  .nav-inner { padding: 8px 10px; gap: 4px; }
-  .nav-cta { padding: 6px 8px !important; font-size: 11px !important; }
-  .sfx-toggle, .lang-toggle { width: 34px; height: 34px; }
-  .wallet { padding: 5px 8px 5px 5px; gap: 4px; }
-  .wallet-icon { width: 24px; height: 24px; }
-  .wallet-amount { font-size: 12px; }
-  .grid { gap: 8px; }
-  .game-card { aspect-ratio: 3 / 4.2; }
-  .cat-grid-big .cat-icon { width: 82px; height: 82px; font-size: 48px; }
-  .cat-grid-big .cat-name { font-size: 15px; }
-  .hero { padding: 20px 0 18px; }
-  .hero h1 { font-size: 24px; line-height: 1.08; }
-  .hero .lede { font-size: 13px; }
-  .hero-info-bar { font-size: 11px; padding: 8px 10px; }
-  .hero-visual { max-width: 240px; }
-  .hero-brand-logo { width: 80%; max-width: 240px; }
-  .section-title { font-size: 20px; }
-  .section { padding: 24px 0; }
-  .section-head { margin-bottom: 14px; }
-  .play-title-block h1 { font-size: 20px; }
-  .play-sub { font-size: 12px; }
+  .container { padding: 0 14px; }
+  .nav-inner { padding: 10px 12px; gap: 6px; }
+  .nav-cta { padding: 8px 12px !important; font-size: 12px !important; min-height: 38px; }
+  .sfx-toggle { width: 38px; height: 38px; }
+  .lang-toggle { width: 38px; }
+  .wallet { padding: 6px 10px 6px 6px; gap: 6px; }
+  .wallet-icon { width: 26px; height: 26px; }
+  .wallet-amount { font-size: 13px; }
+  .grid { gap: 12px; }
+  .cat-grid-big .cat-icon { width: 88px; height: 88px; font-size: 52px; }
+  .cat-grid-big .cat-name { font-size: 17px; }
+  .hero { padding: 26px 0 24px; }
+  .hero h1 { font-size: 26px; line-height: 1.1; }
+  .hero .lede { font-size: 14px; }
+  .hero-info-bar { font-size: 12px; padding: 10px 12px; }
+  .hero-visual { max-width: 260px; }
+  .hero-brand-logo { width: 84%; max-width: 260px; }
+  .section-title { font-size: 22px; }
+  .section { padding: 36px 0; }
+  .section-head { margin-bottom: 20px; }
+  .play-title-block h1 { font-size: 22px; }
+  .play-sub { font-size: 13px; }
 }
