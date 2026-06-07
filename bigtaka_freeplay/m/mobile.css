@@ -574,22 +574,22 @@ a { color: inherit; text-decoration: none; }
 }
 .signup-final .btn {
   width: 100%;
-  min-height: 72px;
+  min-height: 76px;
   border-radius: 16px;
   font-weight: 900;
   text-align: left;
   display: flex !important;
   align-items: center;
   gap: 10px;
-  padding: 12px 14px;
+  padding: 12px 18px 12px 12px;
   box-sizing: border-box;
   overflow: hidden;
 }
 .signup-final-emoji {
-  font-size: 26px;
+  font-size: 24px;
   flex-shrink: 0;
   line-height: 1;
-  width: 30px;
+  width: 28px;
   text-align: center;
 }
 .signup-final-text {
@@ -599,23 +599,30 @@ a { color: inherit; text-decoration: none; }
   flex: 1 1 auto;
   min-width: 0;
   overflow: hidden;
+  padding-right: 4px;
 }
 .signup-final-text strong {
-  font-size: 14.5px;
+  font-size: 13.5px;
   font-weight: 900;
-  letter-spacing: -0.005em;
-  line-height: 1.15;
+  letter-spacing: -0.01em;
+  line-height: 1.18;
   white-space: normal;
   word-break: break-word;
+  overflow-wrap: anywhere;
+  display: block;
+  max-width: 100%;
 }
 .signup-final-text small {
-  font-size: 10.5px;
-  opacity: 0.88;
+  font-size: 10px;
+  opacity: 0.85;
   font-weight: 600;
-  line-height: 1.3;
+  line-height: 1.28;
   white-space: normal;
   word-break: break-word;
-  letter-spacing: -0.005em;
+  overflow-wrap: anywhere;
+  letter-spacing: -0.008em;
+  display: block;
+  max-width: 100%;
 }
 /* Signup step-3 button gradients + box treatment (matches desktop styles.css) */
 .signup-final .btn-gold,
@@ -659,11 +666,11 @@ a { color: inherit; text-decoration: none; }
 .signup-final .btn-ghost .signup-final-text small { display: none; }
 
 @media (max-width: 380px) {
-  .signup-card { padding: 6px 16px 18px !important; }
-  .signup-final .btn { padding: 10px 12px; gap: 8px; min-height: 70px; }
+  .signup-card { padding: 6px 14px 18px !important; }
+  .signup-final .btn { padding: 10px 14px 10px 10px; gap: 8px; min-height: 72px; }
   .signup-final-emoji { font-size: 22px; width: 26px; }
-  .signup-final-text strong { font-size: 13.5px; }
-  .signup-final-text small { font-size: 10px; line-height: 1.28; }
+  .signup-final-text strong { font-size: 12.5px; }
+  .signup-final-text small { font-size: 9.5px; line-height: 1.28; }
 }
 .signup-region-block {
   display: none;
