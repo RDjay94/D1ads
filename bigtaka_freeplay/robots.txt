@@ -1,0 +1,21 @@
+# Bigtaka Free Play — robots.txt
+# https://www.playbigtaka.com/
+
+User-agent: *
+Allow: /
+Disallow: /assets/posters/*_thumb*
+
+# Big crawlers may take a bit — give them what they need
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+# Aggressive scrapers — be polite
+Crawl-delay: 1
+
+Sitemap: https://www.playbigtaka.com/sitemap.xml
