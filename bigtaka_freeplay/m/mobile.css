@@ -635,66 +635,54 @@ a { color: inherit; text-decoration: none; }
 
 /* ============================================================ */
 /* REGISTER PROMPT — "🎁 Welcome Bonus Unlocked" popup           */
-/* On desktop it sits as a small card in the bottom-right.       */
-/* On mobile we promote it to a slide-up bottom sheet to match   */
-/* signup + bonus-select treatment.                              */
+/* Non-blocking slide-up — does NOT cover the homepage, no       */
+/* dark backdrop. Sits anchored to the bottom above the tabbar,  */
+/* user can still see and interact with the homepage behind it.  */
 /* ============================================================ */
 .register-prompt-bg {
-  position: fixed !important;
-  inset: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  width: 100% !important;
-  z-index: 1000 !important;
-  background: rgba(5, 2, 16, 0.84) !important;
-  backdrop-filter: blur(8px) !important;
-  display: flex !important;
-  align-items: flex-end !important;
-  justify-content: center !important;
-  pointer-events: auto !important;
-  animation: mFadeIn 0.25s ease;
+  /* Wrapper is a 0-size pass-through; the card inside positions itself */
+  position: static !important;
+  background: none !important;
+  backdrop-filter: none !important;
+  pointer-events: none !important;
+  display: contents !important;
 }
 .register-prompt-bg.fade-out {
   opacity: 0;
-  transform: none !important;
-  transition: opacity 0.3s ease !important;
+  transform: translateY(40px) !important;
+  transition: all 0.3s ease !important;
   pointer-events: none;
 }
 .register-prompt-card {
-  position: relative !important;
-  width: 100% !important;
+  position: fixed !important;
+  left: 8px !important;
+  right: 8px !important;
+  bottom: calc(86px + env(safe-area-inset-bottom)) !important;
+  top: auto !important;
+  width: auto !important;
   max-width: 100% !important;
-  max-height: 70vh !important;
+  max-height: none !important;
   margin: 0 !important;
+  z-index: 8500 !important;
   background:
     radial-gradient(ellipse at 80% 0%, rgba(255, 240, 150, 0.3), transparent 55%),
     linear-gradient(180deg, #5b0d8c 0%, #c80060 35%, #ff5a00 75%, #ffb800 100%) !important;
-  border: 0 !important;
-  border-top: 1px solid rgba(255, 215, 0, 0.4) !important;
-  border-radius: 24px 24px 0 0 !important;
-  padding: 14px 20px calc(20px + env(safe-area-inset-bottom)) !important;
-  box-shadow: 0 -16px 40px rgba(0, 0, 0, 0.6) !important;
+  border: 1px solid rgba(255, 215, 0, 0.5) !important;
+  border-radius: 18px !important;
+  padding: 14px 16px 16px !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55), 0 0 28px rgba(255, 90, 0, 0.45) !important;
   overflow: hidden !important;
   pointer-events: auto !important;
   text-align: center !important;
-  animation: mSheetUp 0.32s cubic-bezier(0.21, 0.97, 0.42, 1) !important;
+  animation: none !important;
+  transform: translateY(0) !important;
+  transition: opacity 0.25s ease, transform 0.35s cubic-bezier(0.21, 0.97, 0.42, 1) !important;
   box-sizing: border-box;
 }
 .register-prompt-card::before {
-  /* Replace the desktop rotating rainbow halo with a simple grab handle on mobile */
-  content: '' !important;
-  display: block !important;
-  position: relative !important;
-  inset: auto !important;
-  border-radius: 2px !important;
-  width: 44px !important;
-  height: 4px !important;
-  background: rgba(255, 255, 255, 0.55) !important;
-  margin: 0 auto 12px !important;
-  filter: none !important;
-  opacity: 1 !important;
-  animation: none !important;
-  z-index: 1;
+  /* Non-blocking slide-up: no grab handle needed */
+  content: none !important;
+  display: none !important;
 }
 .register-prompt-bg .register-prompt-close {
   position: absolute !important;
@@ -709,25 +697,28 @@ a { color: inherit; text-decoration: none; }
   border: 1px solid rgba(255, 255, 255, 0.2) !important;
   z-index: 3 !important;
 }
+.register-prompt-card {
+  /* Override the desktop padding for a more compact mobile slide-up */
+  padding: 10px 14px 14px !important;
+}
 .register-prompt-coin {
-  top: -22px !important;
-  right: -20px !important;
-  width: 86px !important;
-  height: 86px !important;
-  opacity: 0.2 !important;
+  top: -18px !important;
+  right: -16px !important;
+  width: 70px !important;
+  height: 70px !important;
+  opacity: 0.18 !important;
 }
 .register-prompt-eyebrow {
   font-size: 10px !important;
-  padding: 4px 12px !important;
-  margin: 4px 0 10px !important;
+  padding: 3px 10px !important;
+  margin: 2px 32px 8px 0 !important;
   display: inline-block !important;
-  margin-right: 32px !important;
 }
 .register-prompt-card h2 {
-  font-size: clamp(20px, 5.5vw, 24px) !important;
+  font-size: 18px !important;
   font-weight: 900 !important;
   line-height: 1.18 !important;
-  margin: 0 0 8px !important;
+  margin: 0 0 4px !important;
   letter-spacing: -0.01em !important;
   color: #fff !important;
   word-break: break-word;
@@ -740,23 +731,24 @@ a { color: inherit; text-decoration: none; }
   -webkit-text-fill-color: transparent !important;
 }
 .register-prompt-card p {
-  font-size: 14px !important;
-  line-height: 1.45 !important;
+  font-size: 12.5px !important;
+  line-height: 1.4 !important;
   color: rgba(255, 255, 255, 0.92) !important;
-  margin: 0 0 16px !important;
-  padding: 0 6px;
+  margin: 0 0 10px !important;
+  padding: 0 !important;
 }
 .register-prompt-actions {
   display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
   gap: 8px !important;
   margin-top: 4px !important;
 }
 .register-prompt-actions .btn {
   width: 100% !important;
-  min-height: 52px !important;
-  padding: 12px 16px !important;
-  border-radius: 14px !important;
-  font-size: 15px !important;
+  min-height: 44px !important;
+  padding: 10px 12px !important;
+  border-radius: 12px !important;
+  font-size: 13px !important;
   font-weight: 900 !important;
   display: inline-flex !important;
   align-items: center !important;
@@ -766,13 +758,13 @@ a { color: inherit; text-decoration: none; }
 .register-prompt-actions .btn-gold {
   background: linear-gradient(135deg, #ffd700, #c89211) !important;
   color: #1a0c35 !important;
-  box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4) !important;
+  box-shadow: 0 6px 16px rgba(255, 215, 0, 0.4) !important;
   border: 0 !important;
 }
 .register-prompt-actions .btn-ghost {
-  background: rgba(0, 0, 0, 0.25) !important;
+  background: rgba(0, 0, 0, 0.3) !important;
   color: #fff !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
 }
 
 /* ============================================================ */

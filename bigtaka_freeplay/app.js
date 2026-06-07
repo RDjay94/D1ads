@@ -1724,8 +1724,10 @@ const RegisterPrompt = {
       setTimeout(() => el.remove(), 320);
     }
     el.querySelector('[data-rp-claim]').addEventListener('click', () => {
-      // Open the bonus selection screen, then close this prompt
-      BonusSelect.open();
+      // Open the Signup flow directly (matches the Sign Up tab + the Claim
+      // Now CTA on the homepage). The signup card slides up while this
+      // non-blocking prompt fades out.
+      Signup.open();
       setTimeout(close, 200);
     });
     el.querySelector('[data-rp-later]').addEventListener('click', close);
