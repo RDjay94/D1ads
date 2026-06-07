@@ -550,7 +550,7 @@ a { color: inherit; text-decoration: none; }
 }
 .signup-final {
   display: grid; gap: 12px;
-  margin-top: 18px;
+  margin-top: 16px;
 }
 .signup-final .btn {
   width: 100%;
@@ -560,41 +560,42 @@ a { color: inherit; text-decoration: none; }
   text-align: left;
   display: flex !important;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   padding: 12px 14px;
   box-sizing: border-box;
   overflow: hidden;
 }
 .signup-final-emoji {
-  font-size: 28px;
+  font-size: 26px;
   flex-shrink: 0;
   line-height: 1;
-  width: 36px;
+  width: 30px;
   text-align: center;
 }
 .signup-final-text {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 2px;
   flex: 1 1 auto;
   min-width: 0;
   overflow: hidden;
 }
 .signup-final-text strong {
-  font-size: 15px;
+  font-size: 14.5px;
   font-weight: 900;
-  letter-spacing: 0;
+  letter-spacing: -0.005em;
   line-height: 1.15;
   white-space: normal;
   word-break: break-word;
 }
 .signup-final-text small {
-  font-size: 11.5px;
-  opacity: 0.85;
+  font-size: 10.5px;
+  opacity: 0.88;
   font-weight: 600;
   line-height: 1.3;
   white-space: normal;
   word-break: break-word;
+  letter-spacing: -0.005em;
 }
 .signup-final .btn-ghost {
   min-height: 48px;
@@ -609,10 +610,11 @@ a { color: inherit; text-decoration: none; }
 .signup-final .btn-ghost .signup-final-text small { display: none; }
 
 @media (max-width: 380px) {
-  .signup-final .btn { padding: 10px 12px; gap: 10px; min-height: 68px; }
-  .signup-final-emoji { font-size: 26px; width: 32px; }
-  .signup-final-text strong { font-size: 14px; }
-  .signup-final-text small { font-size: 11px; }
+  .signup-card { padding: 6px 16px 18px !important; }
+  .signup-final .btn { padding: 10px 12px; gap: 8px; min-height: 70px; }
+  .signup-final-emoji { font-size: 22px; width: 26px; }
+  .signup-final-text strong { font-size: 13.5px; }
+  .signup-final-text small { font-size: 10px; line-height: 1.28; }
 }
 .signup-region-block {
   display: none;
