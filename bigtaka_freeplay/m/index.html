@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<script>(function(){var p=location.pathname;if(p.endsWith('/')||/\.html?$/.test(p))return;var m='/bigtaka_freeplay/m';var i=p.lastIndexOf(m);if(i!==-1&&p.length===i+m.length){document.write('<base href="'+p+'/">');}else{var s=p.lastIndexOf('/');if(s>=0)document.write('<base href="'+p.substring(0,s+1)+'">');}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0" />
+<meta name="theme-color" content="#100525" />
+<title>Bigtaka Free Play — Mobile</title>
+<meta name="description" content="Free-to-play learning hub for online casino & sports games. 72 titles. No real money. Practice with FUN coins." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+Bengali:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="mobile.css" />
+</head>
+<body>
+
+<!-- ============ TOP BAR ============ -->
+<header class="m-topbar">
+  <a href="#" class="m-logo"><img src="../assets/bigtaka-freetoplay.png" alt="Bigtaka" /></a>
+  <div></div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <div class="m-wallet">
+      <img src="../assets/takacoincoin.png" alt="Taka" />
+      <div>
+        <div class="m-wallet-fun">FUN</div>
+        <div class="m-wallet-amt"><span data-wallet>10,000</span></div>
+      </div>
+    </div>
+    <button class="m-lang" data-i18n-toggle data-i18n-skip aria-label="Toggle language"><span data-i18n-toggle-label>EN</span></button>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="m-hero">
+  <span class="m-hero-tag">100% Free · Educational</span>
+  <h1>Learn to play.<br/><span class="hl">Win bigger</span> later.</h1>
+  <p>Practice 72 casino &amp; sports games with FUN coins. Zero taka risked.</p>
+  <div class="m-cta-row">
+    <a href="#library" class="m-cta m-cta-primary">▶ Play Free Now</a>
+    <button class="m-cta m-cta-gold" data-open-signup>🎁 Claim Welcome Bonus</button>
+  </div>
+</section>
+
+<!-- ============ CATEGORY STRIP ============ -->
+<section class="m-section">
+  <div class="m-section-head">
+    <div class="m-section-title">Categories</div>
+  </div>
+  <div class="m-cat-strip">
+    <button class="m-cat-pill slots" data-jump="slots"><div class="ic">🎰</div><div class="nm">Slots</div></button>
+    <button class="m-cat-pill live" data-jump="live"><div class="ic">🎴</div><div class="nm">Live Casino</div></button>
+    <button class="m-cat-pill crash" data-jump="crash"><div class="ic">🚀</div><div class="nm">Aviator</div></button>
+    <button class="m-cat-pill fast" data-jump="fast"><div class="ic">⚡</div><div class="nm">Fast Games</div></button>
+    <button class="m-cat-pill sports" data-jump="sports"><div class="ic">🏏</div><div class="nm">Sports</div></button>
+  </div>
+</section>
+
+<!-- ============ HOT GAMES ============ -->
+<section class="m-section">
+  <div class="m-section-head">
+    <div class="m-section-title">🔥 Hot Right Now</div>
+    <a href="#library" class="m-section-more">See all →</a>
+  </div>
+  <div class="m-scroller" id="hot-scroller"></div>
+</section>
+
+<!-- ============ BONUS PROMO ============ -->
+<div class="m-promo">
+  <h3>100% Welcome Slot Bonus</h3>
+  <p>Match your first slot deposit up to ৳18,000 · BD only.</p>
+  <button class="btn" data-open-signup>Claim Now →</button>
+</div>
+
+<!-- ============ DAILY MISSIONS (collapsible) ============ -->
+<details class="m-accordion" open>
+  <summary><span style="font-size:18px">🎯</span> Daily Missions</summary>
+  <div class="m-accordion-body" id="missions-body"></div>
+</details>
+
+<!-- ============ ACHIEVEMENTS (collapsible) ============ -->
+<details class="m-accordion">
+  <summary><span style="font-size:18px">🏆</span> Achievement Badges</summary>
+  <div class="m-accordion-body" id="badges-body"></div>
+</details>
+
+<!-- ============ GAME LIBRARY ============ -->
+<section class="m-section" id="library">
+  <div class="m-section-head">
+    <div class="m-section-title">All Games <span id="m-game-count" style="opacity:0.6;font-weight:600;font-size:13px">(72)</span></div>
+  </div>
+  <div class="m-search">
+    <span class="m-search-icon">🔍</span>
+    <input id="m-search" type="text" placeholder="Search games or providers…" />
+  </div>
+  <div class="m-filter-row" id="m-filters">
+    <button class="m-filter-btn active" data-filter="all">All</button>
+    <button class="m-filter-btn" data-filter="slots">🎰 Slots</button>
+    <button class="m-filter-btn" data-filter="live">🎴 Live</button>
+    <button class="m-filter-btn" data-filter="crash">🚀 Aviator</button>
+    <button class="m-filter-btn" data-filter="fast">⚡ Fast</button>
+    <button class="m-filter-btn" data-filter="sports">🏏 Sports</button>
+  </div>
+  <div class="m-game-grid" id="m-grid"></div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="m-footer">
+  <strong>⚠ Free play only.</strong> Virtual FUN coins · No real money · 18+ educational use.<br/>
+  © 2026 Bigtaka. All rights reserved.
+</footer>
+
+<!-- ============ BOTTOM TAB BAR ============ -->
+<nav class="m-tabbar">
+  <a href="#" class="m-tab active" data-tab="home"><span class="ic">🏠</span><span class="label">Home</span></a>
+  <a href="#library" class="m-tab" data-tab="games"><span class="ic">🎮</span><span class="label">Games</span></a>
+  <a href="#" class="m-tab" data-open-signup data-tab="bonus"><span class="ic">🎁</span><span class="label">Bonus</span></a>
+  <a href="#" class="m-tab" data-tab="profile"><span class="ic">👤</span><span class="label">Profile</span></a>
+</nav>
+
+<!-- ============ GAME DETAIL MODAL ============ -->
+<div class="m-modal-bg" id="m-modal">
+  <div class="m-modal">
+    <div class="m-modal-grip"></div>
+    <div id="m-modal-body"></div>
+  </div>
+</div>
+
+<script src="../i18n.js"></script>
+<script src="../app.js"></script>
+<script>
+// =====================================================================
+// MOBILE HUB CONTROLLER
+// Reuses GAMES, Wallet, Player, Sfx, LiveCasino, Signup from ../app.js
+// =====================================================================
+(function(){
+  const grid = document.getElementById('m-grid');
+  const hot = document.getElementById('hot-scroller');
+  const search = document.getElementById('m-search');
+  const filterRow = document.getElementById('m-filters');
+  const modal = document.getElementById('m-modal');
+  const modalBody = document.getElementById('m-modal-body');
+  const gameCount = document.getElementById('m-game-count');
+  const missionsBody = document.getElementById('missions-body');
+  const badgesBody = document.getElementById('badges-body');
+
+  function tagClass(tag) { return ['hot','new','play','tutorial'].includes(tag) ? tag : ''; }
+  function tagLabel(tag) { return { hot: '🔥 HOT', new: '✨ NEW', play: 'PLAY', tutorial: 'HOW TO' }[tag] || ''; }
+
+  function renderCard(g) {
+    const poster = 'assets/posters/' + g.id + '.png';
+    return '<div class="m-game-card" data-game="' + g.id + '">' +
+      '<div class="m-game-art" style="background-image:url(\'../' + poster + '\')"></div>' +
+      (g.tag ? '<span class="m-game-tag ' + tagClass(g.tag) + '">' + tagLabel(g.tag) + '</span>' : '') +
+      '<div class="m-game-meta"><div class="m-game-name">' + g.name + '</div><div class="m-game-prov">' + g.provider + '</div></div>' +
+      '</div>';
+  }
+
+  // ---------- HOT scroller (tag = 'hot') ----------
+  function renderHot() {
+    const list = (typeof GAMES !== 'undefined' ? GAMES : []).filter(g => g.tag === 'hot').slice(0, 12);
+    hot.innerHTML = list.map(renderCard).join('');
+  }
+
+  // ---------- LIBRARY grid ----------
+  let activeFilter = 'all';
+  function renderGrid() {
+    if (typeof GAMES === 'undefined') return;
+    const q = search.value.trim().toLowerCase();
+    let list = GAMES;
+    if (activeFilter !== 'all') list = list.filter(g => g.cat === activeFilter);
+    if (q) list = list.filter(g => g.name.toLowerCase().includes(q) || g.provider.toLowerCase().includes(q));
+    if (!list.length) {
+      grid.innerHTML = '<div style="grid-column:1/-1;padding:40px 20px;text-align:center;color:rgba(255,255,255,0.5)">No games. Try another search.</div>';
+    } else {
+      grid.innerHTML = list.map(renderCard).join('');
+    }
+    gameCount.textContent = '(' + list.length + ')';
+  }
+
+  filterRow.addEventListener('click', e => {
+    const btn = e.target.closest('.m-filter-btn'); if (!btn) return;
+    filterRow.querySelectorAll('.m-filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    renderGrid();
+  });
+  search.addEventListener('input', renderGrid);
+
+  // Category strip jumps to library + filter
+  document.querySelectorAll('[data-jump]').forEach(el => {
+    el.addEventListener('click', e => {
+      e.preventDefault();
+      const cat = el.dataset.jump;
+      activeFilter = cat;
+      filterRow.querySelectorAll('.m-filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === cat));
+      renderGrid();
+      document.getElementById('library')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  // ---------- Game detail modal ----------
+  function openGame(id) {
+    const g = (typeof GAMES !== 'undefined' ? GAMES : []).find(x => x.id === id);
+    if (!g) return;
+    if (typeof Sfx !== 'undefined' && Sfx.open) Sfx.open();
+    modalBody.innerHTML =
+      '<div class="m-modal-eyebrow">' + (typeof CATEGORIES !== 'undefined' && CATEGORIES[g.cat] ? CATEGORIES[g.cat].name : g.cat) + '</div>' +
+      '<div class="m-modal-title">' + g.name + '</div>' +
+      '<div class="m-modal-prov">' + g.provider + '</div>' +
+      '<div class="m-modal-stats">' +
+        '<div class="m-modal-stat"><div class="k">RTP</div><div class="v">' + (g.rtp || '—') + '</div></div>' +
+        '<div class="m-modal-stat"><div class="k">Vol</div><div class="v">' + (g.volatility || '—') + '</div></div>' +
+        '<div class="m-modal-stat"><div class="k">Max</div><div class="v">' + (g.maxWin || '—') + '</div></div>' +
+        '<div class="m-modal-stat"><div class="k">Min Bet</div><div class="v">' + (g.minBet || '—') + '</div></div>' +
+      '</div>' +
+      (g.how ? '<div class="m-modal-section"><h4>How it works</h4><p>' + g.how + '</p></div>' : '') +
+      (g.rules ? '<div class="m-modal-section"><h4>Rules &amp; Features</h4><ul style="padding-left:18px;margin:0;font-size:14px;line-height:1.55">' + g.rules.map(r => '<li>' + r + '</li>').join('') + '</ul></div>' : '') +
+      (g.strategy ? '<div class="m-modal-tip"><strong>💡 Strategy tip:</strong> ' + g.strategy + '</div>' : '') +
+      '<div class="m-modal-cta">' +
+        (g.play && !g.play.startsWith('#') ? '<a href="../' + g.play + '" class="btn btn-primary">▶ Try Free Demo</a>' : '<button class="btn btn-primary" disabled>Coming soon</button>') +
+        '<button class="btn btn-ghost" data-modal-close>Close</button>' +
+      '</div>';
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+    if (typeof Sfx !== 'undefined' && Sfx.close) Sfx.close();
+  }
+  modal.addEventListener('click', e => {
+    if (e.target === modal) closeModal();
+    if (e.target.closest('[data-modal-close]')) closeModal();
+  });
+  // Card tap
+  document.body.addEventListener('click', e => {
+    const card = e.target.closest('.m-game-card');
+    if (card) {
+      // If user tapped the inline play button (none in mobile cards) handle, else open modal
+      openGame(card.dataset.game);
+    }
+  });
+
+  // ---------- Missions ----------
+  function renderMissions() {
+    if (typeof Player === 'undefined' || !Player.MISSIONS) { missionsBody.innerHTML = '<p style="opacity:0.6;font-size:13px">No missions today.</p>'; return; }
+    const missions = Player.todayMissions ? Player.todayMissions() : Player.MISSIONS.slice(0, 3);
+    missionsBody.innerHTML = missions.map(m => {
+      return '<div class="m-mission-row">' +
+        '<div class="ic">' + (m.emoji || '🎯') + '</div>' +
+        '<div class="info"><div class="nm">' + m.text + '</div><div class="ds">Reward: ' + m.reward + ' FUN</div></div>' +
+        '<div class="pr">+' + m.reward + '</div>' +
+        '</div>';
+    }).join('');
+  }
+
+  // ---------- Badges ----------
+  function renderBadges() {
+    if (typeof Player === 'undefined' || !Player.BADGES) { badgesBody.innerHTML = '<p style="opacity:0.6;font-size:13px">No badges yet.</p>'; return; }
+    badgesBody.innerHTML = Player.BADGES.slice(0, 6).map(b => {
+      return '<div class="m-badge-row">' +
+        '<div class="ic">' + (b.emoji || '🏆') + '</div>' +
+        '<div class="info"><div class="nm">' + b.name + '</div><div class="ds">' + b.desc + '</div></div>' +
+        '<div class="pr">500</div>' +
+        '</div>';
+    }).join('');
+  }
+
+  // ---------- Init when app.js is loaded ----------
+  function start() {
+    if (typeof GAMES === 'undefined') { setTimeout(start, 50); return; }
+    renderHot();
+    renderGrid();
+    renderMissions();
+    renderBadges();
+  }
+  start();
+
+  // Expose for app.js render hooks (so language toggle re-renders dynamic content)
+  window.renderGrid = renderGrid;
+  window.renderHot = renderHot;
+  window.renderMissions = renderMissions;
+  window.renderBadges = renderBadges;
+
+  // Tab bar visual state
+  document.querySelectorAll('.m-tab').forEach(t => {
+    t.addEventListener('click', () => {
+      document.querySelectorAll('.m-tab').forEach(x => x.classList.toggle('active', x === t));
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

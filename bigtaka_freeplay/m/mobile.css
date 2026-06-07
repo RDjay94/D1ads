@@ -1,0 +1,373 @@
+/* ===================================================================
+   BIGTAKA FREE PLAY — Mobile-only stylesheet.
+   Used by the /m/ phone-first hub + game wrappers. Lives alongside
+   the existing styles.css (which only applies to the desktop hub).
+   =================================================================== */
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', 'Noto Sans Bengali', system-ui, -apple-system, sans-serif;
+  color: #fff;
+  background: #100525;
+  background-image:
+    radial-gradient(ellipse at 50% 0%, rgba(80, 14, 207, 0.35), transparent 50%),
+    radial-gradient(ellipse at 100% 100%, rgba(255, 30, 215, 0.18), transparent 50%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  padding-bottom: 92px; /* clear of bottom tab bar */
+}
+img { max-width: 100%; display: block; }
+button { font: inherit; cursor: pointer; border: 0; background: none; color: inherit; }
+a { color: inherit; text-decoration: none; }
+
+/* ============ TOP STATUS BAR ============ */
+.m-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(16, 5, 37, 0.94);
+  backdrop-filter: saturate(140%) blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 10px 14px;
+  display: grid;
+  grid-template-columns: 36px 1fr auto;
+  align-items: center;
+  gap: 10px;
+}
+.m-logo {
+  width: 56px; height: 56px; display: inline-flex; align-items: center; justify-content: center;
+}
+.m-logo img { width: 64px; height: 64px; object-fit: contain; margin: -12px; }
+.m-wallet {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 12px 6px 6px; border-radius: 999px;
+  background: rgba(255, 215, 0, 0.12);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+}
+.m-wallet img { width: 26px; height: 26px; }
+.m-wallet-amt { font-weight: 900; font-size: 14px; color: #ffd700; }
+.m-wallet-fun { font-size: 10px; opacity: 0.7; letter-spacing: 0.1em; }
+.m-lang {
+  width: 40px; height: 40px; border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 11px; font-weight: 900; letter-spacing: 0.04em;
+  color: #ffd700;
+}
+
+/* ============ HERO ============ */
+.m-hero {
+  padding: 22px 16px 18px;
+  text-align: center;
+  position: relative;
+}
+.m-hero-tag {
+  display: inline-block;
+  font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 5px 12px; border-radius: 999px;
+  background: rgba(137, 235, 22, 0.15); color: #89eb16; border: 1px solid rgba(137, 235, 22, 0.4);
+  margin-bottom: 14px;
+}
+.m-hero h1 {
+  font-size: clamp(28px, 9vw, 36px); font-weight: 900; letter-spacing: -0.02em;
+  line-height: 1.08; margin: 0 0 10px;
+}
+.m-hero h1 .hl { background: linear-gradient(135deg, #ffd700, #ff8a00); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.m-hero p { font-size: 14px; color: rgba(255, 255, 255, 0.75); line-height: 1.5; margin: 0 0 16px; padding: 0 8px; }
+.m-cta-row { display: grid; gap: 10px; max-width: 320px; margin: 0 auto; }
+.m-cta {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 54px; border-radius: 14px;
+  font-weight: 900; font-size: 16px; letter-spacing: 0.02em;
+  transition: transform 0.12s ease;
+}
+.m-cta:active { transform: scale(0.97); }
+.m-cta-primary { background: linear-gradient(135deg, #89eb16, #5a9f00); color: #1a0c35; box-shadow: 0 8px 24px rgba(137, 235, 22, 0.4); }
+.m-cta-gold { background: linear-gradient(135deg, #ffd700, #c89211); color: #1a0c35; box-shadow: 0 8px 24px rgba(255, 215, 0, 0.4); }
+.m-cta-ghost { background: rgba(255, 255, 255, 0.08); color: #fff; border: 1px solid rgba(255, 255, 255, 0.18); }
+
+/* ============ QUICK CATEGORY STRIP ============ */
+.m-section { padding: 12px 0 8px; }
+.m-section-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  padding: 0 16px; margin-bottom: 14px;
+}
+.m-section-title { font-size: 17px; font-weight: 900; letter-spacing: -0.01em; }
+.m-section-more { font-size: 12px; font-weight: 700; color: #ffd700; }
+
+.m-cat-strip {
+  display: flex; gap: 12px;
+  padding: 0 16px 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.m-cat-strip::-webkit-scrollbar { display: none; }
+.m-cat-pill {
+  flex-shrink: 0;
+  min-width: 88px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 14px 10px;
+  text-align: center;
+}
+.m-cat-pill .ic { font-size: 32px; line-height: 1; margin-bottom: 6px; }
+.m-cat-pill .nm { font-size: 12px; font-weight: 800; }
+.m-cat-pill.slots { background: linear-gradient(135deg, rgba(255, 215, 0, 0.18), rgba(200, 146, 17, 0.18)); border-color: rgba(255, 215, 0, 0.35); }
+.m-cat-pill.live { background: linear-gradient(135deg, rgba(255, 30, 215, 0.18), rgba(184, 0, 152, 0.18)); border-color: rgba(255, 30, 215, 0.35); }
+.m-cat-pill.crash { background: linear-gradient(135deg, rgba(137, 235, 22, 0.18), rgba(90, 159, 0, 0.18)); border-color: rgba(137, 235, 22, 0.35); }
+.m-cat-pill.fast { background: linear-gradient(135deg, rgba(107, 26, 255, 0.2), rgba(80, 14, 207, 0.2)); border-color: rgba(107, 26, 255, 0.35); }
+.m-cat-pill.sports { background: linear-gradient(135deg, rgba(0, 153, 255, 0.18), rgba(0, 102, 204, 0.18)); border-color: rgba(0, 153, 255, 0.35); }
+
+/* ============ HORIZONTAL GAME SCROLLER ============ */
+.m-scroller {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 150px;
+  gap: 12px;
+  padding: 0 16px 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+}
+.m-scroller::-webkit-scrollbar { display: none; }
+.m-scroller .m-game-card { scroll-snap-align: start; }
+
+/* ============ GAME CARDS (used in scroller + main grid) ============ */
+.m-game-card {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #1a0c35;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: transform 0.12s ease;
+}
+.m-game-card:active { transform: scale(0.97); }
+.m-game-art {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center;
+}
+.m-game-meta {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 10px 10px 9px;
+  background: linear-gradient(180deg, transparent 0%, rgba(10, 4, 24, 0.0) 40%, rgba(10, 4, 24, 0.92) 78%, rgba(10, 4, 24, 0.98) 100%);
+}
+.m-game-name { font-size: 13px; font-weight: 900; line-height: 1.15; }
+.m-game-prov { font-size: 9px; letter-spacing: 0.06em; opacity: 0.7; text-transform: uppercase; margin-top: 2px; }
+.m-game-tag {
+  position: absolute; top: 8px; left: 8px;
+  font-size: 9px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 3px 7px; border-radius: 8px;
+}
+.m-game-tag.hot { background: rgba(255, 30, 215, 0.25); color: #ff5fde; border: 1px solid rgba(255, 30, 215, 0.5); }
+.m-game-tag.new { background: rgba(255, 215, 0, 0.25); color: #ffd700; border: 1px solid rgba(255, 215, 0, 0.5); }
+.m-game-tag.play { background: rgba(137, 235, 22, 0.25); color: #89eb16; border: 1px solid rgba(137, 235, 22, 0.5); }
+.m-game-tag.tutorial { background: rgba(80, 14, 207, 0.3); color: #b69cff; border: 1px solid rgba(80, 14, 207, 0.55); }
+
+/* ============ FILTER STRIP + LIBRARY GRID ============ */
+.m-filter-row {
+  display: flex; gap: 8px;
+  padding: 4px 16px 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.m-filter-row::-webkit-scrollbar { display: none; }
+.m-filter-btn {
+  flex-shrink: 0;
+  padding: 10px 16px; border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 13px; font-weight: 700; color: rgba(255, 255, 255, 0.85);
+  white-space: nowrap;
+}
+.m-filter-btn.active {
+  background: linear-gradient(135deg, #500ecf, #ff1ed7);
+  border-color: rgba(255, 215, 0, 0.5);
+  color: #fff;
+}
+
+.m-game-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 0 16px;
+}
+.m-search {
+  position: relative;
+  margin: 0 16px 12px;
+}
+.m-search input {
+  width: 100%; height: 44px;
+  padding: 0 14px 0 40px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border-radius: 14px;
+  font-size: 14px;
+}
+.m-search input::placeholder { color: rgba(255, 255, 255, 0.4); }
+.m-search-icon {
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%); opacity: 0.6; font-size: 16px; pointer-events: none;
+}
+
+/* ============ SECTION TILE (BONUS / MISSIONS / HOW-TO promo cards) ============ */
+.m-promo {
+  margin: 14px 16px;
+  border-radius: 18px;
+  padding: 20px 18px;
+  background: linear-gradient(135deg, #500ecf, #ff1ed7);
+  position: relative;
+  overflow: hidden;
+}
+.m-promo h3 { margin: 0 0 6px; font-size: 18px; font-weight: 900; }
+.m-promo p { margin: 0 0 12px; font-size: 13px; opacity: 0.9; }
+.m-promo .btn { display: inline-flex; align-items: center; justify-content: center; height: 42px; padding: 0 18px; border-radius: 12px; background: #ffd700; color: #1a0c35; font-weight: 900; font-size: 13px; }
+
+/* ============ BOTTOM TAB BAR ============ */
+.m-tabbar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  z-index: 100;
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  background: rgba(16, 5, 37, 0.96);
+  backdrop-filter: saturate(140%) blur(14px);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 8px 4px calc(8px + env(safe-area-inset-bottom));
+}
+.m-tab {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 6px 4px;
+  gap: 4px;
+  font-size: 10px; font-weight: 800; letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.55);
+  border-radius: 10px;
+}
+.m-tab.active { color: #ffd700; }
+.m-tab .ic { font-size: 22px; line-height: 1; }
+.m-tab .label { font-size: 10px; }
+
+/* ============ FLOATING LANG TOGGLE ============ */
+.m-fab-lang {
+  position: fixed; bottom: calc(96px + env(safe-area-inset-bottom)); right: 12px;
+  z-index: 90;
+  width: 44px; height: 44px; border-radius: 14px;
+  background: rgba(16, 5, 37, 0.94); color: #ffd700;
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  font-size: 12px; font-weight: 900;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45);
+}
+
+/* ============ MODAL ============ */
+.m-modal-bg {
+  position: fixed; inset: 0;
+  background: rgba(10, 4, 24, 0.84);
+  backdrop-filter: blur(6px);
+  z-index: 200;
+  display: none;
+  align-items: flex-end;
+}
+.m-modal-bg.open { display: flex; }
+.m-modal {
+  width: 100%;
+  max-height: 88vh;
+  background: #160730;
+  border-radius: 22px 22px 0 0;
+  border-top: 1px solid rgba(255, 215, 0, 0.25);
+  padding: 8px 18px calc(20px + env(safe-area-inset-bottom));
+  overflow-y: auto;
+  animation: mSheetUp 0.25s cubic-bezier(0.21, 0.97, 0.42, 1);
+}
+@keyframes mSheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.m-modal-grip {
+  width: 44px; height: 4px; border-radius: 2px;
+  background: rgba(255, 255, 255, 0.25);
+  margin: 8px auto 12px;
+}
+.m-modal-eyebrow { font-size: 11px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #ffd700; }
+.m-modal-title { font-size: 24px; font-weight: 900; line-height: 1.1; margin: 4px 0 2px; }
+.m-modal-prov { font-size: 12px; opacity: 0.7; margin-bottom: 14px; }
+.m-modal-section { margin: 16px 0; }
+.m-modal-section h4 { font-size: 11px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.7; margin: 0 0 8px; }
+.m-modal-section p { font-size: 14px; line-height: 1.55; margin: 0; }
+.m-modal-stats {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+}
+.m-modal-stat {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 10px 6px; text-align: center;
+}
+.m-modal-stat .k { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.6; }
+.m-modal-stat .v { font-size: 13px; font-weight: 900; margin-top: 4px; }
+.m-modal-tip {
+  background: rgba(255, 215, 0, 0.08);
+  border: 1px solid rgba(255, 215, 0, 0.25);
+  border-radius: 14px;
+  padding: 14px;
+  font-size: 13px; line-height: 1.5;
+  margin: 16px 0;
+}
+.m-modal-tip strong { color: #ffd700; }
+.m-modal-cta {
+  position: sticky; bottom: 0;
+  background: linear-gradient(180deg, transparent, #160730 30%);
+  padding-top: 14px;
+  margin: 18px -18px 0; padding-left: 18px; padding-right: 18px; padding-bottom: 4px;
+}
+.m-modal-cta .btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 100%; height: 54px;
+  font-weight: 900; font-size: 15px;
+  border-radius: 14px;
+}
+.m-modal-cta .btn-primary { background: linear-gradient(135deg, #89eb16, #5a9f00); color: #1a0c35; }
+.m-modal-cta .btn-ghost { background: rgba(255, 255, 255, 0.06); color: #fff; margin-top: 8px; }
+
+/* ============ FOOTER (above tab bar) ============ */
+.m-footer {
+  padding: 24px 16px 36px;
+  text-align: center;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  line-height: 1.6;
+}
+.m-footer strong { color: rgba(255, 255, 255, 0.65); }
+
+/* ============ ICONIC BADGES / MISSIONS (collapsible) ============ */
+.m-accordion {
+  margin: 0 16px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+.m-accordion summary {
+  list-style: none;
+  padding: 14px 16px;
+  display: flex; align-items: center; gap: 10px;
+  cursor: pointer;
+  font-weight: 800; font-size: 14px;
+}
+.m-accordion summary::-webkit-details-marker { display: none; }
+.m-accordion summary::after {
+  content: '▾'; margin-left: auto; opacity: 0.6;
+  transition: transform 0.2s;
+}
+.m-accordion[open] summary::after { transform: rotate(180deg); }
+.m-accordion-body { padding: 0 16px 16px; }
+.m-mission-row, .m-badge-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+.m-mission-row .ic, .m-badge-row .ic { font-size: 22px; }
+.m-mission-row .info, .m-badge-row .info { flex: 1; }
+.m-mission-row .nm, .m-badge-row .nm { font-size: 13px; font-weight: 800; }
+.m-mission-row .ds, .m-badge-row .ds { font-size: 11px; opacity: 0.65; margin-top: 1px; }
+.m-mission-row .pr {
+  background: rgba(255, 215, 0, 0.16); color: #ffd700;
+  font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 999px;
+}

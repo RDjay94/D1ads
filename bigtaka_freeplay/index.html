@@ -3,6 +3,30 @@
 <head>
 <meta charset="UTF-8" />
 <script>(function(){var p=location.pathname;if(p.endsWith('/')||/\.html?$/.test(p))return;var m='/bigtaka_freeplay';var i=p.lastIndexOf(m);if(i!==-1&&p.length===i+m.length){document.write('<base href="'+p+'/">');}else{var s=p.lastIndexOf('/');if(s>=0)document.write('<base href="'+p.substring(0,s+1)+'">');}})();</script>
+<script>
+// Redirect mobile visitors to the dedicated /m/ phone-first hub.
+// Skipped if the user has explicitly chosen desktop via ?desktop=1 or sessionStorage.
+(function(){
+  try {
+    if (location.search.indexOf('desktop=1') > -1) { sessionStorage.setItem('bt_force_desktop', '1'); return; }
+    if (sessionStorage.getItem('bt_force_desktop') === '1') return;
+    var ua = navigator.userAgent || '';
+    var isUA = /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini|Mobile/i.test(ua);
+    // Check BOTH window.innerWidth AND screen.width — the former is the
+    // viewport (works on real phones), the latter is the physical screen
+    // (works in dev-tool / preview emulation where innerWidth may not
+    // have been resized yet at parse time).
+    var w = Math.min(window.innerWidth || 9999, screen.width || 9999);
+    var isNarrow = w <= 820;
+    if (isUA || isNarrow) {
+      var path = location.pathname;
+      var slash = path.lastIndexOf('/');
+      var mobilePath = (slash >= 0 ? path.substring(0, slash + 1) : '/') + 'm/index.html';
+      location.replace(mobilePath + (location.search || '') + (location.hash || ''));
+    }
+  } catch (e) {}
+})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Bigtaka Free Play — Learn Every Casino Game, Risk-Free</title>
 <meta name="description" content="Free-to-play learning hub for online casino & sports games. 60+ titles. No real money. Practice slots, live casino, Aviator, sports betting with FUN coins." />
