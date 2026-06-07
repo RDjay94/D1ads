@@ -3489,8 +3489,21 @@ img { display: block; max-width: 100%; }
   .lr-bolt .m { font-size: 10px !important; }
   .dc-x2-banner { padding: 10px !important; font-size: 12px !important; margin: 8px 0 !important; }
 
-  /* Make the bet-controls panel a fixed drawer above the tabbar so SPIN is always reachable */
-  .play-side > .panel:first-of-type {
+  /* WHEEL-GAME DRAWER (opt-in by stage class)
+     Mega-wheel, Dream-catcher, Candyland, Funky-time, Monopoly-live,
+     Crazy-time all have their bet controls in .play-side. Float that
+     panel as a fixed bottom drawer above the tabbar so SPIN is
+     always one tap away.
+     Lightning Roulette, Crazy Coin Flip, and every game that already
+     has its action button INSIDE the canvas (Aviator, Slot, Mines,
+     Plinko, Dice, Blackjack, Cricket, Penalty, Three-point) keep the
+     side panel inline. */
+  body:has(.mw-stage) .play-side > .panel:first-of-type,
+  body:has(.dc-stage) .play-side > .panel:first-of-type,
+  body:has(.cl-stage) .play-side > .panel:first-of-type,
+  body:has(.ft-stage) .play-side > .panel:first-of-type,
+  body:has(.ml-stage) .play-side > .panel:first-of-type,
+  body:has(.ct-stage) .play-side > .panel:first-of-type {
     position: fixed;
     bottom: calc(80px + env(safe-area-inset-bottom));
     left: 8px;
@@ -3499,84 +3512,58 @@ img { display: block; max-width: 100%; }
     background: rgba(16, 5, 37, 0.96);
     backdrop-filter: saturate(140%) blur(14px);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px 16px 0 0;
+    border-radius: 16px;
     box-shadow: 0 -16px 32px rgba(0, 0, 0, 0.5);
     padding: 10px 12px !important;
     max-height: 46vh;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
-  .play-side > .panel:first-of-type h4 { display: none !important; }
-  .play-side > .panel:first-of-type .mw-bet-grid,
-  .play-side > .panel:first-of-type .dc-bet-grid,
-  .play-side > .panel:first-of-type .cl-bet-grid,
-  .play-side > .panel:first-of-type .ft-bet-grid,
-  .play-side > .panel:first-of-type .ml-bet-grid,
-  .play-side > .panel:first-of-type .ct-bet-grid { gap: 6px !important; margin-top: 8px !important; }
-  .play-side > .panel:first-of-type .mw-bet-btn,
-  .play-side > .panel:first-of-type .dc-bet-btn,
-  .play-side > .panel:first-of-type .cl-bet-btn,
-  .play-side > .panel:first-of-type .ft-bet-btn,
-  .play-side > .panel:first-of-type .ml-bet-btn,
-  .play-side > .panel:first-of-type .ct-bet-btn { min-height: 48px !important; padding: 10px 4px !important; font-size: 13px !important; }
-  /* Pad the canvas so it doesn't get hidden under the floating bet drawer */
-  .play-canvas-wrap { margin-bottom: calc(46vh + 80px); }
-  /* But on small phones the bet drawer is shorter — use a smaller buffer */
-  .play-canvas-wrap { margin-bottom: 280px; }
-
-  /* Lightning roulette is the exception — its big bet board belongs above the wheel, not in a drawer */
-  body:has(.lr-board) .play-side > .panel:first-of-type {
-    position: relative !important; bottom: auto; left: auto; right: auto; max-height: none;
-    backdrop-filter: none; background: var(--surface-2); border-radius: 16px;
+  body:has(.mw-stage) .play-side > .panel:first-of-type h4,
+  body:has(.dc-stage) .play-side > .panel:first-of-type h4,
+  body:has(.cl-stage) .play-side > .panel:first-of-type h4,
+  body:has(.ft-stage) .play-side > .panel:first-of-type h4,
+  body:has(.ml-stage) .play-side > .panel:first-of-type h4,
+  body:has(.ct-stage) .play-side > .panel:first-of-type h4 { display: none !important; }
+  /* Tighter bet grids inside the drawer */
+  .mw-bet-grid, .dc-bet-grid, .cl-bet-grid, .ft-bet-grid, .ml-bet-grid, .ct-bet-grid {
+    gap: 6px !important;
+    margin-top: 8px !important;
   }
-  body:has(.lr-board) .play-canvas-wrap { margin-bottom: 12px; }
-
-  /* Blackjack / Aviator / Mines / Plinko / Dice / Cricket / Penalty / Three-point —
-     their canvases have built-in actions, so don't float the side panel. */
-  body:has(.aviator-canvas) .play-side > .panel:first-of-type,
-  body:has(#reels) .play-side > .panel:first-of-type,
-  body:has(.mines-grid) .play-side > .panel:first-of-type,
-  body:has(.plinko-board) .play-side > .panel:first-of-type,
-  body:has(.dice-canvas) .play-side > .panel:first-of-type,
-  body:has(.cricket-pitch) .play-side > .panel:first-of-type,
-  body:has(.penalty-field) .play-side > .panel:first-of-type,
-  body:has(.three-point-court) .play-side > .panel:first-of-type {
-    position: relative !important; bottom: auto; left: auto; right: auto; max-height: none;
-    backdrop-filter: none; background: var(--surface-2); border-radius: 16px;
+  .mw-bet-btn, .dc-bet-btn, .cl-bet-btn, .ft-bet-btn, .ml-bet-btn, .ct-bet-btn {
+    min-height: 48px !important;
+    padding: 10px 4px !important;
+    font-size: 13px !important;
   }
-  body:has(.aviator-canvas) .play-canvas-wrap,
-  body:has(#reels) .play-canvas-wrap,
-  body:has(.mines-grid) .play-canvas-wrap,
-  body:has(.plinko-board) .play-canvas-wrap,
-  body:has(.dice-canvas) .play-canvas-wrap,
-  body:has(.cricket-pitch) .play-canvas-wrap,
-  body:has(.penalty-field) .play-canvas-wrap,
-  body:has(.three-point-court) .play-canvas-wrap { margin-bottom: 12px; }
+  /* Push canvas content above the floating drawer (only for the 6 wheel games) */
+  body:has(.mw-stage) .play-canvas-wrap,
+  body:has(.dc-stage) .play-canvas-wrap,
+  body:has(.cl-stage) .play-canvas-wrap,
+  body:has(.ft-stage) .play-canvas-wrap,
+  body:has(.ml-stage) .play-canvas-wrap,
+  body:has(.ct-stage) .play-canvas-wrap { margin-bottom: 280px; }
 
-  /* Compact NAV on game pages: tighter wallet, icon-only Sign Up */
-  .nav-inner { min-height: 52px !important; padding: 8px 12px !important; gap: 6px !important; }
-  .nav-cta { padding: 6px 10px !important; font-size: 11px !important; min-height: 36px !important; border-radius: 8px !important; }
+  /* Compact NAV on game pages: tighter wallet, small-but-still-text Sign Up */
+  .nav-inner { min-height: 52px !important; padding: 8px 10px !important; gap: 6px !important; }
   .nav-login { display: none !important; }
-  /* On game pages: shrink Sign Up to icon-style */
-  body:not(.is-hub) .nav-signup {
-    font-size: 0 !important;
-    padding: 8px !important;
-    min-width: 36px;
-    width: 36px;
-    height: 36px;
+  /* Sign Up stays a text button, just compact */
+  .nav-cta {
+    padding: 7px 11px !important;
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.02em !important;
+    min-height: 32px !important;
     border-radius: 8px !important;
+    white-space: nowrap !important;
   }
-  body:not(.is-hub) .nav-signup::before {
-    content: '✍️';
-    font-size: 14px;
-    display: inline;
-  }
-  body:not(.is-hub) .wallet { padding: 4px 8px 4px 4px !important; gap: 6px !important; }
-  body:not(.is-hub) .wallet-icon { width: 24px !important; height: 24px !important; }
-  body:not(.is-hub) .wallet-amount { font-size: 12px !important; }
-  body:not(.is-hub) .wallet-label { display: none !important; }
-  body:not(.is-hub) .sfx-toggle { width: 32px !important; height: 32px !important; font-size: 14px !important; }
-  body:not(.is-hub) .lang-toggle { font-size: 11px !important; }
+  /* Wallet tighter */
+  .wallet { padding: 4px 8px 4px 4px !important; gap: 6px !important; border-radius: 10px !important; }
+  .wallet-icon { width: 24px !important; height: 24px !important; }
+  .wallet-amount { font-size: 12px !important; line-height: 1.1; }
+  .wallet-label { display: none !important; }
+  .wallet-reset { width: 24px !important; height: 24px !important; font-size: 12px !important; }
+  .sfx-toggle { width: 32px !important; height: 32px !important; font-size: 14px !important; }
+  .lang-toggle { font-size: 11px !important; }
 
   /* Floating language toggle — move up so it sits above the nav bar */
   .i18n-floating-toggle {
