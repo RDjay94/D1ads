@@ -1244,7 +1244,12 @@ const Signup = {
   _ensure() {
     if (this.modal) return;
     this._loadStored();
-    const assetPath = location.pathname.includes('/games/') ? '../assets/' : 'assets/';
+    // Asset path is relative to the current page:
+    //   /pages/bigtaka_freeplay/index.html      → 'assets/'
+    //   /pages/bigtaka_freeplay/m/index.html    → '../assets/'
+    //   /pages/bigtaka_freeplay/games/<name>.html → '../assets/'
+    const p = location.pathname;
+    const assetPath = (p.includes('/games/') || p.includes('/m/')) ? '../assets/' : 'assets/';
     const html = `
       <div id="signup-modal" class="signup-modal" aria-hidden="true">
         <div class="signup-card">
@@ -1695,8 +1700,10 @@ const RegisterPrompt = {
     } catch (e) {}
 
     // Resolve image path relative to current page
-    const isGame = location.pathname.includes('/games/');
-    const coinSrc = isGame ? '../assets/takacoincoin.png' : 'assets/takacoincoin.png';
+    // Resolve asset path: relative for /games/ and /m/, plain for root hub
+    const p = location.pathname;
+    const isNested = p.includes('/games/') || p.includes('/m/');
+    const coinSrc = (isNested ? '../assets/' : 'assets/') + 'takacoincoin.png';
 
     const html = `
       <div class="register-prompt-bg open" id="register-prompt" role="dialog" aria-label="Welcome bonus">
