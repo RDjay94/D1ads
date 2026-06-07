@@ -348,7 +348,7 @@ function toast(msg, type = '') {
 // ============ GAME CATALOG ============
 const CATEGORIES = {
   slots:  { name: 'Slots',        emoji: '🎰', count: 25, blurb: 'Spin the reels — match symbols to win.' },
-  live:   { name: 'Live Casino',  emoji: '🎴', count: 22, blurb: 'Real dealers, real-time action.' },
+  live:   { name: 'Live Casino',  emoji: '♠️', count: 22, blurb: 'Real dealers, real-time action.' },
   crash:  { name: 'Aviator & Crash', emoji: '🚀', count: 10, blurb: 'Cash out before the rocket crashes.' },
   fast:   { name: 'Fast Games',   emoji: '⚡', count: 5,  blurb: 'Quick rounds, instant outcomes.' },
   sports: { name: 'Sports',       emoji: '🏏', count: 10, blurb: 'Cricket, soccer & NBA challenges.' }
@@ -564,7 +564,7 @@ const GAMES = [
     rules: ['Win = base payout × random multiplier', 'Lightning fee = 100% of base bet (added to total)', 'Multiplier only applies to winning hands', 'Lose = lose entire bet (base + lightning)'],
     strategy: 'House edge is lower than standard blackjack despite the fee. Bigger swing potential makes sessions more exciting.'
   },
-  { id: 'speed-baccarat', cat: 'live', name: 'Speed Baccarat', provider: 'Evolution Gaming', color: ['#d4a017', '#7a4a0d'], icon: '🎴', tag: 'tutorial', play: 'games/blackjack.html?game=baccarat&name=Speed+Baccarat',
+  { id: 'speed-baccarat', cat: 'live', name: 'Speed Baccarat', provider: 'Evolution Gaming', color: ['#d4a017', '#7a4a0d'], icon: '♠️', tag: 'tutorial', play: 'games/blackjack.html?game=baccarat&name=Speed+Baccarat',
     rtp: '98.94%', volatility: 'Low', maxWin: '8×', minBet: '20 FUN',
     how: 'Bet on Player, Banker, or Tie. Faster version of standard baccarat — rounds complete in ~27 seconds instead of 48.',
     rules: ['Player pays 1:1', 'Banker pays 1:1 (minus 5% commission)', 'Tie pays 8:1', 'Banker has slight edge — bet on Banker if unsure'],
@@ -582,7 +582,7 @@ const GAMES = [
     rules: ['Bet on Andar or Bahar before dealing', 'Andar wins if matched first (lower payout due to dealing order)', 'Bahar pays 1:1', 'Side bets on number of cards to match available'],
     strategy: 'Andar has ~51.5% win rate but pays 0.9:1. Bahar has 48.5% but pays 1:1. Math is nearly even — pick by feel.'
   },
-  { id: 'teen-patti', cat: 'live', name: 'Teen Patti Live', provider: 'Ezugi', color: ['#ff1ed7', '#d4a017'], icon: '🎴', tag: 'hot', play: 'games/blackjack.html?game=teenpatti&name=Teen+Patti+Live',
+  { id: 'teen-patti', cat: 'live', name: 'Teen Patti Live', provider: 'Ezugi', color: ['#ff1ed7', '#d4a017'], icon: '♠️', tag: 'hot', play: 'games/blackjack.html?game=teenpatti&name=Teen+Patti+Live',
     rtp: '97.85%', volatility: 'Medium', maxWin: '60×', minBet: '10 FUN',
     how: 'Indian "three-card" poker. Player A and Player B each get 3 cards. Bet on which hand is stronger.',
     rules: ['Hand rankings: Trail > Pure Sequence > Sequence > Color > Pair > High Card', 'Bet on Player A or Player B (1:1)', 'Side bets: Pair Plus, 3+3 Bonus', '6-card bonus available'],
@@ -608,7 +608,7 @@ const GAMES = [
     rules: ['Beat dealer without busting', 'Blackjack pays 3:2', 'Dealer hits to 17', 'Side bets available', 'Streak bonus on 3+ wins'],
     strategy: 'Side bets are flashy but house edge is 5-15%. Stick to the main bet for the lowest casino edge in any game.'
   },
-  { id: 'baccarat-palace', cat: 'live', name: 'Baccarat Palace', provider: 'Pragmatic Live', color: ['#ffd700', '#5b0d8c'], icon: '🎴', tag: 'hot', play: 'games/blackjack.html?game=baccarat&name=Baccarat+Palace',
+  { id: 'baccarat-palace', cat: 'live', name: 'Baccarat Palace', provider: 'Pragmatic Live', color: ['#ffd700', '#5b0d8c'], icon: '♠️', tag: 'hot', play: 'games/blackjack.html?game=baccarat&name=Baccarat+Palace',
     rtp: '98.94%', volatility: 'Low', maxWin: '8×', minBet: '20 FUN',
     how: 'Fast-paced baccarat with trend roadmaps, dragon streak effects, and multiplier rounds. Bet Player, Banker, or Tie.',
     rules: ['Player and Banker each get 2-3 cards', 'Closest to 9 wins', 'Player pays 1:1', 'Banker pays 0.95:1 (5% commission)', 'Tie pays 8:1'],
@@ -1276,7 +1276,7 @@ const Signup = {
             <p>What games are you most excited to try?<small>Select any — we'll personalize your hub.</small></p>
             <div class="signup-cats">
               <button class="signup-cat" data-cat="slots">🎰 Slots</button>
-              <button class="signup-cat" data-cat="live">🎴 Live Casino</button>
+              <button class="signup-cat" data-cat="live">♠️ Live Casino</button>
               <button class="signup-cat" data-cat="crash">🚀 Aviator</button>
               <button class="signup-cat" data-cat="fast">⚡ Fast Games</button>
               <button class="signup-cat" data-cat="sports" style="grid-column: span 2;">🏏 Sports (Cricket · Soccer · NBA)</button>
@@ -1624,7 +1624,7 @@ const BONUSES = [
   { id: 'megacashback',    emoji: '💰', name: '30% MegaCashback',            value: '30% Weekly',        perks: 'On all net losses · across every game · auto-credited every Monday',          tag: 'MEGA' },
   { id: 'weekly-pool',     emoji: '🏆', name: 'Weekly Bonus Pool',           value: '৳600,000 / week',  perks: 'Win a slice of the biggest weekly prize pool in Bangladesh · stake to qualify', tag: 'HUGE' },
   { id: 'vip-rebate',      emoji: '👑', name: 'Exclusive VIP Rebate',        value: 'Tier-based %',      perks: 'Daily rebate on all stakes · climb 5 VIP tiers · personal account manager',    tag: 'EXCLUSIVE' },
-  { id: 'live-unlimited',  emoji: '🎴', name: 'Live Casino Unlimited Bonus', value: 'No Wager Cap',     perks: 'Unlimited cashback on live tables · Roulette, Baccarat, Blackjack, Dragon Tiger', tag: 'NEW' }
+  { id: 'live-unlimited',  emoji: '♠️', name: 'Live Casino Unlimited Bonus', value: 'No Wager Cap',     perks: 'Unlimited cashback on live tables · Roulette, Baccarat, Blackjack, Dragon Tiger', tag: 'NEW' }
 ];
 
 const BonusSelect = {
