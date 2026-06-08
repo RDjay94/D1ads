@@ -37,18 +37,18 @@
     'Bigtaka Free Play': 'বিগটাকা ফ্রি প্লে',
 
     // ============ HERO ============
-    '100% Free • No Real Money • Educational': '১০০% ফ্রি • আসল টাকা নেই • শিক্ষামূলক',
+    '100% Free • Practice Mode • Educational': '১০০% ফ্রি • Practice Mode • শিক্ষামূলক',
     'Learn to Play.': 'খেলা শিখুন।',
     'Win Bigger': 'বড় জিতুন',
     ' Later.': ' পরে।',
     'Later.': 'পরে।',
     'Practice every casino game in the book — slots, live tables, Aviator, sports — with free FUN coins. Master the rules, build a strategy, and play like a pro. ':
       'বইয়ের প্রতিটি ক্যাসিনো গেম অনুশীলন করুন — স্লট, লাইভ টেবিল, Aviator, খেলাধুলা — ফ্রি FUN কয়েন দিয়ে। নিয়ম শিখুন, কৌশল গড়ুন, এবং প্রো-এর মতো খেলুন। ',
-    'Zero taka risked.': 'কোনো টাকা ঝুঁকিতে নেই।',
+    'Zero risk.': 'কোনো ঝুঁকি নেই।',
     '▶ Play Free': '▶ ফ্রি খেলুন',
     '3000+ games': '৩০০০+ গেম',
     ' · live tables, slots, crash, sports — all free to practice': ' · লাইভ টেবিল, স্লট, ক্র্যাশ, খেলাধুলা — সব ফ্রি অনুশীলন',
-    'Taka coin': 'টাকা কয়েন',
+    'FUN coin': 'FUN কয়েন',
 
     // ============ HOW IT WORKS ============
     '3 Steps. ': '৩ ধাপ। ',
@@ -57,8 +57,8 @@
     'No sign-up. No deposit. Just open a game, place a FUN bet, and learn.':
       'কোনো সাইন-আপ নেই। কোনো ডিপোজিট নেই। শুধু একটি গেম খুলুন, FUN বাজি ধরুন, এবং শিখুন।',
     'Get 10,000 FUN Coins': '১০,০০০ FUN কয়েন পান',
-    "Every visitor starts with 10,000 free FUN coins. Burn through them? Hit reset — they're not real money, they're for learning.":
-      'প্রতিটি ভিজিটর ১০,০০০ ফ্রি FUN কয়েন দিয়ে শুরু করে। শেষ হয়ে গেছে? রিসেট করুন — এগুলো আসল টাকা নয়, শেখার জন্য।',
+    "Every visitor starts with 10,000 free FUN coins. Burn through them? Hit reset — they're not real currency, they're for learning.":
+      'প্রতিটি ভিজিটর ১০,০০০ ফ্রি FUN কয়েন দিয়ে শুরু করে। শেষ হয়ে গেছে? রিসেট করুন — এগুলো real currency নয়, শেখার জন্য।',
     'Pick a Game': 'একটি গেম বাছুন',
     'Browse 60+ titles from real industry providers — Pragmatic Play, Evolution, Spribe, JILI. Tap "How to Play" to read the rules before you bet.':
       'বাস্তব ইন্ডাস্ট্রি প্রোভাইডার থেকে ৬০+ টাইটেল ব্রাউজ করুন — Pragmatic Play, Evolution, Spribe, JILI। বাজি ধরার আগে নিয়ম পড়তে "কীভাবে খেলবেন" ট্যাপ করুন।',
@@ -194,7 +194,7 @@
     'Responsible': 'দায়িত্বশীল',
     'Free play guidelines': 'ফ্রি প্লে নির্দেশিকা',
     'Educational use only': 'শুধুমাত্র শিক্ষামূলক ব্যবহার',
-    'No real money': 'কোনো আসল টাকা নেই',
+    'Free practice only': 'শুধু ফ্রি practice',
     'Contact us': 'যোগাযোগ করুন',
     '⚠ Free play only.': '⚠ শুধু ফ্রি প্লে।',
     ' Bigtaka Free Play uses virtual FUN coins with no monetary value. No real currency is wagered, won, or paid out. For ages 18+. This is an educational learning environment.':

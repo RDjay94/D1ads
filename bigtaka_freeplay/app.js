@@ -314,7 +314,7 @@ const Wallet = {
   },
   add(delta) { return this.set(this.get() + delta); },
   reset() {
-    if (confirm('Reset your FUN balance to 10,000? Your real money will not change because there is none — these are practice coins.')) {
+    if (confirm('Reset your FUN balance to 10,000? These are practice coins — nothing real on the line.')) {
       this.set(STARTING_BALANCE);
       Sfx.coin();
       toast('Balance reset to 10,000 FUN coins', 'win');
@@ -1530,7 +1530,7 @@ const LiveCasino = {
 
   // Fake live feed
   FEED_TEMPLATES: [
-    name => `${name} won ৳${(Math.floor(Math.random()*9000)+1000).toLocaleString()}`,
+    name => `${name} won ${(Math.floor(Math.random()*9000)+1000).toLocaleString()} FUN`,
     name => `${name} hit a hot streak 🔥`,
     name => `${name} triggered Lightning Multiplier ⚡`,
     name => `${name} cashed out at ${(2+Math.random()*8).toFixed(1)}×`,
@@ -1619,12 +1619,12 @@ const LiveCasino = {
 // ============ BONUS SELECT (between Claim Welcome Bonus → affiliate link) ============
 const REGISTER_URL = 'https://rrwkd.ttrk.io/69c7fc1113304dfe90bf3506';
 const BONUSES = [
-  { id: 'welcome-slot',    emoji: '🎰', name: '100% Welcome Slot Bonus',     value: 'Up to ৳18,000',    perks: 'Match your first slot deposit · 30+ premium titles · auto-credited',          tag: 'BEST DEAL' },
-  { id: 'free-spins',      emoji: '✨', name: '100 Free Spins',              value: '100 Free Spins',    perks: 'On hottest slots · Pragmatic, JILI, PG Soft · winnings as real cash',         tag: 'POPULAR' },
-  { id: 'megacashback',    emoji: '💰', name: '30% MegaCashback',            value: '30% Weekly',        perks: 'On all net losses · across every game · auto-credited every Monday',          tag: 'MEGA' },
-  { id: 'weekly-pool',     emoji: '🏆', name: 'Weekly Bonus Pool',           value: '৳600,000 / week',  perks: 'Win a slice of the biggest weekly prize pool in Bangladesh · stake to qualify', tag: 'HUGE' },
-  { id: 'vip-rebate',      emoji: '👑', name: 'Exclusive VIP Rebate',        value: 'Tier-based %',      perks: 'Daily rebate on all stakes · climb 5 VIP tiers · personal account manager',    tag: 'EXCLUSIVE' },
-  { id: 'live-unlimited',  emoji: '♠️', name: 'Live Casino Unlimited Bonus', value: 'No Wager Cap',     perks: 'Unlimited cashback on live tables · Roulette, Baccarat, Blackjack, Dragon Tiger', tag: 'NEW' }
+  { id: 'welcome-slot',    emoji: '🎰', name: '100% Welcome Slot Bonus',     value: 'VIP Welcome Pack',    perks: 'Premium slot welcome pack · 30+ top titles · auto-activated',          tag: 'BEST DEAL' },
+  { id: 'free-spins',      emoji: '✨', name: '100 Free Spins',              value: '100 Free Spins',    perks: 'On hottest slots · Pragmatic, JILI, PG Soft · top providers',         tag: 'POPULAR' },
+  { id: 'megacashback',    emoji: '💰', name: '30% MegaCashback',            value: '30% Weekly',        perks: 'Weekly recovery boost · across every game · auto-activated every Monday',          tag: 'MEGA' },
+  { id: 'weekly-pool',     emoji: '🏆', name: 'Weekly Bonus Pool',           value: 'Weekly Premium Pool',  perks: 'Compete for the biggest weekly leaderboard in Bangladesh · play to qualify', tag: 'HUGE' },
+  { id: 'vip-rebate',      emoji: '👑', name: 'Exclusive VIP Rebate',        value: 'Tier-based %',      perks: 'Daily VIP boost · climb 5 VIP tiers · personal account manager',    tag: 'EXCLUSIVE' },
+  { id: 'live-unlimited',  emoji: '♠️', name: 'Live Casino Unlimited Bonus', value: 'No Wager Cap',     perks: 'Unlimited live-table boosts · Roulette, Baccarat, Blackjack, Dragon Tiger', tag: 'NEW' }
 ];
 
 const BonusSelect = {

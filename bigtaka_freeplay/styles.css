@@ -2952,7 +2952,7 @@ img { display: block; max-width: 100%; }
 }
 
 .coin-burst-coin::after {
-  content: '৳';
+  content: 'F';
   position: absolute;
   inset: 0;
   display: flex;

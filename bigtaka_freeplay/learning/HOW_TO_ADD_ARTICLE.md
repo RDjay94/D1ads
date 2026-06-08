@@ -59,7 +59,7 @@ Easiest: duplicate any existing article in `articles/` (`how-to-play-aviator-ban
 - `.article-lede` (2-3 sentence answer to the headline question — Google featured-snippet target)
 - `.article-toc` H2 anchor list
 - All body content
-- Themed `<h3>` text inside `.article-signup` (e.g. "Real wins waiting. ৳18,000 to start.")
+- Themed `<h3>` text inside `.article-signup` (e.g. "Real wins waiting. Welcome Rewards inside.")
 
 ### 4. Add to sitemap
 
@@ -84,7 +84,7 @@ Every article must include:
 | Lede callout (`.article-lede`) with 2-3 sentence direct answer | Google featured-snippet target |
 | TOC chip-set linking to H2 ids | Helps mobile readers + adds anchor-link CTR |
 | Mid-article `.play-cta` linking to the relevant free demo | Pre-signup engagement — gets reader into the product flow |
-| End-of-article `.article-signup` with gold "Claim ৳18,000" + ghost "Practice FREE First" | The actual conversion event |
+| End-of-article `.article-signup` with gold "Claim Welcome Rewards" + ghost "Try FREE First" | The actual conversion event |
 | Minimum 2 internal links to OTHER articles | Lifts time-on-site + SEO link equity |
 | At least one `<table>` OR `<blockquote>` for visual variety | Breaks up text walls |
 | ≥1100 words of body content | Below this, Google ranks it as thin |
@@ -96,7 +96,7 @@ Every article must include:
 Pulled from `Marketing/_context/bigtaka_brand_voice_guide.md` — read it for the full spec.
 
 - **Energy + confidence.** Short sentences. Action verbs. No "as we all know" or "many people wonder".
-- **Bangladesh-first.** Mention taka, BD players, Bangladesh by name. The reader feels seen when content speaks to their context.
+- **Bangladesh-first.** Mention FUN coins, BD players, Bangladesh by name. The reader feels seen when content speaks to their context.
 - **Banglish in 1-2 spots.** Light, natural — "shob theke important", "ajker tip". Never forced.
 - **Honest about variance.** No "you WILL win" claims. "You can put yourself in better position" is the right phrasing.
 - **No emojis in body prose.** Article-cat span and play-cta buttons may use ▶ or 🔥. Body stays clean.

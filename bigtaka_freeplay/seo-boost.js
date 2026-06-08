@@ -1,6 +1,6 @@
 /* BIGTAKA FREE-PLAY — SEO boost / conversion triggers
  * Adds three signup-conversion nudges on top of the existing flow:
- *   1) Sticky bottom "Sign Up · ৳18,000" pill on game pages after 5 spins
+ *   1) Sticky bottom "Sign Up · Welcome Pack" pill on game pages after 5 spins
  *   2) Desktop exit-intent — fires Signup the first time the cursor
  *      leaves the viewport via the top edge
  *   3) Mobile idle — after 90s of no interaction on a game page, fires
@@ -51,7 +51,7 @@
       <button class="seo-pill-close" aria-label="Dismiss">✕</button>
       <span class="seo-pill-emoji">🎁</span>
       <span class="seo-pill-text">
-        <strong>Get ৳18,000 Welcome Bonus</strong>
+        <strong>Get the VIP Welcome Pack</strong>
         <small>Sign up · Bangladesh only · auto-credited</small>
       </span>
       <button class="seo-pill-cta">Sign Up</button>
