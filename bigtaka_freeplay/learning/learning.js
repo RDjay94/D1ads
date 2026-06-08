@@ -91,12 +91,13 @@
   }
 
   function cardCover(a) {
+    const langPill = a.bn ? '<span class="card-lang">EN · বাং</span>' : '';
     if (a.image) {
-      return `<div class="card-cover" style="background-image:url('${a.image}')"></div>`;
+      return `<div class="card-cover" style="background-image:url('${a.image}')">${langPill}</div>`;
     }
     const grad = CAT_GRADIENTS[a.cat] || CAT_GRADIENTS.basics;
     const emoji = CAT_EMOJI[a.cat] || '📖';
-    return `<div class="card-cover card-cover-placeholder" style="background:${grad}"><span class="cover-emoji">${emoji}</span></div>`;
+    return `<div class="card-cover card-cover-placeholder" style="background:${grad}"><span class="cover-emoji">${emoji}</span>${langPill}</div>`;
   }
 
   function renderTodays() {

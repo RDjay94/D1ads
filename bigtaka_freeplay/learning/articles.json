@@ -10,6 +10,8 @@
       "readMin": 7,
       "demoLink": "../games/aviator.html",
       "demoLabel": "Try Aviator FREE",
+      "bn": true,
+      "image": "assets/poster-how-to-play-aviator-bangladesh.jpg",
       "featured": true
     },
     {
@@ -21,7 +23,9 @@
       "published": "2026-06-01",
       "readMin": 6,
       "demoLink": "../games/aviator.html",
-      "demoLabel": "Practice Aviator FREE"
+      "demoLabel": "Practice Aviator FREE",
+      "bn": true,
+      "image": "assets/poster-aviator-5-mistakes-bankroll.jpg"
     },
     {
       "slug": "sweet-bonanza-strategy-bd",
@@ -32,7 +36,9 @@
       "published": "2026-06-02",
       "readMin": 7,
       "demoLink": "../games/slot.html?theme=candy&name=Sweet+Bonanza",
-      "demoLabel": "Spin Sweet Bonanza FREE"
+      "demoLabel": "Spin Sweet Bonanza FREE",
+      "bn": true,
+      "image": "assets/poster-sweet-bonanza-strategy-bd.jpg"
     },
     {
       "slug": "gates-of-olympus-rtp-explained",
@@ -43,7 +49,9 @@
       "published": "2026-06-02",
       "readMin": 6,
       "demoLink": "../games/slot.html?theme=olympus",
-      "demoLabel": "Spin Olympus FREE"
+      "demoLabel": "Spin Olympus FREE",
+      "bn": true,
+      "image": "assets/poster-gates-of-olympus-rtp-explained.jpg"
     },
     {
       "slug": "mines-strategy-3-vs-5",
@@ -54,7 +62,9 @@
       "published": "2026-06-02",
       "readMin": 8,
       "demoLink": "../games/mines.html",
-      "demoLabel": "Practice Mines FREE"
+      "demoLabel": "Practice Mines FREE",
+      "bn": true,
+      "image": "assets/poster-mines-strategy-3-vs-5.jpg"
     },
     {
       "slug": "plinko-strategy-where-to-drop",
@@ -65,7 +75,9 @@
       "published": "2026-06-03",
       "readMin": 6,
       "demoLink": "../games/plinko.html",
-      "demoLabel": "Drop Plinko FREE"
+      "demoLabel": "Drop Plinko FREE",
+      "bn": true,
+      "image": "assets/poster-plinko-strategy-where-to-drop.jpg"
     },
     {
       "slug": "crazy-time-vs-funky-time",
@@ -76,7 +88,9 @@
       "published": "2026-06-03",
       "readMin": 7,
       "demoLink": "../games/crazy-time.html",
-      "demoLabel": "Try Crazy Time FREE"
+      "demoLabel": "Try Crazy Time FREE",
+      "bn": true,
+      "image": "assets/poster-crazy-time-vs-funky-time.jpg"
     },
     {
       "slug": "lightning-roulette-multipliers",
@@ -87,7 +101,9 @@
       "published": "2026-06-03",
       "readMin": 7,
       "demoLink": "../games/lightning-roulette.html",
-      "demoLabel": "Spin Lightning FREE"
+      "demoLabel": "Spin Lightning FREE",
+      "bn": true,
+      "image": "assets/poster-lightning-roulette-multipliers.jpg"
     },
     {
       "slug": "teen-patti-vs-andar-bahar",
@@ -98,7 +114,9 @@
       "published": "2026-06-04",
       "readMin": 8,
       "demoLink": "../games/blackjack.html?game=teenpatti",
-      "demoLabel": "Practice Teen Patti FREE"
+      "demoLabel": "Practice Teen Patti FREE",
+      "bn": true,
+      "image": "assets/poster-teen-patti-vs-andar-bahar.jpg"
     },
     {
       "slug": "live-casino-beginner-guide-bd",
@@ -109,7 +127,9 @@
       "published": "2026-06-04",
       "readMin": 8,
       "demoLink": "../#game-library",
-      "demoLabel": "Explore Live Casino FREE"
+      "demoLabel": "Explore Live Casino FREE",
+      "bn": true,
+      "image": "assets/poster-live-casino-beginner-guide-bd.jpg"
     },
     {
       "slug": "what-is-rtp-bangladesh-guide",
@@ -120,7 +140,9 @@
       "published": "2026-06-04",
       "readMin": 6,
       "demoLink": "../#game-library",
-      "demoLabel": "Try a High-RTP Game FREE"
+      "demoLabel": "Try a High-RTP Game FREE",
+      "bn": true,
+      "image": "assets/poster-what-is-rtp-bangladesh-guide.jpg"
     },
     {
       "slug": "slot-volatility-low-vs-high",
@@ -131,7 +153,9 @@
       "published": "2026-06-05",
       "readMin": 6,
       "demoLink": "../#game-library",
-      "demoLabel": "Test Both Variances FREE"
+      "demoLabel": "Test Both Variances FREE",
+      "bn": true,
+      "image": "assets/poster-slot-volatility-low-vs-high.jpg"
     },
     {
       "slug": "how-to-read-slot-paytable",
@@ -142,7 +166,9 @@
       "published": "2026-06-05",
       "readMin": 5,
       "demoLink": "../#game-library",
-      "demoLabel": "Try Reading a Live Paytable"
+      "demoLabel": "Try Reading a Live Paytable",
+      "bn": true,
+      "image": "assets/poster-how-to-read-slot-paytable.jpg"
     },
     {
       "slug": "bankroll-management-10-rules",
@@ -153,7 +179,9 @@
       "published": "2026-06-05",
       "readMin": 9,
       "demoLink": "../#game-library",
-      "demoLabel": "Practice with FUN Coins FREE"
+      "demoLabel": "Practice with FUN Coins FREE",
+      "bn": true,
+      "image": "assets/poster-bankroll-management-10-rules.jpg"
     },
     {
       "slug": "hot-cold-slots-truth",
@@ -164,7 +192,9 @@
       "published": "2026-06-06",
       "readMin": 6,
       "demoLink": "../#game-library",
-      "demoLabel": "Try a Slot with Real RNG"
+      "demoLabel": "Try a Slot with Real RNG",
+      "bn": true,
+      "image": "assets/poster-hot-cold-slots-truth.jpg"
     },
     {
       "slug": "ipl-2026-match-predictor",
@@ -175,7 +205,9 @@
       "published": "2026-06-06",
       "readMin": 7,
       "demoLink": "../games/cricket-six.html",
-      "demoLabel": "Play IPL Predictor FREE"
+      "demoLabel": "Play IPL Predictor FREE",
+      "bn": true,
+      "image": "assets/poster-ipl-2026-match-predictor.jpg"
     },
     {
       "slug": "cricket-predictor-skill-building",
@@ -186,7 +218,9 @@
       "published": "2026-06-06",
       "readMin": 6,
       "demoLink": "../games/cricket-six.html",
-      "demoLabel": "Train on Free Predictor"
+      "demoLabel": "Train on Free Predictor",
+      "bn": true,
+      "image": "assets/poster-cricket-predictor-skill-building.jpg"
     },
     {
       "slug": "free-spins-vs-cashback-which-bonus",
@@ -198,6 +232,7 @@
       "readMin": 7,
       "demoLink": "../#game-library",
       "demoLabel": "Test-Drive with FUN Coins",
+      "bn": true,
       "image": "assets/poster-free-spins-vs-cashback.jpg"
     },
     {
@@ -210,6 +245,7 @@
       "readMin": 6,
       "demoLink": "../games/aviator.html",
       "demoLabel": "See What the Hype's About",
+      "bn": true,
       "image": "assets/poster-why-bangladeshis-love-aviator.jpg"
     },
     {
@@ -222,6 +258,7 @@
       "readMin": 8,
       "demoLink": "../#game-library",
       "demoLabel": "Practice Before You Claim",
+      "bn": true,
       "image": "assets/poster-eid-2026-casino-bonuses-bd.jpg"
     }
   ]
