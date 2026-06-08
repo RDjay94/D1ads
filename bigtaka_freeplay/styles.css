@@ -419,13 +419,15 @@ img { display: block; max-width: 100%; }
 
 .btn-green {
   background: linear-gradient(135deg, #a4ff2c 0%, #89eb16 100%);
-  color: #0a0418;
-  box-shadow: 0 8px 22px rgba(137, 235, 22, 0.35);
+  color: #000;
+  font-weight: 900;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+  box-shadow: 0 6px 18px rgba(137, 235, 22, 0.28);
 }
 
 .btn-green:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 30px rgba(137, 235, 22, 0.5);
+  box-shadow: 0 10px 26px rgba(137, 235, 22, 0.42);
 }
 
 .btn-ghost {
