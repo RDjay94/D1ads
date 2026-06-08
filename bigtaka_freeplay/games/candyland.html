@@ -239,6 +239,7 @@
     if (bets[seg]) win = bets[seg] * (META[seg].pay + 1);
     if (win > 0) {
       Wallet.add(win);
+      Player.recordWin(win, META[seg].pay + 1, 'live');
       resultEl.innerHTML = `${META[seg].ic} ${seg.toUpperCase()} · WIN ${win.toLocaleString()} FUN`;
       resultEl.className = 'cl-result win';
       Sfx.win && Sfx.win();
@@ -278,7 +279,9 @@
       document.getElementById('bonus-total').textContent = (total).toLocaleString() + ' FUN';
       Sfx.gem && Sfx.gem();
       if (picks === 6) {
-        Wallet.add(Math.floor(total));
+        const finalWin = Math.floor(total);
+        Wallet.add(finalWin);
+        Player.recordWin(finalWin, bet > 0 ? finalWin / bet : 1, 'live');
         document.getElementById('bonus-close').style.display = '';
         Sfx.bigWin && Sfx.bigWin();
       }
@@ -324,7 +327,7 @@
       stopped = true;
       const finalMult = timeUp ? 0 : m;
       const win = Math.floor(bet * finalMult);
-      if (!timeUp) Wallet.add(win);
+      if (!timeUp) { Wallet.add(win); Player.recordWin(win, finalMult, 'live'); }
       document.getElementById('bonus-total').textContent = timeUp ? 'Time up · No win' : (win.toLocaleString() + ' FUN');
       closeBtn.textContent = 'Collect';
       closeBtn.onclick = () => {

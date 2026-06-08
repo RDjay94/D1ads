@@ -223,6 +223,7 @@
     }
     if (win > 0) {
       Wallet.add(win);
+      Player.recordWin(win, megaHit ? megaMult * (winNum + 1) : (winNum + 1), 'live');
       resultEl.innerHTML = `${winNum} · WIN ${win.toLocaleString()} FUN` + (megaHit ? `<br/><span class="mw-mega-applied">⚡ Mega Multiplier ${megaMult}× applied!</span>` : '');
       resultEl.className = 'mw-result win';
       if (megaHit || win >= bets[winNum] * 10) Sfx.bigWin && Sfx.bigWin(); else Sfx.win && Sfx.win();

@@ -261,6 +261,7 @@
     }
     if (win > 0) {
       Wallet.add(win);
+      Player.recordWin(win, slotApplies ? slotMult : (seg.v + 1), 'live');
       resultEl.innerHTML = `${seg.v} · WIN ${win.toLocaleString()} FUN${slotApplies ? ' <span style="color:var(--gold)"> ⚡ ' + slotMult + '×</span>' : ''}`;
       resultEl.className = 'ct-result win'; Sfx.win && Sfx.win();
     } else {
@@ -312,7 +313,7 @@
         const mult = win === 'red' ? red : blue;
         const isWin = side === win;
         const won = isWin ? Math.floor(bet * mult * slot) : 0;
-        if (isWin) Wallet.add(won);
+        if (isWin) { Wallet.add(won); Player.recordWin(won, mult * slot, 'live'); }
         totalEl.textContent = isWin ? `${win.toUpperCase()} · ${mult}× · WIN ${won.toLocaleString()} FUN` : `${win.toUpperCase()} won · You picked ${side.toUpperCase()}`;
         closeBtn.style.display = '';
         closeBtn.onclick = () => closeBonus('🪙 Coin Flip', won, isWin);
@@ -352,6 +353,7 @@
             const mult = buckets[targetBucket];
             const win = Math.floor(bet * mult * slot);
             Wallet.add(win);
+            Player.recordWin(win, mult * slot, 'live');
             totalEl.textContent = `${mult}× · WIN ${win.toLocaleString()} FUN`;
             closeBtn.style.display = '';
             closeBtn.onclick = () => closeBonus('🎯 Pachinko', win, true);
@@ -398,6 +400,7 @@
       t.classList.add('revealed'); t.textContent = m + '×';
       const win = Math.floor(bet * m * slot);
       Wallet.add(win);
+      Player.recordWin(win, m * slot, 'live');
       totalEl.textContent = `${m}× · WIN ${win.toLocaleString()} FUN`;
       closeBtn.style.display = '';
       closeBtn.onclick = () => closeBonus('💰 Cash Hunt', win, true);
@@ -450,6 +453,7 @@
           const result = innerSegs[idx];
           const win = Math.floor(bet * result.m * slot);
           Wallet.add(win);
+          Player.recordWin(win, result.m * slot, 'live');
           totalEl.textContent = `${result.m}× · WIN ${win.toLocaleString()} FUN`;
           closeBtn.style.display = '';
           closeBtn.onclick = () => closeBonus('🎡 Crazy Time', win, true);

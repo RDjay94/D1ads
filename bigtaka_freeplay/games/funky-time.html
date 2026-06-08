@@ -263,6 +263,7 @@
       if (bet === 0) { resultEl.textContent = LABEL[seg.k] + ' bonus · No bet'; resultEl.className = 'ft-result loss'; Sfx.loss && Sfx.loss(); resetRound(); return; }
       const win = Math.floor(bet * variance * (slotApplies ? slotMult : 1));
       Wallet.add(win);
+      Player.recordWin(win, variance * (slotApplies ? slotMult : 1), 'live');
       const name = seg.k === 'disco' ? "Stayin' Alive" : seg.k === 'vip' ? 'VIP Disco' : 'Funky Time';
       resultEl.innerHTML = `${LABEL[seg.k]} ${name.toUpperCase()} · ${variance}× · WIN ${win.toLocaleString()} FUN`;
       resultEl.className = 'ft-result bonus';
@@ -278,6 +279,7 @@
     }
     if (win > 0) {
       Wallet.add(win);
+      Player.recordWin(win, slotApplies ? slotMult : (seg.v + 1), 'live');
       resultEl.innerHTML = `${seg.v} · WIN ${win.toLocaleString()} FUN${slotApplies ? ' <span style="color:var(--gold)"> ⚡ Top Slot ' + slotMult + '×</span>' : ''}`;
       resultEl.className = 'ft-result win';
       Sfx.win && Sfx.win();
@@ -317,6 +319,7 @@
       t.classList.add('picked');
       const win = Math.floor(bet * tile.mult * slotMult);
       Wallet.add(win);
+      Player.recordWin(win, tile.mult * slotMult, 'live');
       totalEl.innerHTML = `${tile.mult}× ${slotMult > 1 ? ' (⚡ ' + slotMult + '× slot)' : ''}<br/>WIN ${win.toLocaleString()} FUN`;
       closeBtn.style.display = '';
       Sfx.bigWin && Sfx.bigWin();

@@ -311,6 +311,7 @@
     });
     if (win > 0) {
       Wallet.add(win);
+      Player.recordWin(win, (boltHit && straightBets[winNum]) ? boltHit.mult : 2, 'live');
       if (boltHit && straightBets[winNum]) {
         resultEl.innerHTML = `${winNum} · ⚡ ${boltHit.mult}× LIGHTNING HIT · WIN ${win.toLocaleString()} FUN`;
         resultEl.className = 'lr-result bolt-win';

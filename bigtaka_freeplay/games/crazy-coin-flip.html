@@ -244,6 +244,7 @@
         if (isWin) {
           const payout = phase1Bet * mult;
           Wallet.add(payout);
+          Player.recordWin(payout, mult, 'live');
           resultEl.innerHTML = `${win.toUpperCase()} · ${mult}× · WIN ${payout.toLocaleString()} FUN`;
           resultEl.className = 'ccf-result win';
           if (mult >= 50) Sfx.jackpot && Sfx.jackpot(); else if (mult >= 10) Sfx.bigWin && Sfx.bigWin(); else Sfx.win && Sfx.win();

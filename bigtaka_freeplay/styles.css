@@ -1684,11 +1684,14 @@ img { display: block; max-width: 100%; }
     radial-gradient(circle at 50% 30%, rgba(80, 14, 207, 0.4) 0%, transparent 60%),
     radial-gradient(circle at 50% 50%, #1a0c35 0%, #0a0418 90%);
   display: none;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: 24px;
+  padding: 24px 24px max(24px, env(safe-area-inset-bottom, 0px) + 24px);
   opacity: 0;
   transition: opacity 0.4s ease;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
 
 .signup-modal.open { display: flex; opacity: 1; }
@@ -1697,6 +1700,7 @@ img { display: block; max-width: 100%; }
 .signup-card {
   width: 100%;
   max-width: 520px;
+  margin: auto;
   background: linear-gradient(180deg, var(--bg-3), var(--bg-2));
   border: 2px solid rgba(255, 215, 0, 0.35);
   border-radius: 22px;
@@ -1862,18 +1866,20 @@ img { display: block; max-width: 100%; }
 }
 
 .signup-final .btn {
-  padding: 16px 18px;
+  padding: 14px 16px;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   text-align: left;
   height: auto;
   justify-content: flex-start;
   width: 100%;
+  white-space: normal;
+  word-break: break-word;
 }
 
 .signup-final-emoji {
-  font-size: 32px;
+  font-size: 28px;
   flex-shrink: 0;
   line-height: 1;
 }
@@ -1885,17 +1891,21 @@ img { display: block; max-width: 100%; }
   gap: 2px;
   flex: 1;
   min-width: 0;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .signup-final-text strong {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 900;
+  line-height: 1.2;
 }
 
 .signup-final-text small {
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 600;
   opacity: 0.78;
+  line-height: 1.3;
 }
 
 .signup-final .btn-ghost { padding: 10px 16px; justify-content: center; }
@@ -1923,9 +1933,24 @@ img { display: block; max-width: 100%; }
 .btn-loading { opacity: 0.7; pointer-events: none; }
 
 @media (max-width: 480px) {
-  .signup-card { padding: 24px 18px; }
-  .signup-logo img { height: 100px; width: 100px; margin: -24px -16px; }
-  .signup-emoji { font-size: 48px; }
+  .signup-modal { padding: 12px 12px max(12px, env(safe-area-inset-bottom, 0px) + 12px); }
+  .signup-card { padding: 20px 16px 18px; border-radius: 18px; }
+  .signup-logo { margin: -16px 0 -8px; }
+  .signup-logo img { height: 92px; width: 92px; margin: -22px -14px; }
+  .signup-steps { margin-bottom: 16px; }
+  .signup-emoji { font-size: 42px; margin-bottom: 10px; }
+  .signup-page h2 { font-size: 22px; }
+  .signup-page > p { font-size: 13.5px; margin-bottom: 16px; padding: 0 4px; }
+  .signup-page input[type="text"] { padding: 14px 16px; font-size: 16px; margin-bottom: 16px; }
+  .signup-cats { gap: 8px; margin-bottom: 16px; }
+  .signup-cat { padding: 13px 8px; font-size: 13px; }
+  .signup-final { gap: 10px; }
+  .signup-final .btn { padding: 12px 14px; gap: 10px; }
+  .signup-final-emoji { font-size: 24px; }
+  .signup-final-text strong { font-size: 14px; }
+  .signup-final-text small { font-size: 11px; }
+  .signup-region-block { padding: 10px 12px 12px; }
+  .signup-region-block-icon { font-size: 26px; }
 }
 
 /* ============ REGISTER PROMPT (side popup, non-blocking) ============ */
@@ -2091,7 +2116,12 @@ img { display: block; max-width: 100%; }
 .register-prompt-actions .btn-ghost { padding: 7px 14px; font-size: 11px; opacity: 0.78; }
 
 @media (max-width: 480px) {
-  .register-prompt-bg { right: 12px; bottom: 12px; left: 12px; width: auto; }
+  .register-prompt-bg {
+    right: 12px;
+    left: 12px;
+    bottom: max(12px, env(safe-area-inset-bottom, 0px) + 12px);
+    width: auto;
+  }
 }
 
 /* ============ LIVE CASINO (dealer, feed, reactions, streak, lightning) ============ */

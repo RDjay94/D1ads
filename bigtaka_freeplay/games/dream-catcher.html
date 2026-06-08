@@ -220,6 +220,7 @@
     }
     if (win > 0) {
       Wallet.add(win);
+      Player.recordWin(win, (winNum + 1) * multiplierStack, 'live');
       const stackTxt = multiplierStack > 1 ? ` ×${multiplierStack}` : '';
       resultEl.innerHTML = `${winNum} · WIN ${win.toLocaleString()} FUN${stackTxt ? ' <span style="color:#d4a017">' + stackTxt + '</span>' : ''}`;
       resultEl.className = 'dc-result win';

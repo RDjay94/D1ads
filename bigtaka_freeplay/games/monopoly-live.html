@@ -295,6 +295,7 @@
       const mult = 2 + Math.floor(Math.random() * 19);
       const win = bet * mult;
       Wallet.add(win);
+      Player.recordWin(win, mult, 'live');
       resultEl.innerHTML = `🎁 Chance · ${mult}× · WIN ${win.toLocaleString()} FUN`;
       resultEl.className = 'ml-result bonus';
       Sfx.bigWin && Sfx.bigWin();
@@ -305,6 +306,7 @@
     if (bets[key]) win = bets[key] * (seg.v + 1);
     if (win > 0) {
       Wallet.add(win);
+      Player.recordWin(win, seg.v + 1, 'live');
       resultEl.innerHTML = `${seg.v} · WIN ${win.toLocaleString()} FUN`;
       resultEl.className = 'ml-result win'; Sfx.win && Sfx.win();
     } else {
@@ -344,6 +346,7 @@
       if (rollsLeft <= 0) {
         const win = Math.floor(bet * multSum);
         Wallet.add(win);
+        Player.recordWin(win, multSum, 'live');
         totalEl.textContent = `WIN ${win.toLocaleString()} FUN`;
         closeBtn.style.display = '';
         closeBtn.onclick = () => {
