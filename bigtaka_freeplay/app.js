@@ -1174,15 +1174,44 @@ const Player = {
 };
 
 // ============ BD GATE (IP-country cloak for the welcome-bonus affiliate URL) ============
-// The Claim Welcome Bonus CTA must only open the affiliate link for Bangladesh IPs.
-// Other regions see an inline "available to BD only" notice. The check runs once on
-// page load and is cached for the session so the click handler stays synchronous
-// (needed to keep window.open() inside the user-gesture window).
+// The Claim Welcome Bonus CTA opens the affiliate link only for Bangladesh visitors.
+// Non-BD regions see an inline "available to selected region only" notice so ad-network
+// reviewers in US/EU never reach the affiliate URL. The check runs once on page load
+// and caches in sessionStorage so the click handler stays synchronous (needed to keep
+// window.open() inside the user-gesture window — popup blockers will eat a deferred open).
+//
+// Robustness rules (do NOT regress — this gate has historically blocked real BD users):
+//  1. Multiple geo providers in a fallback chain. Single-provider was the original bug:
+//     ipapi.co alone gets 429-rate-limited on BD mobile NAT pools and is on Brave/AdGuard
+//     blocklists, so legit BD users were silently dropped into the ERR/block branch.
+//  2. Fail-OPEN when every provider fails. The TTrk.io affiliate URL has its own
+//     server-side geo routing, so non-BD visitors won't convert even if we let them
+//     through — we only lose the cosmetic cloak in the rare full-failure case.
+//  3. Bengali browser language is treated as a positive BD signal when geo is unknown.
+//     navigator.language starting with `bn` is a near-perfect proxy for BD residency.
 const BdGate = {
   AFFILIATE_URL: 'https://rrwkd.ttrk.io/69c7fc1113304dfe90bf3506',
   COUNTRY: null,
   CHECKING: true,
   _pending: [],
+
+  // Providers tried in order. Each returns the ISO-2 country code or '' on failure.
+  // Keep them lightweight, key-less, and CORS-friendly. If one starts charging or
+  // adding auth, drop it — don't break the page on a 401.
+  _providers: [
+    {
+      url: 'https://ipapi.co/json/',
+      pick: d => d && d.country_code
+    },
+    {
+      url: 'https://ipwho.is/?fields=country_code,success',
+      pick: d => d && d.success !== false && d.country_code
+    },
+    {
+      url: 'https://get.geojs.io/v1/ip/country.json',
+      pick: d => d && d.country
+    }
+  ],
 
   init() {
     const cached = sessionStorage.getItem('bigtaka_freeplay_bdgate_v1');
@@ -1191,21 +1220,53 @@ const BdGate = {
       this.CHECKING = false;
       return;
     }
+    this._tryProviders(0);
+  },
+
+  _tryProviders(idx) {
+    if (idx >= this._providers.length) {
+      // Every provider failed. Mark UNKNOWN — allow() will fail-open below.
+      this.COUNTRY = 'UNKNOWN';
+      // Don't cache UNKNOWN: a transient blip shouldn't burn the whole session.
+      this.CHECKING = false;
+      this._flush();
+      return;
+    }
+    const provider = this._providers[idx];
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 4500);
-    fetch('https://ipapi.co/json/', { signal: controller.signal })
+    // 8s timeout (was 4.5s) — BD mobile 3G/EDGE latency frequently exceeds 5s.
+    const timer = setTimeout(() => controller.abort(), 8000);
+    fetch(provider.url, { signal: controller.signal, cache: 'no-store' })
       .then(r => r.ok ? r.json() : Promise.reject(r.status))
       .then(d => {
         clearTimeout(timer);
-        const code = (d && d.country_code ? String(d.country_code) : '').toUpperCase();
-        this.COUNTRY = code || 'ERR';
+        const raw = provider.pick(d);
+        const code = raw ? String(raw).toUpperCase() : '';
+        if (!code) throw new Error('no country in response');
+        this.COUNTRY = code;
         sessionStorage.setItem('bigtaka_freeplay_bdgate_v1', this.COUNTRY);
+        this.CHECKING = false;
+        this._flush();
       })
-      .catch(() => { this.COUNTRY = 'ERR'; })
-      .finally(() => { this.CHECKING = false; this._flush(); });
+      .catch(() => {
+        clearTimeout(timer);
+        this._tryProviders(idx + 1);
+      });
   },
 
-  allow() { return this.COUNTRY === 'BD'; },
+  // Fail-OPEN on UNKNOWN, and treat a Bengali browser as a BD signal. This is what
+  // unblocks the legit-BD-user case where every geo API got rate-limited or blocked
+  // by a privacy extension — without these, the click silently shows the region-block
+  // panel even though the user is in Dhaka.
+  allow() {
+    if (this.COUNTRY === 'BD') return true;
+    if (this.COUNTRY === 'UNKNOWN') return true;
+    try {
+      const lang = ((navigator.language || '') + ' ' + (navigator.languages || []).join(' ')).toLowerCase();
+      if (/\bbn(\b|-)/.test(lang)) return true;
+    } catch (e) {}
+    return false;
+  },
 
   whenReady(cb) {
     if (!this.CHECKING) { cb(); return; }
