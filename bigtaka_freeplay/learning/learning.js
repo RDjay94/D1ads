@@ -9,14 +9,40 @@
 (function () {
   'use strict';
 
-  const CAT_LABELS = {
-    aviator: 'Aviator',
-    slots: 'Slots',
-    live: 'Live Casino',
-    strategy: 'Strategy',
-    cricket: 'Cricket',
-    bonus: 'Bonuses',
-    basics: 'Basics'
+  // Detect hub page language. Set in the host page via <html lang="bn"> +
+  // <body data-hub-lang="bn"> (or "en"). Defaults to en.
+  const PAGE_LANG = (document.body && document.body.getAttribute('data-hub-lang')) ||
+                    (document.documentElement.lang === 'bn' ? 'bn' : 'en');
+
+  const CAT_LABELS_EN = {
+    aviator: 'Aviator', slots: 'Slots', live: 'Live Casino', strategy: 'Strategy',
+    cricket: 'Cricket', bonus: 'Bonuses', basics: 'Basics'
+  };
+  const CAT_LABELS_BN = {
+    aviator: 'Aviator', slots: 'স্লট', live: 'লাইভ ক্যাসিনো', strategy: 'কৌশল',
+    cricket: 'ক্রিকেট', bonus: 'বোনাস', basics: 'বেসিকস'
+  };
+  const CAT_LABELS = PAGE_LANG === 'bn' ? CAT_LABELS_BN : CAT_LABELS_EN;
+
+  // Localized strings used by render functions
+  const STR = PAGE_LANG === 'bn' ? {
+    newToday: 'আজকের নতুন',
+    topRead: 'টপ রিড',
+    minRead: 'মিনিট পড়া',
+    readArticle: 'আর্টিকেল পড়ুন →',
+    read: 'পড়ুন →',
+    today: 'আজ',
+    yesterday: 'গতকাল',
+    daysAgo: 'দিন আগে'
+  } : {
+    newToday: 'New Today',
+    topRead: 'Top Read',
+    minRead: 'min read',
+    readArticle: 'Read article →',
+    read: 'Read →',
+    today: 'Today',
+    yesterday: 'Yesterday',
+    daysAgo: 'days ago'
   };
 
   // Category → gradient for cards without a real poster image
@@ -55,13 +81,26 @@
   }
   function relativeLabel(iso) {
     const todayStr = todayISO();
-    if (iso === todayStr) return 'Today';
+    if (iso === todayStr) return STR.today;
     const today = new Date(todayStr + 'T00:00:00');
     const then = new Date(iso + 'T00:00:00');
     const diff = Math.round((today - then) / (1000 * 60 * 60 * 24));
-    if (diff === 1) return 'Yesterday';
-    if (diff < 7) return diff + ' days ago';
+    if (diff === 1) return STR.yesterday;
+    if (diff < 7) return diff + ' ' + STR.daysAgo;
     return formatDate(iso);
+  }
+
+  // Pick the title/excerpt that matches the hub language. Falls back to EN
+  // if BN data is missing on a particular article.
+  function articleTitle(a) {
+    return (PAGE_LANG === 'bn' && a.titleBn) ? a.titleBn : a.title;
+  }
+  function articleExcerpt(a) {
+    return (PAGE_LANG === 'bn' && a.excerptBn) ? a.excerptBn : a.excerpt;
+  }
+  // BN hub links to .bn.html article files; EN hub links to plain .html.
+  function articleUrl(slug) {
+    return 'articles/' + slug + (PAGE_LANG === 'bn' ? '.bn.html' : '.html');
   }
 
   // ============ PICK TODAY'S 3 ============
@@ -86,9 +125,6 @@
   }
 
   // ============ RENDER ============
-  function articleUrl(slug) {
-    return 'articles/' + slug + '.html';
-  }
 
   // Derive thumbnail path from full poster path. Nanobanana auto-generates
   // <name>_thumb.jpeg next to <name>.jpg — ~15 KB instead of ~750 KB.
@@ -121,15 +157,15 @@
       <a href="${articleUrl(a.slug)}" class="today-card${i === 0 ? ' feat' : ''}">
         ${cardCover(a, 'full')}
         <div class="today-card-body">
-          <span class="today-badge">${a.published === todayISO() ? 'New Today' : 'Top Read'}</span>
+          <span class="today-badge">${a.published === todayISO() ? STR.newToday : STR.topRead}</span>
           <span class="cat">${CAT_LABELS[a.cat] || a.cat}</span>
-          <h3>${escapeHtml(a.title)}</h3>
-          <p>${escapeHtml(a.excerpt)}</p>
+          <h3>${escapeHtml(articleTitle(a))}</h3>
+          <p>${escapeHtml(articleExcerpt(a))}</p>
           <div class="meta">
-            <span><b>${a.readMin}</b> min read</span>
+            <span><b>${a.readMin}</b> ${STR.minRead}</span>
             <span>${relativeLabel(a.published)}</span>
           </div>
-          <div class="read-arrow">Read article →</div>
+          <div class="read-arrow">${STR.readArticle}</div>
         </div>
       </a>
     `).join('');
@@ -145,9 +181,12 @@
     }
     if (activeQuery) {
       const q = activeQuery.toLowerCase();
+      // Match against EN + BN fields so search works from either hub language
       filtered = filtered.filter(a =>
-        a.title.toLowerCase().includes(q) ||
-        a.excerpt.toLowerCase().includes(q) ||
+        (a.title || '').toLowerCase().includes(q) ||
+        (a.titleBn || '').toLowerCase().includes(q) ||
+        (a.excerpt || '').toLowerCase().includes(q) ||
+        (a.excerptBn || '').toLowerCase().includes(q) ||
         (a.tags || []).some(t => t.toLowerCase().includes(q))
       );
     }
@@ -179,11 +218,11 @@
         ${cardCover(a, 'thumb')}
         <div class="archive-card-body">
           <span class="cat">${CAT_LABELS[a.cat] || a.cat}</span>
-          <h4>${escapeHtml(a.title)}</h4>
-          <p>${escapeHtml(a.excerpt)}</p>
+          <h4>${escapeHtml(articleTitle(a))}</h4>
+          <p>${escapeHtml(articleExcerpt(a))}</p>
           <div class="meta">
-            <span>${relativeLabel(a.published)} · ${a.readMin} min</span>
-            <span class="read">Read →</span>
+            <span>${relativeLabel(a.published)} · ${a.readMin} ${PAGE_LANG === 'bn' ? 'মিনিট' : 'min'}</span>
+            <span class="read">${STR.read}</span>
           </div>
         </div>
       </a>

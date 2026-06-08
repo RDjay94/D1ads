@@ -568,6 +568,30 @@
   .article-lang-switch { justify-content: center; }
 }
 
+/* Compact lang-pill variant used in the hub nav (links between EN/BN hub) */
+.nav-lang-pill {
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 800;
+  border-radius: 999px;
+  background: rgba(137, 235, 22, 0.12);
+  border: 1px solid rgba(137, 235, 22, 0.4);
+  color: var(--green);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.nav-lang-pill:hover {
+  background: rgba(137, 235, 22, 0.22);
+  border-color: var(--green);
+  color: var(--green-glow);
+}
+@media (max-width: 720px) {
+  .nav-lang-pill { padding: 6px 10px; font-size: 11px; }
+}
+
 .article-header { margin-bottom: 36px; }
 .article-cat {
   display: inline-block;
