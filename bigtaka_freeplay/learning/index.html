@@ -112,12 +112,6 @@
       <a href="#todays-picks" class="btn btn-green">▶ Read Today's 3</a>
       <a href="../#game-library" class="btn btn-ghost">Try a Game Free</a>
     </div>
-    <div class="learn-stats">
-      <div><b id="stat-articles">20</b><span>Articles</span></div>
-      <div><b>3/day</b><span>New posts</span></div>
-      <div><b>BN + EN</b><span>Bilingual</span></div>
-      <div><b>VIP</b><span>Welcome Pack</span></div>
-    </div>
   </div>
 </header>
 
@@ -275,5 +269,16 @@
 <script src="../app.js" defer></script>
 <script src="../i18n.js" defer></script>
 <script src="learning.js" defer></script>
+<script>
+  // EN page: floating toggle navigates to the BN sibling
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('.i18n-floating-toggle, [data-i18n-toggle]');
+    if (!btn) return;
+    if (btn.tagName === 'A' && btn.getAttribute('href')) return; // nav-pill <a> handles itself
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    location.href = '/learning/index.bn.html' + (location.search || '');
+  }, true);
+</script>
 </body>
 </html>

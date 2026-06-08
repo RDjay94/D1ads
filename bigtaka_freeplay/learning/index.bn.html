@@ -111,12 +111,6 @@
       <a href="#todays-picks" class="btn btn-green">▶ আজকের ৩টি পড়ুন</a>
       <a href="../#game-library" class="btn btn-ghost">একটি গেম FREE try করুন</a>
     </div>
-    <div class="learn-stats">
-      <div><b id="stat-articles">20</b><span>আর্টিকেল</span></div>
-      <div><b>৩/দিন</b><span>নতুন পোস্ট</span></div>
-      <div><b>BN + EN</b><span>দ্বিভাষিক</span></div>
-      <div><b>VIP</b><span>Welcome Pack</span></div>
-    </div>
   </div>
 </header>
 
@@ -274,5 +268,16 @@
 <script src="../app.js" defer></script>
 <script src="../i18n.js" defer></script>
 <script src="learning.js" defer></script>
+<script>
+  // BN page: floating toggle navigates to the EN sibling
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('.i18n-floating-toggle, [data-i18n-toggle]');
+    if (!btn) return;
+    if (btn.tagName === 'A' && btn.getAttribute('href')) return; // nav-pill <a> handles itself
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    location.href = '/learning/index.html' + (location.search || '');
+  }, true);
+</script>
 </body>
 </html>
