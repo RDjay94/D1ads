@@ -90,10 +90,23 @@
     return 'articles/' + slug + '.html';
   }
 
-  function cardCover(a) {
+  // Derive thumbnail path from full poster path. Nanobanana auto-generates
+  // <name>_thumb.jpeg next to <name>.jpg — ~15 KB instead of ~750 KB.
+  function thumbPath(imgPath) {
+    if (!imgPath) return imgPath;
+    return imgPath.replace(/\.jpg$/i, '_thumb.jpeg');
+  }
+
+  // `size` = "full" (Today's Picks, above fold, large display) or "thumb" (archive).
+  function cardCover(a, size) {
+    size = size || 'thumb';
     const langPill = a.bn ? '<span class="card-lang">EN · বাং</span>' : '';
     if (a.image) {
-      return `<div class="card-cover" style="background-image:url('${a.image}')">${langPill}</div>`;
+      const src = size === 'full' ? a.image : thumbPath(a.image);
+      // Use <img> with native loading="lazy" so off-screen images defer.
+      // decoding="async" keeps decode off main thread.
+      const lazy = size === 'thumb' ? 'loading="lazy" decoding="async"' : 'loading="eager" fetchpriority="high"';
+      return `<div class="card-cover"><img class="card-cover-img" src="${src}" alt="" ${lazy} />${langPill}</div>`;
     }
     const grad = CAT_GRADIENTS[a.cat] || CAT_GRADIENTS.basics;
     const emoji = CAT_EMOJI[a.cat] || '📖';
@@ -106,7 +119,7 @@
     const picks = pickTodaysThree(ARTICLES);
     grid.innerHTML = picks.map((a, i) => `
       <a href="${articleUrl(a.slug)}" class="today-card${i === 0 ? ' feat' : ''}">
-        ${cardCover(a)}
+        ${cardCover(a, 'full')}
         <div class="today-card-body">
           <span class="today-badge">${a.published === todayISO() ? 'New Today' : 'Top Read'}</span>
           <span class="cat">${CAT_LABELS[a.cat] || a.cat}</span>
@@ -163,7 +176,7 @@
 
     grid.innerHTML = list.map(a => `
       <a href="${articleUrl(a.slug)}" class="archive-card" data-cat="${a.cat}">
-        ${cardCover(a)}
+        ${cardCover(a, 'thumb')}
         <div class="archive-card-body">
           <span class="cat">${CAT_LABELS[a.cat] || a.cat}</span>
           <h4>${escapeHtml(a.title)}</h4>
