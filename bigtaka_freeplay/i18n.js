@@ -530,7 +530,26 @@
     },
 
     toggle() {
-      this.setLang(currentLang === 'bn' ? 'en' : 'bn');
+      const target = currentLang === 'bn' ? 'en' : 'bn';
+      // If the page declares a sibling translated HTML file via
+      // <link rel="alternate" hreflang="..."> use that — the in-place
+      // translator can't fully render long-form article content.
+      try {
+        const alt = document.querySelector('link[rel="alternate"][hreflang="' + target + '"]');
+        if (alt && alt.href) {
+          const url = new URL(alt.href, location.href);
+          // Same-origin only — and ignore self-references (some EN pages
+          // list themselves as hreflang="en" + as x-default)
+          const samePath = url.pathname === location.pathname;
+          if (!samePath) {
+            // Persist the choice so other pages (without alternates) follow it
+            try { localStorage.setItem(LANG_KEY, target); } catch (e) {}
+            location.href = url.pathname + url.search + url.hash;
+            return;
+          }
+        }
+      } catch (e) { /* fall through to in-place translation */ }
+      this.setLang(target);
     },
 
     t,

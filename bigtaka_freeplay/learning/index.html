@@ -269,16 +269,5 @@
 <script src="../app.js" defer></script>
 <script src="../i18n.js" defer></script>
 <script src="learning.js" defer></script>
-<script>
-  // EN page: floating toggle navigates to the BN sibling
-  document.addEventListener('click', function (e) {
-    var btn = e.target.closest('.i18n-floating-toggle, [data-i18n-toggle]');
-    if (!btn) return;
-    if (btn.tagName === 'A' && btn.getAttribute('href')) return; // nav-pill <a> handles itself
-    e.preventDefault();
-    e.stopImmediatePropagation();
-    location.href = '/learning/index.bn.html' + (location.search || '');
-  }, true);
-</script>
 </body>
 </html>
