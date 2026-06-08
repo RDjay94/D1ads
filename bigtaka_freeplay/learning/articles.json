@@ -1,0 +1,228 @@
+{
+  "articles": [
+    {
+      "slug": "how-to-play-aviator-bangladesh",
+      "title": "How to Play Aviator in Bangladesh — Complete Beginner Guide",
+      "excerpt": "Place a bet, watch the plane climb, cash out before it flies away. Aviator made simple for Bangladesh players — rules, RTP, the auto-cashout trick, and 3 first-week mistakes to avoid.",
+      "cat": "aviator",
+      "tags": ["aviator", "beginner", "spribe", "strategy"],
+      "published": "2026-06-01",
+      "readMin": 7,
+      "demoLink": "../games/aviator.html",
+      "demoLabel": "Try Aviator FREE",
+      "featured": true
+    },
+    {
+      "slug": "aviator-5-mistakes-bankroll",
+      "title": "5 Aviator Mistakes That Drain Your Bankroll (And How to Stop Them)",
+      "excerpt": "Chasing losses, no cash-out rule, doubling on tilt — the five Aviator mistakes that quietly destroy 90% of Bangladesh players' bankrolls. Plus the fix for each.",
+      "cat": "aviator",
+      "tags": ["aviator", "bankroll", "strategy", "mistakes"],
+      "published": "2026-06-01",
+      "readMin": 6,
+      "demoLink": "../games/aviator.html",
+      "demoLabel": "Practice Aviator FREE"
+    },
+    {
+      "slug": "sweet-bonanza-strategy-bd",
+      "title": "Sweet Bonanza Free Play — 5 Strategy Tips for Bangladesh Players",
+      "excerpt": "Tumble-pays, multipliers, and the free-spin buy. How Sweet Bonanza actually pays out, and the 5 settings every BD player should know before risking a single taka.",
+      "cat": "slots",
+      "tags": ["slots", "pragmatic", "sweet-bonanza", "strategy"],
+      "published": "2026-06-02",
+      "readMin": 7,
+      "demoLink": "../games/slot.html?theme=candy&name=Sweet+Bonanza",
+      "demoLabel": "Spin Sweet Bonanza FREE"
+    },
+    {
+      "slug": "gates-of-olympus-rtp-explained",
+      "title": "Gates of Olympus RTP Explained for Bangladesh Players",
+      "excerpt": "96.5% RTP, 5000× max, Zeus multipliers up to 500×. What the numbers really mean for a Bangladesh player spinning 1000 rounds — and when to stop.",
+      "cat": "slots",
+      "tags": ["slots", "pragmatic", "gates-of-olympus", "rtp"],
+      "published": "2026-06-02",
+      "readMin": 6,
+      "demoLink": "../games/slot.html?theme=olympus",
+      "demoLabel": "Spin Olympus FREE"
+    },
+    {
+      "slug": "mines-strategy-3-vs-5",
+      "title": "Mines Strategy — 3 Mines vs 5 Mines, Which Actually Pays More?",
+      "excerpt": "Lower mine count = lower payout. Higher mine count = higher risk. The math behind picking your mine count, plus a Bangladesh-friendly safe pattern that wins more often.",
+      "cat": "strategy",
+      "tags": ["mines", "strategy", "math", "crash-games"],
+      "published": "2026-06-02",
+      "readMin": 8,
+      "demoLink": "../games/mines.html",
+      "demoLabel": "Practice Mines FREE"
+    },
+    {
+      "slug": "plinko-strategy-where-to-drop",
+      "title": "Plinko Strategy — Where to Drop & Why It Matters",
+      "excerpt": "Center drops, edge drops, and the multiplier illusion. Why most Plinko videos lie — and what actually changes your expected return as a Bangladesh player.",
+      "cat": "strategy",
+      "tags": ["plinko", "strategy", "math"],
+      "published": "2026-06-03",
+      "readMin": 6,
+      "demoLink": "../games/plinko.html",
+      "demoLabel": "Drop Plinko FREE"
+    },
+    {
+      "slug": "crazy-time-vs-funky-time",
+      "title": "Crazy Time vs Funky Time — Which Live Show Wins More?",
+      "excerpt": "Both from Evolution, both with bonus rounds, both popular in Bangladesh. We break down RTP, hit-rates, and which one's actually better for a beginner.",
+      "cat": "live",
+      "tags": ["live", "evolution", "crazy-time", "funky-time"],
+      "published": "2026-06-03",
+      "readMin": 7,
+      "demoLink": "../games/crazy-time.html",
+      "demoLabel": "Try Crazy Time FREE"
+    },
+    {
+      "slug": "lightning-roulette-multipliers",
+      "title": "Lightning Roulette Multipliers — A Bangladesh Player's Strategy Guide",
+      "excerpt": "The 500× multiplier numbers, the cost of straight bets, and the rookie mistake that turns 97% RTP into 92%. Lightning Roulette explained for BD players.",
+      "cat": "live",
+      "tags": ["live", "roulette", "evolution", "lightning"],
+      "published": "2026-06-03",
+      "readMin": 7,
+      "demoLink": "../games/lightning-roulette.html",
+      "demoLabel": "Spin Lightning FREE"
+    },
+    {
+      "slug": "teen-patti-vs-andar-bahar",
+      "title": "Teen Patti vs Andar Bahar — Bangladesh Card Game Showdown",
+      "excerpt": "Two of the most loved card games in Bangladesh. We pit Teen Patti against Andar Bahar — rules, edges, speed, and which one you should learn first.",
+      "cat": "live",
+      "tags": ["live", "card-games", "teen-patti", "andar-bahar"],
+      "published": "2026-06-04",
+      "readMin": 8,
+      "demoLink": "../games/blackjack.html?game=teenpatti",
+      "demoLabel": "Practice Teen Patti FREE"
+    },
+    {
+      "slug": "live-casino-beginner-guide-bd",
+      "title": "Beginner's Guide to Live Casino — Bangladesh Edition",
+      "excerpt": "Real dealers, real tables, real Hindi-speaking hosts. Everything a Bangladesh first-timer should know about live casino — interface, etiquette, and starter tables.",
+      "cat": "live",
+      "tags": ["live", "beginner", "bangladesh"],
+      "published": "2026-06-04",
+      "readMin": 8,
+      "demoLink": "../#game-library",
+      "demoLabel": "Explore Live Casino FREE"
+    },
+    {
+      "slug": "what-is-rtp-bangladesh-guide",
+      "title": "What is RTP? Complete Casino Player's Guide for Bangladesh",
+      "excerpt": "RTP = Return To Player. Sounds simple. But 96% RTP doesn't mean you'll get back 96 taka of every 100 — here's what it really means for your bankroll.",
+      "cat": "basics",
+      "tags": ["rtp", "basics", "math", "education"],
+      "published": "2026-06-04",
+      "readMin": 6,
+      "demoLink": "../#game-library",
+      "demoLabel": "Try a High-RTP Game FREE"
+    },
+    {
+      "slug": "slot-volatility-low-vs-high",
+      "title": "Slot Volatility Explained — Low vs High Variance for Bangladesh Players",
+      "excerpt": "Low volatility = frequent small wins. High volatility = rare huge wins. Which one matches your bankroll, your patience, and your goals? Decision framework inside.",
+      "cat": "basics",
+      "tags": ["volatility", "slots", "education", "math"],
+      "published": "2026-06-05",
+      "readMin": 6,
+      "demoLink": "../#game-library",
+      "demoLabel": "Test Both Variances FREE"
+    },
+    {
+      "slug": "how-to-read-slot-paytable",
+      "title": "How to Read a Slot Paytable in 60 Seconds",
+      "excerpt": "Every slot has a paytable, and 95% of new players never open it. Here's exactly what to look at — RTP, max win, hit rate, paylines — in under a minute.",
+      "cat": "basics",
+      "tags": ["slots", "paytable", "tutorial"],
+      "published": "2026-06-05",
+      "readMin": 5,
+      "demoLink": "../#game-library",
+      "demoLabel": "Try Reading a Live Paytable"
+    },
+    {
+      "slug": "bankroll-management-10-rules",
+      "title": "Bankroll Management for Bangladesh Players — 10 Golden Rules",
+      "excerpt": "Set a session limit. Never chase. The 1% rule. The 10 bankroll laws every BD player needs before depositing a single taka — built for taka budgets.",
+      "cat": "strategy",
+      "tags": ["bankroll", "strategy", "money-management", "rules"],
+      "published": "2026-06-05",
+      "readMin": 9,
+      "demoLink": "../#game-library",
+      "demoLabel": "Practice with FUN Coins FREE"
+    },
+    {
+      "slug": "hot-cold-slots-truth",
+      "title": "The Truth About \"Hot\" and \"Cold\" Slot Machines",
+      "excerpt": "Your friend says the machine \"is due for a win.\" That's a lie statistics tell you. Why RNG makes hot/cold theories worthless — and what really decides slot outcomes.",
+      "cat": "basics",
+      "tags": ["rng", "slots", "myth", "education"],
+      "published": "2026-06-06",
+      "readMin": 6,
+      "demoLink": "../#game-library",
+      "demoLabel": "Try a Slot with Real RNG"
+    },
+    {
+      "slug": "ipl-2026-match-predictor",
+      "title": "IPL 2026 Match Predictor — Bangladesh's Free Cricket Practice Game",
+      "excerpt": "Predict the match outcome. Predict the top scorer. Predict the over total. The IPL 2026 free predictor game built for Bangladesh cricket fans — and how to use it to sharpen real betting instincts.",
+      "cat": "cricket",
+      "tags": ["cricket", "ipl", "predictor", "sports"],
+      "published": "2026-06-06",
+      "readMin": 7,
+      "demoLink": "../games/cricket-six.html",
+      "demoLabel": "Play IPL Predictor FREE"
+    },
+    {
+      "slug": "cricket-predictor-skill-building",
+      "title": "Cricket Match Predictor — How Free Practice Builds Real Skill",
+      "excerpt": "How does picking winners on a free predictor make you a better real-money bettor? The 4 skills it secretly trains, and how Bangladesh fans can use it to bet smarter on IPL & T20.",
+      "cat": "cricket",
+      "tags": ["cricket", "predictor", "skill", "training"],
+      "published": "2026-06-06",
+      "readMin": 6,
+      "demoLink": "../games/cricket-six.html",
+      "demoLabel": "Train on Free Predictor"
+    },
+    {
+      "slug": "free-spins-vs-cashback-which-bonus",
+      "title": "Free Spins vs Cashback — Which Bonus Is Actually Better?",
+      "excerpt": "100 free spins or 10% cashback? Which one puts more real taka in your pocket as a Bangladesh player? We do the math on both — and pick a winner.",
+      "cat": "bonus",
+      "tags": ["bonus", "free-spins", "cashback", "math"],
+      "published": "2026-06-08",
+      "readMin": 7,
+      "demoLink": "../#game-library",
+      "demoLabel": "Test-Drive with FUN Coins",
+      "image": "assets/poster-free-spins-vs-cashback.jpg"
+    },
+    {
+      "slug": "why-bangladeshis-love-aviator",
+      "title": "Why Bangladeshi Players Love Aviator (And What It Means for You)",
+      "excerpt": "Speed. Skill-feel. Social proof. The three reasons Aviator owns Bangladesh's online crash market — and why understanding the hype helps you play smarter.",
+      "cat": "aviator",
+      "tags": ["aviator", "discussion", "bangladesh", "trends"],
+      "published": "2026-06-08",
+      "readMin": 6,
+      "demoLink": "../games/aviator.html",
+      "demoLabel": "See What the Hype's About",
+      "image": "assets/poster-why-bangladeshis-love-aviator.jpg"
+    },
+    {
+      "slug": "eid-2026-casino-bonuses-bd",
+      "title": "Eid 2026 Casino Bonuses — What Bangladesh Players Should Watch For",
+      "excerpt": "Festival = peak bonus season. Here's the Eid 2026 bonus playbook — what's worth claiming, what's a trap, and the 3 wagering clauses that quietly cost BD players millions of taka every Eid.",
+      "cat": "bonus",
+      "tags": ["bonus", "eid", "festival", "promotions"],
+      "published": "2026-06-08",
+      "readMin": 8,
+      "demoLink": "../#game-library",
+      "demoLabel": "Practice Before You Claim",
+      "image": "assets/poster-eid-2026-casino-bonuses-bd.jpg"
+    }
+  ]
+}

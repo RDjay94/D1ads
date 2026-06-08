@@ -12,6 +12,9 @@
     // ============ NAV ============
     'Home': 'হোম',
     'All Games': 'সব গেম',
+    'Learning': 'শিক্ষা',
+    'Learning Hub': 'শিক্ষা কেন্দ্র',
+    'Learning Hub (3 articles daily)': 'শিক্ষা কেন্দ্র (দৈনিক ৩টি আর্টিকেল)',
     'How It Works': 'কীভাবে কাজ করে',
     'About': 'সম্পর্কে',
     'Log In': 'লগ ইন',
